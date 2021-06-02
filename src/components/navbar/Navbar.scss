@@ -1,0 +1,77 @@
+@import '../../utils/variable.scss';
+
+.wrapp-navbar{
+    display: flex;
+    position: fixed;
+    height: auto;
+    left: 75px;
+    right: 0;
+    background-color: #fff;
+    padding: 10px 40px;
+    box-shadow: 0px 2px 15px -2px rgba(0,0,0,0.1);
+    justify-content: space-between;
+    z-index: 99;
+    transition: 0.3s ease-in-out;
+
+    .column-kiri-navbar{
+        display: flex;
+        align-items: center;
+        
+        .btn-navmenu{
+            display: flex;
+            font-size: $font2;
+            background-color: transparent;
+            border-radius: 2px;
+            border: 1px solid $color8;
+            cursor: pointer;
+            color: $color6;
+            transition: 0.2s ease-in-out;
+            &:hover{
+                color: #fff;
+                background-color: $color6;
+            }
+
+            i{
+                padding: 10px;
+            }
+
+            .active-icon-bar-menu{
+                color: #fff;
+            }
+        }
+
+        .active-btn-navmenu{
+            background-color: $color6;
+        }
+
+        .name-web{
+            display: flex;
+            font-size: $font2;
+            color: $color7;
+            margin-left: 10px;
+        }
+    }
+
+    .column-kanan-navbar{
+        display: flex;
+
+        .btn-profile-navbar{
+            display: flex;
+            font-size: $font2;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            color: $color7;
+            align-items: center;
+            background-color: transparent;
+
+            i{
+                background-color: $color6;
+                padding: 10px;
+                color: #fff;
+                border-radius: 2px;
+                margin-left: 10px;
+            }
+        }
+    }
+}

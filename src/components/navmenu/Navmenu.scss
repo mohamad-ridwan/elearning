@@ -1,0 +1,101 @@
+@import '../../utils/variable.scss';
+
+.wrapp-navmenu{
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    padding: 20px 0;
+    width: 75px;
+    background-color: #fff;
+    align-items: flex-start;
+    transition: 0.3s ease-in-out;
+    z-index: 999;
+    box-shadow: 2px 0 15px -1px rgba(0,0,0,0.1);
+    overflow: hidden;
+
+    .txt-menu{
+        display: flex;
+        font-size: $font2;
+        color: $color6;
+        margin-bottom: 10px;
+        padding-left: 20px;
+    }
+
+    .container-btn-bar-navmenu{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        .btn-bar-navmenu{
+            display: flex;
+            position: relative;
+            width: 100%;
+            align-items: center;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-size: $font2;
+            color: $color2;
+            transition: 0.2s ease-in-out;
+            padding: 5px 20px;
+            &:hover{
+                background-color: $color10;
+            }
+    
+            i{
+                padding: 10px;
+                background-color: $color10;
+                margin-right: 10px;
+                border-radius: 2px;
+                transition: 0.2s ease-in-out;
+            }
+    
+            .icon-arrow{
+                display: flex;
+                position: absolute;
+                right: 0;
+                font-size: 14px;
+                background-color: transparent;
+                transition: 0.2s ease-in-out;
+            }
+        }
+    
+        .active-bar-navmenu{
+            background-color: $color10;
+        }
+    
+        .container-nav-collapse{
+            display: flex;
+            flex-direction: column;
+            height: 0px;
+            width: 100%;
+            background-color: $color1;
+            transition: 0.2s ease-in-out;
+            overflow: hidden;
+    
+            .btn-menu-collapse{
+                display: flex;
+                background-color: transparent;
+                outline: none;
+                border: none;
+                align-items: center;
+                padding: 8px 40px;
+                cursor: pointer;
+                font-size: $font2;
+                transition: 0.2s ease-in-out;
+                &:hover{
+                    background-color: $color10;
+                }
+    
+                i{
+                    font-size: 8px;
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+}

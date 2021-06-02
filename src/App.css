@@ -1,3 +1,19 @@
+html{
+  scroll-behavior: smooth;
+}
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Mulish', sans-serif;
+  letter-spacing: 0.3px;
+}
+
+body{
+  overflow-x: hidden;
+}
+
 .App {
   text-align: center;
 }

@@ -1,0 +1,39 @@
+@import '../../utils/variable.scss';
+
+.wrapp-input-card{
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: 100%;
+    margin-bottom: 10px;
+
+    .label-input-card{
+        display: flex;
+        font-size: $font2;
+        color: $color2;
+        margin-bottom: 5px;
+    }
+
+    .txt-input-card{
+        display: flex;
+        height: auto;
+        width: 100%;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        outline: none;
+        padding: 7px 12px;
+        font-size: $font1;
+        color: $color2;
+    }
+    .txt-input-card::placeholder{
+        color: $color2;
+    }
+
+    .error-message-input{
+        display: flex;
+        font-size: 11px;
+        margin-top: 5px;
+        color: $color4;
+        transition: 0.3s ease-in-out;
+    }
+}

@@ -1,0 +1,20 @@
+@import '../../utils/variable.scss';
+
+.wrapp-button-card{
+    display: flex;
+    height: auto;
+    width: auto;
+    background-color: $color3;
+    padding: 7px 12px;
+    align-items: center;
+    font-size: $font2;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: $color1;
+    border-radius: 5px;
+    transition: 0.2s ease-in-out;
+    &:hover{
+        background-color: $color5;
+    }
+}

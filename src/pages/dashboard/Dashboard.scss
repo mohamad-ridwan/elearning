@@ -1,0 +1,11 @@
+@import '../../utils/variable.scss';
+
+.wrapp-dashboard{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: auto;
+    margin-left: 70px;
+    background-color: $color1;
+    transition: 0.3s ease-in-out;
+}
