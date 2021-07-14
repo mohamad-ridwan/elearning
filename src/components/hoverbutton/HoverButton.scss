@@ -1,0 +1,67 @@
+@import '../../utils/variable.scss';
+
+.wrapp-hover-button{
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    padding: 5px 7px 4px 7px;
+    justify-content: center;
+    z-index: 101;
+    opacity: 0;
+    animation: opacity 0.2s ease-in-out forwards;
+
+    .name-hover-button{
+        display: flex;
+    }
+
+    .btn-group-hover-button{
+        position: relative;
+        align-items: center;
+        cursor: pointer;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        transition: 0.2s ease-in-out;
+
+        .name-btn-group{
+            z-index: 11;
+        }
+        
+        .hover-black{
+            display: flex;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            background-color: #000;
+            opacity: 0;
+            border-radius: 3px;
+            transition: 0.2s ease-in-out;
+        }
+    }
+
+    .line-grey{
+        display: none;
+        height: 0.5px;
+        width: 100%;
+        margin-top: 5px;
+        background-color: #ddd;
+    }
+}
+
+.close-btn-group-hover-button{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+}
+
+@keyframes opacity{
+    to{
+        opacity: 1;
+    }
+}

@@ -1,0 +1,128 @@
+@import '../../utils/variable.scss';
+
+.wrapp-ruang-materi{
+    display: flex;
+    flex-direction: column;
+    margin-left: 70px;
+    background-color: $color1;
+    transition: 0.3s ease-in-out;
+    padding: 80px 50px 40px 50px;
+
+    .column-atas-ruang-materi{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        background-color: #fff;
+
+        .column-btn-page-materi{
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+            border-bottom: 1px solid $color16;
+            padding: 15px 15px 0 15px;
+        }
+
+        .container-tools-ruang-materi{
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            animation: opacity 0.3s ease-in-out forwards;
+            
+            .title-ruang-materi{
+                display: flex;
+                text-align: start;
+                font-size: 16px;
+                color: $color2;
+                font-weight: 600;
+                margin: 15px 15px 0 15px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid $color16;
+            }
+    
+            .column-tools-ruang-materi{
+                padding: 5px;
+            }
+        }
+    }
+
+    .column-bawah-ruang-materi{
+        display: flex;
+        width: 100%;
+        background-color: #fff;
+        padding: 0 15px 15px 15px;
+        opacity: 0;
+        animation: opacity 0.3s ease-in-out forwards;
+
+        .container-scroll-ruang-materi{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            overflow-x: auto;
+
+            .body-ruang-materi{
+                display: flex;
+                flex-direction: column;
+                width: auto;
+                border-left: 1px solid $color16;
+
+                .column-list-materi{
+                    display: flex;
+                    border-bottom: 1px solid $color16;
+                    transition: 0.2s ease-in-out;
+                    background-color: $color10;
+                }
+
+                .no-data-available{
+                    display: flex;
+                    font-size: $font2;
+                    color: $color2;
+                    padding: 10px;
+                    justify-content: center;
+                }
+            }
+        }
+    }
+
+    .container-slide-pembelajaran{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 40px 40px 40px 40px;
+        background-color: #fff;
+        opacity: 0;
+        animation: opacity 0.3s ease-in-out forwards;
+
+        .line-border-slide{
+            display: flex;
+            height: 1px;
+            width: 100%;
+            background-color: $color16;
+            margin-bottom: 15px;
+        }
+        
+        .card-slide-pembelajaran{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+    }
+
+    .container-pagination-ruang-materi{
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        padding: 0 15px 15px 15px;
+        border-bottom-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        opacity: 0;
+        animation: opacity 0.3s ease-in-out forwards;
+    }
+}
+
+@keyframes opacity{
+    to{
+        opacity: 1;
+    }
+}

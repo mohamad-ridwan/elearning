@@ -1,0 +1,43 @@
+@import '../../utils/variable.scss';
+
+.list-table{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-right: 1px solid $color16;
+    width: calc(100%/7);
+    font-size: $font2;
+    color: $color2;
+    text-align: start;
+    justify-content: flex-start;
+    
+    .btn-list-table{
+        display: flex;
+        border-radius: 3px;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        font-size: $font2;
+        color: $color2;
+        text-align: start;
+        align-items: center;
+
+        i{
+            display: none;
+            font-size: 11px;
+            color: #fff;
+            margin-left: 8px;
+            margin-top: -3px;
+        }
+    }
+
+    .box-hadir{
+        display: none;
+        align-items: center;
+        padding: 5px 10px;
+        background-color: $color12;
+        border-radius: 2px;
+        color: #fff;
+        cursor: default;
+    }
+}

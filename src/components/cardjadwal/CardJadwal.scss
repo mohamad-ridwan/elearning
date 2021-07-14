@@ -1,0 +1,251 @@
+@import '../../utils/variable.scss';
+
+.wrapp-card-jadwal{
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: calc(96%/3);
+    background-color: #fff;
+    border: 1px solid $color19;
+    border-radius: 3px;
+    margin: 0 10px 20px 0;
+
+    .column-red-card{
+        display: flex;
+        flex-direction: column;
+        padding: 10px 0;
+        justify-content: center;
+        align-items: center;
+        background-color: $color12;
+
+        .name-matkul{
+            display: flex;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .jadwal-matkul{
+            display: flex;
+            margin-top: 20px;
+            color: #fff;
+            font-size: $font1;
+            font-weight: 600;
+        }
+    }
+
+    .column-white-card{
+        display: flex;
+        flex-direction: column;
+        padding: 30px 20px;
+
+        ul{
+            display: flex;
+            flex-direction: column;
+
+            .list-card{
+                display: flex;
+                position: relative;
+                align-items: center;
+                list-style: none;
+                font-size: $font1;
+                color: $color2;
+                font-weight: 600;
+
+                i{
+                    display: flex;
+                    position: absolute;
+                }
+
+                .name-list{
+                    display: flex;
+                    margin-left: 25px;
+                }
+            }
+        }
+
+        .column-info-matkul{
+            display: none;
+            align-items: center;
+
+            i{
+                display: flex;
+                height: 35px;
+                width: 35px;
+                border-radius: 500px;
+                border: 2px solid $color6;
+                justify-content: center;
+                align-items: center;
+                font-size: 16px;
+                color: $color6;
+                margin-right: 10px;
+            }
+
+            .column-deskripsi-info-matkul{
+                display: flex;
+                flex-direction: column;
+
+                .title-info-matkul{
+                    display: flex;
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: $color2;
+                    text-align: start;
+                }
+
+                .name-label-info-matkul{
+                    display: flex;
+                    font-size: $font2;
+                    color: $color9;
+                }
+            }
+        }
+
+        .column-btn-matkul{
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+
+            .body-btn-matkul{
+                display: flex;
+                padding: 7px 12px;
+                border-radius: 5px;
+                
+                .btn-masuk-kelas{
+                    display: flex;
+                    position: relative;
+                    font-size: $font2;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 7px 15px;
+                    background-color: $color6;
+                    color: #fff;
+                    border: none;
+                    outline: none;
+                    cursor: pointer;
+                    border-bottom-left-radius: 3px;
+                    border-top-left-radius: 3px;
+
+                    .txt-masuk-kelas{
+                        z-index: 1;
+                    }
+
+                    .hover-black-masuk-kelas{
+                        display: flex;
+                        position: absolute;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        top: 0;
+                        background-color: #000;
+                        opacity: 0;
+                        border-bottom-left-radius: 3px;
+                        border-top-left-radius: 3px;
+                        transition: 0.2s ease-in-out;
+                    }
+                }
+    
+                .btn-blue-group{
+                    display: flex;
+                    position: relative;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 0px 12px;
+                    border: none;
+                    outline: none;
+                    cursor: pointer;
+                    background-color: $color13;
+                    color: #fff;
+                    font-size: $font2;
+                    transition: 0.2s ease-in-out;
+
+                    i{
+                        z-index: 1;
+                    }
+                    
+                    .hover-black-ruang-diskusi{
+                        display: flex;
+                        position: absolute;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        top: 0;
+                        background-color: #000;
+                        opacity: 0;
+                        transition: 0.2s ease-in-out;
+                    }
+
+                    .hover-black-ruang-materi{
+                        display: flex;
+                        position: absolute;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        top: 0;
+                        background-color: #000;
+                        opacity: 0;
+                        transition: 0.2s ease-in-out;
+                    }
+
+                    .hover-black-ruang-tugas{
+                        display: flex;
+                        position: absolute;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        top: 0;
+                        background-color: #000;
+                        opacity: 0;
+                        border-bottom-right-radius: 3px;
+                        border-top-right-radius: 3px;
+                        transition: 0.2s ease-in-out;
+                    }
+                }
+
+                .btn-ruang-tugas{
+                    border-bottom-right-radius: 3px;
+                    border-top-right-radius: 3px;
+                }
+            }   
+        }
+    }
+
+    .container-card-slide-pembelajaran{
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+
+        .circle-white-icon-zip{
+            display: flex;
+            height: 80px;
+            width: 80px;
+            border-radius: 500px;
+            background-color: #fff;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+
+            .img-icon-zip{
+                display: flex;
+                height: auto;
+                max-width: 100%;
+            }
+        }
+
+        .name-file-materi{
+            display: flex;
+            font-size: $font2;
+            color: $color2;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .column-btn-download-file{
+            display: flex;
+        }
+    }
+}

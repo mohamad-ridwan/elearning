@@ -1,0 +1,63 @@
+@import '../../utils/variable.scss';
+
+.column-tools-absen{
+    display: flex;
+    padding: 15px 10px;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+
+    .column-kiri-tools-absen{
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+
+        .btn-tools-group{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px 10px;
+            border: 1px solid #bbb;
+            outline: none;
+            cursor: pointer;
+            border-radius: 2px;
+            background-color: transparent;
+            margin: 0 10px 0px 0;
+            font-size: $font2;
+            color: $color2;
+            transition: 0.2s ease-in-out;
+            &:hover{
+                border: 1px solid $color6;
+                background-color: $color6;
+                color: #fff;
+            }
+        }
+    }
+
+    .column-kanan-tools-absen{
+        display: flex;
+        align-items: center;
+
+        .txt-search-absen{
+            display: flex;
+            font-size: $font2;
+            color: $color2;
+            margin-right: 5px;
+        }
+
+        .container-search-absen{
+            display: flex;
+            position: relative;
+        
+            .input-search-absen{
+                display: flex;
+                padding: 5px 8px;
+                border-radius: 2px;
+                border: 1px solid $color16;
+                transition: 0.2s ease-in-out;
+                outline: none;
+                font-size: $font2;
+            }
+        }
+    }
+}

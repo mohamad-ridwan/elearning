@@ -12,8 +12,8 @@
     background-color: #fff;
     align-items: flex-start;
     transition: 0.3s ease-in-out;
-    z-index: 999;
-    box-shadow: 2px 0 15px -1px rgba(0,0,0,0.1);
+    z-index: 99;
+    box-shadow: 2px 0 15px -1px $color25;
     overflow: hidden;
 
     .txt-menu{
@@ -51,7 +51,7 @@
                 background-color: $color10;
                 margin-right: 10px;
                 border-radius: 2px;
-                transition: 0.2s ease-in-out;
+                transition: 0.4s ease-in-out;
             }
     
             .icon-arrow{

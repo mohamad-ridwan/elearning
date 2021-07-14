@@ -5,8 +5,7 @@ import { PathContext } from '../../services/context/path'
 
 function Navmenu() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault] = useContext(PathContext)
-    const [indexActive, setIndexActive] = useState()
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal] = useContext(PathContext)
     const [btnNavmenu] = useState([
         {
             name: 'Dashboard',
@@ -16,7 +15,7 @@ function Navmenu() {
         {
             name: 'Profil',
             icon: 'fas fa-user-circle',
-            path: ''
+            path: '/profile'
         },
         {
             name: 'Jadwal',
@@ -25,11 +24,11 @@ function Navmenu() {
             menuCollapse: [
                 {
                     name: 'Jadwal Kuliah',
-                    path: ''
+                    path: '/jadwal-kuliah'
                 },
                 {
                     name: 'Kuliah Pengganti',
-                    path: ''
+                    path: '/kuliah-pengganti'
                 }
             ]
         },
@@ -46,10 +45,10 @@ function Navmenu() {
 
     // btn menu navbar
     const ElementBtnNavmenu = document.getElementsByClassName('btn-navmenu')
-    const iconBarMenu = document.getElementsByClassName('fa-bars')
+    const iconBarMenu = document.getElementsByClassName('fa-list-ul')
 
     const styleNavmenu = {
-        display: pathGlobal === '/login' ? 'none' : 'flex',
+        display: pathGlobal === '/login' || pathGlobal === '/storage' ? 'none' : 'flex',
         width: overActiveNavmenu || activeNavmenu ? '230px' : '75px'
     }
 
@@ -72,7 +71,7 @@ function Navmenu() {
         setActiveNavmenu(false)
         setActiveNavmenuDefault(false)
         setOverActiveNavmenu(false)
-        setIndexActive()
+        setIdxActiveGlobal()
 
         for (let i = 0; i < 4; i++) {
             btnBarMenu[i].classList.remove('active-bar-navmenu')
@@ -86,17 +85,17 @@ function Navmenu() {
         history.push(path)
 
         if (path === '/login') {
-            localStorage.removeItem('token')
+            document.cookie = 'e-learning='
             changeNavmenuAfterLogout();
         }
 
         if (path == undefined) {
             getMenuCollapse();
             btnBarMenu[2].classList.toggle('active-bar-navmenu')
-            if (indexActive == undefined) {
-                setIndexActive(2)
+            if (idxActiveGlobal == undefined) {
+                setIdxActiveGlobal(2)
             } else {
-                setIndexActive()
+                setIdxActiveGlobal()
             }
         }
     }
@@ -127,8 +126,8 @@ function Navmenu() {
         }
         btnBarMenu[index].classList.add('active-bar-navmenu')
 
-        if (indexActive !== undefined) {
-            btnBarMenu[indexActive].classList.add('active-bar-navmenu')
+        if (idxActiveGlobal !== undefined) {
+            btnBarMenu[idxActiveGlobal].classList.add('active-bar-navmenu')
         }
     }
 
@@ -137,8 +136,8 @@ function Navmenu() {
             btnBarMenu[i].classList.remove('active-bar-navmenu')
         }
 
-        if (indexActive !== undefined) {
-            btnBarMenu[indexActive].classList.add('active-bar-navmenu')
+        if (idxActiveGlobal !== undefined) {
+            btnBarMenu[idxActiveGlobal].classList.add('active-bar-navmenu')
         }
     }
 
@@ -159,8 +158,6 @@ function Navmenu() {
 
                         const menuCollapse = e.menuCollapse
 
-                        const checkActiveNavmenu = activeNavmenuDefault ? '#ebeff5' : 'transparent'
-
                         const iconActive = activeNavmenuDefault ? '#1a8e5f' : '#ebeff5'
                         const borderRadiusActive = activeNavmenuDefault ? '500px' : '2px'
                         const colorActive = activeNavmenuDefault ? '#fff' : '#333'
@@ -169,7 +166,7 @@ function Navmenu() {
                             <>
                                 <button key={i} className="btn-bar-navmenu" onClick={() => toPage(e.path)}
                                     onMouseOver={() => mouseOverBtnMenu(i)}
-                                    onMouseLeave={() => mouseLeaveBtnMenu}
+                                    onMouseLeave={() => mouseLeaveBtnMenu()}
                                 >
                                     <i className={e.icon} style={{
                                         backgroundColor: i === 2 ? iconActive : '#ebeff5',
@@ -187,7 +184,7 @@ function Navmenu() {
                                             {menuCollapse !== undefined ? menuCollapse.map((e, i) => {
                                                 return (
                                                     <>
-                                                        <button key={i} className="btn-menu-collapse">
+                                                        <button key={i} className="btn-menu-collapse" onClick={() => toPage(e.path)}>
                                                             <i className="fas fa-arrow-right"></i>
                                                             {e.name}
                                                         </button>

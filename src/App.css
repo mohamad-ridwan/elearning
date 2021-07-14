@@ -8,10 +8,12 @@ html{
   box-sizing: border-box;
   font-family: 'Mulish', sans-serif;
   letter-spacing: 0.3px;
+  line-height: 1.5;
 }
 
 body{
   overflow-x: hidden;
+  background-color: #f5f6fa;
 }
 
 .App {

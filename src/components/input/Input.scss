@@ -14,19 +14,51 @@
         margin-bottom: 5px;
     }
 
-    .txt-input-card{
-        display: flex;
-        height: auto;
-        width: 100%;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        outline: none;
-        padding: 7px 12px;
-        font-size: $font1;
-        color: $color2;
+    .img-input-user{
+        display: none;
+        height: 70px;
+        width: 70px;
+        border-radius: 500px;
+        object-fit: cover;
+        object-position: center;
+        margin: 10px 0;
     }
-    .txt-input-card::placeholder{
-        color: $color2;
+
+    .container-input-card{
+        display: flex;
+        position: relative;
+        border-radius: 5px;
+
+        .txt-input-card{
+            display: flex;
+            height: auto;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid $color20;
+            outline: none;
+            padding: 7px 12px;
+            font-size: $font2;
+            color: $color2;
+        }
+        .txt-input-card::placeholder{
+            color: $color2;
+        }
+
+        .btn-open-file{
+            display: none;
+            height: 100%;
+            width: 100%;
+            padding: 7px 12px;
+            position: absolute;
+            background-color: #fff;
+            cursor: pointer;
+            outline: none;
+            border: 1px solid $color20;
+            border-radius: 5px;
+            font-size: $font2;
+            color: $color2;
+            align-items: center;
+        }
     }
 
     .error-message-input{
@@ -34,6 +66,5 @@
         font-size: 11px;
         margin-top: 5px;
         color: $color4;
-        transition: 0.3s ease-in-out;
     }
 }

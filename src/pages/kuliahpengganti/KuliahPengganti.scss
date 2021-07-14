@@ -1,0 +1,13 @@
+@import '../../utils/variable.scss';
+
+.wrapp-kuliah-pengganti{
+    display: flex;
+    flex-wrap: wrap;
+    height: auto;
+    width: auto;
+    margin-left: 70px;
+    background-color: $color1;
+    padding: 80px 50px 20px 50px;
+    justify-content: flex-start;
+    transition: 0.3s ease-in-out;
+}

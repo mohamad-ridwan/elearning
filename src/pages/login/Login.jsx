@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import './Login.scss'
+import Cookies from 'js-cookie';
+import './Login.scss';
 import Button from '../../components/button/Button';
 import Input from '../../components/input/Input';
 import API from '../../services/api';
@@ -9,35 +10,28 @@ import { PathContext } from '../../services/context/path';
 
 function Login() {
 
-    const [pathGlobal, setPathGlobal] = useContext(PathContext)
-    const [user, setUser] = useState([])
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar] = useContext(PathContext)
     const [logoweb, setLogoweb] = useState({})
     const [errorMessage, setErrorMessage] = useState({})
-    const [errorLogin, setErrorLogin] = useState({
-        txt1: '',
-        txt2: ''
-    })
     const [inputValue, setInputValue] = useState({
         nim: '',
         password: ''
     })
 
-    const getTokenUser = JSON.parse(localStorage.getItem('token'))
+    const getTokenUser = Cookies.get('e-learning')
 
     const history = useHistory();
 
     function setAllAPI() {
-        API.APIGetUser()
+        API.APIGetDashboard(getTokenUser)
             .then(res => {
-                const respons = res.data
-                setUser(respons)
-
-                const checkUserLogin = respons.filter((e) => e.token == getTokenUser)
-
-                if (checkUserLogin.length > 0) {
+                if (res && res.data) {
                     history.push('/')
                     setPathGlobal('/')
                 }
+            })
+            .catch(err => {
+                console.log(err)
             })
 
         API.APIGetLogoweb()
@@ -63,24 +57,50 @@ function Login() {
         }
     }
 
+    function getDashboard(token) {
+        API.APIGetDashboard(token)
+            .then(res => {
+                if (res && res.data) {
+                    setDataUserForNavbar(res.data.user.data)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
     function checkDataUser() {
-        const checkUser = user.filter((e) => e.nim === inputValue.nim && e.password === inputValue.password)
-
-        if (checkUser.length !== 0) {
-            JSON.stringify(localStorage.setItem('token', checkUser[0].token))
-            history.push('/')
-            setPathGlobal('/')
-
-            setInputValue({
-                nim: '',
-                password: ''
-            })
-        } else {
-            setErrorLogin({
-                txt1: 'Oops! Invalid nim or password.',
-                txt2: 'Silahkan cek kembali nim dan password Anda'
-            })
+        const data = {
+            nim: inputValue.nim,
+            password: inputValue.password
         }
+
+        API.APILogin(data)
+            .then(res => {
+                let err = {}
+
+                if (res.error === 'Nim is wrong') {
+                    err.nim = res.error
+                } else if (res.error === 'Password is wrong') {
+                    err.password = res.error
+                } else if (res && res.data.token) {
+                    document.cookie = `e-learning=${res.data.token}`
+                    getDashboard(res.data.token)
+
+                    history.push('/')
+                    setPathGlobal('/')
+
+                    setInputValue({
+                        nim: '',
+                        password: ''
+                    })
+                }
+
+                setErrorMessage(err)
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
     function submitLogin(p) {
@@ -129,18 +149,6 @@ function Login() {
                                     error={errorMessage && errorMessage.password}
                                 />
                             </div>
-
-                            {errorLogin.txt1.length > 0 ? (
-                                <>
-                                    <p className="error-failed-login">
-                                        {errorLogin.txt1}
-                                        <br />
-                                        {errorLogin.txt2}
-                                    </p>
-                                </>
-                            ) : (
-                                <div></div>
-                            )}
 
                             <div className="column-btn-login">
                                 <a href="#" className="btn-lupa-password">

@@ -1,0 +1,47 @@
+@import '../../utils/variable.scss';
+
+.wrapp-pagination{
+    display: flex;
+    flex-direction: column;
+    
+    .total-page-show{
+        display: flex;
+        font-size: $font2;
+        color: $color7;
+    }
+
+    .container-btn-pagination{
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: flex-end;
+        margin-top: 20px;
+        
+        .btn-group-pagination{
+            display: flex;
+            padding: 5px 8px;
+            align-items: center;
+            font-size: $font2;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            color: $color2;
+            background-color: $color10;
+            border-radius: 2px;
+        }
+
+        .column-list-number-pagination{
+            display: flex;
+
+            li{
+                font-size: $font2;
+                color: #fff;
+                padding: 5px 10px;
+                border-radius: 2px;
+                background-color: $color6;
+                cursor: pointer;
+                list-style: none;
+            }
+        }
+    }
+}

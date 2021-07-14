@@ -2,10 +2,102 @@
 
 .wrapp-dashboard{
     display: flex;
-    flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
     width: auto;
     margin-left: 70px;
     background-color: $color1;
     transition: 0.3s ease-in-out;
+    padding: 100px 80px 250px 80px;
+    overflow-y: auto;
+
+    .column-kiri-dashboard{
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        width: 30%;
+        background-color: #fff;
+        border: 1px solid $color19;
+        margin-right: 20px;
+        padding: 20px;
+
+        .column-name-user-dashboard{
+            display: flex;
+            border-bottom: 1px solid $color19;
+            align-items: center;
+            justify-content: center;
+            padding: 0 0 20px 0;
+
+            .img-user-dashboard{
+                display: flex;
+                height: 30px;
+                width: 30px;
+                border-radius: 500px;
+                object-fit: cover;
+                object-position: center;
+            }
+
+            .name-user-dashboard{
+                display: flex;
+                font-size: $font2;
+                color: $color2;
+                text-align: start;
+                margin-left: 10px;
+            }
+        }
+
+        .column-panduan-dashboard{
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+
+            .btn-panduan-dashboard{
+                display: flex;
+                font-size: $font2;
+                color: $color2;
+                align-items: center;
+                text-align: start;
+                border: none;
+                outline: none;
+                transition: 0.2s ease-in-out;
+                background-color: transparent;
+                margin-bottom: 10px;
+                text-decoration: none;
+                cursor: pointer;
+                &:hover{
+                    color: $color6;
+                }
+
+                i{
+                    display: flex;
+                    height: 28px;
+                    width: 28px;
+                    margin-right: 10px;
+                    font-size: $font2;
+                    color: $color6;
+                    border-radius: 500px;
+                    background-color: $color10;
+                    justify-content: center;
+                    align-items: center;
+                }
+            }
+        }
+    }
+
+    .column-kanan-dashboard{
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        width: 70%;
+        background-color: #fff;
+        border: 1px solid $color19;
+        padding: 20px;
+
+        .title-profile-mahasiswa{
+            display: flex;
+            font-size: 14px;
+            color: $color2;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+    }
 }

@@ -1,4 +1,5 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useState, useEffect } from 'react'
+import API from '../api'
 
 export const PathContext = createContext()
 
@@ -9,9 +10,11 @@ const PathProvider = ({ children }) => {
     const [activeNavCollapse, setActiveNavCollapse] = useState(false)
     const [overActiveNavmenu, setOverActiveNavmenu] = useState(false)
     const [activeNavmenuDefault, setActiveNavmenuDefault] = useState(false)
+    const [dataUserForNavbar, setDataUserForNavbar] = useState({})
+    const [idxActiveGlobal, setIdxActiveGlobal] = useState()
 
     return (
-        <PathContext.Provider value={[pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault]}>
+        <PathContext.Provider value={[pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal]}>
             {children}
         </PathContext.Provider>
     )

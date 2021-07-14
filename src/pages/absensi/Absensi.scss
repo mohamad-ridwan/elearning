@@ -1,0 +1,176 @@
+@import '../../utils/variable.scss';
+
+.wrapp-absensi{
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: auto;
+    margin-left: 70px;
+    background-color: $color1;
+    transition: 0.3s ease-in-out;
+    padding: 80px 50px 40px 50px;
+
+    .column-atas-absensi{
+        display: flex;
+        flex-wrap: wrap;
+        height: auto;
+        width: auto;
+    }
+
+    .column-btn-absensi{
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        background-color: #fff;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        border: 1px solid $color19;
+        margin-bottom: 20px;
+        overflow: hidden;
+        border-radius: 2px;
+
+        .container-comment-absen-mhs{
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
+
+            .txt-optional-comment{
+                display: flex;
+                font-size: 11px;
+                color: $color6;
+                margin-bottom: 2px;
+            }
+
+            .input-comment-mhs{
+                display: flex;
+                width: 100%;
+                font-size: $font2;
+                color: $color2;
+                outline: none;
+                border: 1.5px solid $color6;
+                border-radius: 2px;
+                padding: 5px;
+                resize: none;
+            }
+
+            .column-input-komplain-absen{
+                display: flex;
+                flex-direction: column;
+                
+                .btn-group-komplain{
+                    display: flex;
+                    align-items: center;
+                    padding: 3px 0;
+                    cursor: pointer;
+                    border: none;
+                    outline: none;
+                    background-color: transparent;
+                    color: $color2;
+                    transition: 0.2s ease-in-out;
+                    &:hover{
+                        color: $color6;
+                    }
+                    
+                    i{
+                        display: flex;
+                        transition: 0.2s ease-in-out;
+                    }
+
+                    .label-group-komplain{
+                        display: flex;
+                        text-align: start;
+                        margin-left: 8px;
+                        font-size: $font2;
+                        font-weight: 600;
+                        cursor: pointer;
+                    }
+                }
+            }
+
+            .column-btn-submit-comment-absen-mhs{
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 5px;
+            }
+        }
+    }
+
+    .container-tools-absen{
+        display: flex;
+        flex-direction: column;
+        border-left: 2px solid $color16;
+        border-right: 2px solid $color16;
+        border-top: 2px solid $color16;
+        background-color: #fff;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+
+        .title-rekap-absen{
+            display: flex;
+            font-size: $font2;
+            color: $color2;
+            padding: 10px;
+            background-color: $color16;
+            font-weight: 600;
+            margin: -1px -1px 0 -1px;
+        }
+    }
+
+    .column-bawah-absensi{
+        display: flex;
+        width: 100%;
+        background-color: #fff;
+        border-left: 2px solid $color16;
+        border-right: 2px solid $color16;
+        padding: 0 10px 10px 10px;
+
+        .container-scroll-rekap-absen{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            overflow-x: auto;
+
+            .body-absen{
+                display: flex;
+                flex-direction: column;
+                width: auto;
+                border-left: 1px solid $color16;
+
+                .column-list-absen{
+                    display: flex;
+                    border-bottom: 1px solid $color16;
+                    transition: 0.2s ease-in-out;
+                    background-color: $color17;
+                }
+
+                .column-list-active{
+                    background-color: #fff;
+                }
+
+                .no-data-available-absensi{
+                    display: flex;
+                    font-size: $font2;
+                    color: $color2;
+                    padding: 10px;
+                    justify-content: center;
+                    border-bottom: 1px solid $color16;
+                    border-right: 1px solid $color16;
+                }
+            }
+        }
+    }
+
+    .container-paginate-absensi{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        background-color: #fff;
+        padding: 0 10px 10px 10px;
+        border-left: 2px solid $color16;
+        border-right: 2px solid $color16;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        border-bottom: 2px solid $color16;
+    }
+}
