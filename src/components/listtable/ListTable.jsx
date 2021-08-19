@@ -1,7 +1,7 @@
 import React from 'react';
 import './ListTable.scss'
 
-function ListTable({ contentList, statusAbsen, displayWrapp, displayBoxHadir, bgColorStatusAbsen, widthWrapp, bgColorBtnList, paddingBtnList, colorBtnList, cursorBtnList, icon, displayIcon, clickBtn, classBtn }) {
+function ListTable({ contentList, statusAbsen, displayWrapp, displayBoxHadir, bgColorStatusAbsen, widthWrapp, bgColorBtnList, paddingBtnList, colorBtnList, cursorBtnList, icon, displayIcon, clickBtn, classBtn, flexDirectionBtn, marginIcon, mouseEnterBtn, mouseLeaveBtn, classTableActive, fontSizeBtnList, fontWeightBtnList, classWrapp }) {
 
     const styleWrapp = {
         display: displayWrapp,
@@ -9,14 +9,18 @@ function ListTable({ contentList, statusAbsen, displayWrapp, displayBoxHadir, bg
     }
 
     const styleBtnList = {
+        flexDirection: flexDirectionBtn,
         backgroundColor: bgColorBtnList,
         padding: paddingBtnList,
         color: colorBtnList,
-        cursor: cursorBtnList
+        cursor: cursorBtnList,
+        fontSize: fontSizeBtnList,
+        fontWeight: fontWeightBtnList
     }
 
     const styleIcon = {
-        display: displayIcon
+        display: displayIcon,
+        margin: marginIcon
     }
 
     const styleBoxHadir = {
@@ -26,12 +30,18 @@ function ListTable({ contentList, statusAbsen, displayWrapp, displayBoxHadir, bg
 
     return (
         <>
-            <tr className="list-table" style={styleWrapp}>
+            <tr className={`list-table ${classWrapp}`} style={styleWrapp}>
                 <button className={`btn-list-table ${classBtn}`} style={styleBtnList}
                     onClick={clickBtn}
+                    onMouseEnter={mouseEnterBtn}
+                    onMouseLeave={mouseLeaveBtn}
                 >
-                    {contentList}
+                    <p className="content-list-table">
+                        {contentList}
+                    </p>
                     <i className={icon} style={styleIcon}></i>
+
+                    <div className={`btn-list-table-active ${classTableActive}`}></div>
                 </button>
                 <p className="box-hadir" style={styleBoxHadir}>
                     {statusAbsen}

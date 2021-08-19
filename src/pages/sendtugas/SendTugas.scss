@@ -1,0 +1,38 @@
+@import '../../utils/variable.scss';
+
+.wrapp-form-send-tugas{
+    display: flex;
+    margin-left: 70px;
+    background-color: $color1;
+    transition: 0.3s ease-in-out;
+    padding: 80px 50px 40px 50px;
+
+    .container-form-send-tugas{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        border-radius: 5px;
+        border: 1px solid $color16;
+        background-color: #fff;
+
+        .title-form-send-tugas{
+            display: flex;
+            padding: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 1px solid $color16;
+        }
+
+        .column-text-send-tugas{
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+
+            .column-btn-form-upload-tugas{
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+            }
+        }
+    }
+}

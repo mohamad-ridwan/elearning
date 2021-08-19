@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import Cookies from 'js-cookie';
+import { useHistory } from 'react-router-dom';
 import './Profile.scss'
 import Input from '../../components/input/Input';
 import Button from '../../components/button/Button';
@@ -26,6 +27,7 @@ function Profile() {
     })
 
     const getTokenUser = Cookies.get('e-learning')
+    const history = useHistory();
 
     function setAllAPI() {
         setLoading(true)
@@ -43,8 +45,12 @@ function Profile() {
                     })
 
                     setUser(res.data.user.data)
+                } else {
+                    history.push('/login')
+                    document.cookie = 'e-learning='
                 }
             })
+            .catch(err => console.log(err))
     }
 
     useEffect(() => {
@@ -142,7 +148,9 @@ function Profile() {
                 if (res && res.data.error === null) {
                     document.cookie = `e-learning=${res.data.data.token}`
 
-                    window.location.reload();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 0);
                 }
             })
             .catch(err => {

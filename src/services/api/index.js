@@ -1,7 +1,11 @@
 import GetDashboard from "./dashboard/get";
+import DeleteRoomDiskusi from "./jadwalkuliah/deleteroomdiskusi";
 import GetAllJadwalKuliah from "./jadwalkuliah/get";
 import GetOneMatkul from "./jadwalkuliah/getonematkul";
 import PostAbsenMhs from "./jadwalkuliah/postabsenmhs";
+import PostKomentar from "./jadwalkuliah/postkomentar";
+import PostRoomDiskusi from "./jadwalkuliah/postroomdiskusi";
+import PostTugas from "./jadwalkuliah/posttugas";
 import GetLogoweb from "./logoweb/get";
 import GetPanduan from "./panduan/get";
 import GetUser from "./user/get";
@@ -31,6 +35,10 @@ const APIGetPanduan = () => GetPanduan('v3/panduan/get')
 const APIGetAllJadwalKuliah = () => GetAllJadwalKuliah('v4/jadwal-kuliah/get/matakuliah')
 const APIGetOneMatkul = (path) => GetOneMatkul(`v4/jadwal-kuliah/get/matakuliah/one-matkul/${path}`)
 const APIPostAbsenMhs = (_id, pertemuan, data) => PostAbsenMhs(`v4/jadwal-kuliah/post/matakuliah/jadwal-absen/absen-mhs/${_id}/${pertemuan}`, data)
+const APIPostTugas = (id, data) => PostTugas(`v4/jadwal-kuliah/post/matakuliah/data-nilai-tugas/${id}`, data)
+const APIPostKomentar = (_id, id, data) => PostKomentar(`v4/jadwal-kuliah/post/matakuliah/ruang-diskusi/komentar/${_id}/${id}`, data)
+const APIPostRoomDiskusi = (_id, data) => PostRoomDiskusi(`v4/jadwal-kuliah/post/matakuliah/ruang-diskusi/${_id}`, data)
+const APIDeleteRoomDiskusi = (_id, id) => DeleteRoomDiskusi(`v4/jadwal-kuliah/delete/matakuliah/ruang-diskusi/${_id}/${id}`)
 
 const API = {
     APIGetUser,
@@ -43,7 +51,11 @@ const API = {
     APIPostAbsenMhs,
     APILogin,
     APIGetDashboard,
-    APIPutEmailOnly
+    APIPutEmailOnly,
+    APIPostTugas,
+    APIPostKomentar,
+    APIPostRoomDiskusi,
+    APIDeleteRoomDiskusi
 }
 
 export default API;

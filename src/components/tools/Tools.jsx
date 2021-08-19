@@ -1,7 +1,7 @@
 import React from 'react';
 import './Tools.scss'
 
-function Tools({ data }) {
+function Tools({ data, clickBtn }) {
     return (
         <>
             <div className="column-tools-absen">
@@ -9,7 +9,7 @@ function Tools({ data }) {
                     {data && data.length > 0 ? data.map((e, i) => {
                         return (
                             <>
-                                <button key={i} className="btn-tools btn-tools-group">
+                                <button key={i} className="btn-tools btn-tools-group" onClick={() => clickBtn(i)}>
                                     {e.name}
                                 </button>
                             </>

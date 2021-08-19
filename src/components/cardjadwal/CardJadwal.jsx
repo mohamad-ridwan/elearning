@@ -2,7 +2,7 @@ import React from 'react'
 import './CardJadwal.scss'
 import Button from '../button/Button'
 
-function CardJadwal({ displayColumnRed, displayColumnBtn, displayListCard, toPage, widthWrapp, displayInfoMatkul, paddingWhiteCard, titleInfoMatkul, labelInfoMatkul, iconInfoMatkul, marginWrapp, toPageRuangMateri, toPageRuangTugas, mouseOverRuangDiskusi, mouseLeaveRuangDiskusi, mouseOverRuangMateri, mouseLeaveRuangMateri, mouseOverRuangTugas, mouseLeaveRuangTugas, mouseOverMasukKelas, mouseLeaveMasukKelas, displayCardSlidePembelajaran, displayColumnWhite, borderWrapp, bgColorWrapp, nameFile, mouseOverBtnDownload, mouseLeaveBtnDownload, classBtn, clickBtnDownload, bdrRadiusWrapp, matakuliah, hari, jamMasuk, jamKeluar, kodeDosen, kodeMTK, sks, noRuang, kelPraktek, kodeGabung, displayWrapp }) {
+function CardJadwal({ displayColumnRed, displayColumnBtn, displayListCard, toPage, widthWrapp, displayInfoMatkul, paddingWhiteCard, titleInfoMatkul, labelInfoMatkul, iconInfoMatkul, marginWrapp, toPageRuangMateri, toPageRuangTugas, mouseOverRuangDiskusi, mouseLeaveRuangDiskusi, mouseOverRuangMateri, mouseLeaveRuangMateri, mouseOverRuangTugas, mouseLeaveRuangTugas, mouseOverMasukKelas, mouseLeaveMasukKelas, displayCardSlidePembelajaran, displayColumnWhite, borderWrapp, bgColorWrapp, nameFile, mouseOverBtnDownload, mouseLeaveBtnDownload, classBtn, clickBtnDownload, bdrRadiusWrapp, matakuliah, hari, jamMasuk, jamKeluar, kodeDosen, kodeMTK, sks, noRuang, kelPraktek, kodeGabung, displayWrapp, displayIconZip, nameBtn, alignItemsSlidePembelajaran, paddingSlidePembelajaran, fontSlidePembelajaran, dateCreate, marginFontSlidePembelajaran, marginDateSlidePembelajaran, alignItemsBtnDownload, widthBtnDownload, displayIframeYoutube, linkEmbedYoutube, iconPdf, bgColorColumnRed, toPageForumDiskusi, nameAuthor, dateAuthor, displayColumnAuthor, justifyContentSlidePembelajaran, flexDirectionSlidePembelajaran, flexWrapSlidePembelajaran, bgColorBtnDownload, justifyContentFontSlidePembelajaran, colorDateSlidePembelajaran, bdrBottomWrapp, displayBtnFUnduhForumDiskusi, mouseEnterUnduhForumDisk, mouseLeaveUnduhForumDisk, unduhFileForumDisk, textAlignDateSlidePembelajaran, classBtnUnduhFile, displayBtnDelete, displayBtnDownload, message, displayMessage, displayImgAuthor, bgColorColumnKiri, paddingColumnKiri, bdrRadiusColumnKiri, marginColumnKiri, imgAuthor, colorNameFile, maxWidthColumnKiri, positionDateSlidePembelajaran, bottomDateSlidePembelajaran, rightDateSlidePembelajaran, boxShadowColumnKiri, btnDeleteRoomDiskusi }) {
 
     const styleWrapp = {
         display: displayWrapp,
@@ -10,11 +10,13 @@ function CardJadwal({ displayColumnRed, displayColumnBtn, displayListCard, toPag
         margin: marginWrapp,
         border: borderWrapp,
         backgroundColor: bgColorWrapp,
-        borderRadius: bdrRadiusWrapp
+        borderRadius: bdrRadiusWrapp,
+        borderBottom: bdrBottomWrapp
     }
 
     const styleColumnRed = {
-        display: displayColumnRed
+        display: displayColumnRed,
+        backgroundColor: bgColorColumnRed
     }
 
     const styleColumnBtn = {
@@ -35,7 +37,38 @@ function CardJadwal({ displayColumnRed, displayColumnBtn, displayListCard, toPag
     }
 
     const styleCardSlidePembelajaran = {
-        display: displayCardSlidePembelajaran
+        display: displayCardSlidePembelajaran,
+        alignItems: alignItemsSlidePembelajaran,
+        padding: paddingSlidePembelajaran,
+        justifyContent: justifyContentSlidePembelajaran,
+        flexDirection: flexDirectionSlidePembelajaran,
+        flexWrap: flexWrapSlidePembelajaran,
+    }
+
+    const styleFontSlidePembelajaran = {
+        fontSize: fontSlidePembelajaran,
+        margin: marginFontSlidePembelajaran,
+        justifyContent: justifyContentFontSlidePembelajaran,
+        color: colorNameFile
+    }
+
+    const styleDateSlidePembelajaran = {
+        position: positionDateSlidePembelajaran,
+        margin: marginDateSlidePembelajaran,
+        color: colorDateSlidePembelajaran,
+        textAlign: textAlignDateSlidePembelajaran,
+        bottom: bottomDateSlidePembelajaran,
+        right: rightDateSlidePembelajaran
+    }
+
+    const styleColumnBtnDownload = {
+        display: displayBtnDownload,
+        justifyContent: alignItemsBtnDownload,
+        width: widthBtnDownload,
+    }
+
+    const styleIframeYoutube = {
+        display: displayIframeYoutube
     }
 
     const styleKodeDosen = {
@@ -60,6 +93,39 @@ function CardJadwal({ displayColumnRed, displayColumnBtn, displayListCard, toPag
 
     const styleKodeGabung = {
         color: kodeGabung !== undefined && kodeGabung !== ' ' ? '#222' : '#8796af'
+    }
+
+    const styleIconZip = {
+        display: displayIconZip
+    }
+
+    const styleBtnUnduhForumDiskusi = {
+        display: displayBtnFUnduhForumDiskusi
+    }
+
+    const styleAuthorFormDiskus = {
+        display: displayColumnAuthor
+    }
+
+    const styleBtnDelete = {
+        display: displayBtnDelete
+    }
+
+    const styleMessage = {
+        display: displayMessage
+    }
+
+    const styleImgAuthor = {
+        display: displayImgAuthor
+    }
+
+    const styleColumnKiri = {
+        backgroundColor: bgColorColumnKiri,
+        padding: paddingColumnKiri,
+        borderRadius: bdrRadiusColumnKiri,
+        margin: marginColumnKiri,
+        maxWidth: maxWidthColumnKiri,
+        boxShadow: boxShadowColumnKiri
     }
 
     return (
@@ -143,6 +209,7 @@ function CardJadwal({ displayColumnRed, displayColumnBtn, displayListCard, toPag
                                 </div>
                             </button>
                             <button className="btn-blue-group btn-ruang-diskusi"
+                                onClick={toPageForumDiskusi}
                                 onMouseOver={mouseOverRuangDiskusi}
                                 onMouseLeave={mouseLeaveRuangDiskusi}
                             >
@@ -174,19 +241,68 @@ function CardJadwal({ displayColumnRed, displayColumnBtn, displayListCard, toPag
                 </div>
 
                 <div className="container-card-slide-pembelajaran" style={styleCardSlidePembelajaran}>
-                    <div className="circle-white-icon-zip">
-                        <img src="" alt="" className="img-icon-zip" />
+                    <iframe className="video-yt-pembelajaran" src={linkEmbedYoutube} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="fullscreen" style={styleIframeYoutube}></iframe>
+
+                    <img src={imgAuthor} alt="" className="img-author-chat-diskusi"
+                        style={styleImgAuthor}
+                    />
+
+                    <div className="column-kiri-slide-pembelajaran" style={styleColumnKiri}>
+                        <div className="circle-white-icon-zip" style={styleIconZip}>
+                            <img src={iconPdf} alt="" className="img-icon-zip" />
+                        </div>
+
+                        <p className="name-file-materi" style={styleFontSlidePembelajaran}>
+                            {nameFile}
+                        </p>
+
+
+                        <p className="message-komentar-diskusi" style={styleMessage}>
+                            {message}
+                        </p>
+
+                        <p className="date-slide-pembelajaran" style={styleDateSlidePembelajaran}>
+                            {dateCreate}
+                        </p>
+
+                        <div className="column-btn-unduh-file-forum-disk" style={styleBtnUnduhForumDiskusi}>
+                            <Button
+                                displayIcon="flex"
+                                icon="fas fa-download"
+                                fontSize="11px"
+                                paddingBtn="5px 10px"
+                                colorIcon="#fff"
+                                nameBtn="Unduh File"
+                                bdrRadius="2px"
+                                bgColor="#1a538e"
+                                bdrRadiusHoverBtn="3px"
+                                mouseOver={mouseEnterUnduhForumDisk}
+                                mouseleave={mouseLeaveUnduhForumDisk}
+                                classBtn={classBtnUnduhFile}
+                                click={unduhFileForumDisk}
+                            />
+                        </div>
+
+                        <div className="column-author-forum-diskusi" style={styleAuthorFormDiskus}>
+                            <p className="name-author author-forum-diskusi">
+                                <i className="fas fa-at"></i>{nameAuthor}
+                            </p>
+                            <p className="date-author author-forum-diskusi">
+                                <i className="fas fa-calendar-alt"></i>{dateAuthor}
+                            </p>
+                            <button className="btn-delete-form-diskusi author-forum-diskusi" style={styleBtnDelete}
+                                onClick={btnDeleteRoomDiskusi}
+                            >
+                                <i className="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
                     </div>
 
-                    <p className="name-file-materi">
-                        {nameFile}
-                    </p>
-
-                    <div className="column-btn-download-file">
+                    <div className="column-btn-download-file" style={styleColumnBtnDownload}>
                         <Button
-                            nameBtn="Download"
+                            nameBtn={nameBtn}
                             bdrRadius="2px"
-                            bgColor="#1a8e5f"
+                            bgColor={bgColorBtnDownload}
                             bdrRadiusHoverBtn="3px"
                             mouseOver={mouseOverBtnDownload}
                             mouseleave={mouseLeaveBtnDownload}

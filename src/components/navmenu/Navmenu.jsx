@@ -48,7 +48,7 @@ function Navmenu() {
     const iconBarMenu = document.getElementsByClassName('fa-list-ul')
 
     const styleNavmenu = {
-        display: pathGlobal === '/login' || pathGlobal === '/storage' ? 'none' : 'flex',
+        display: pathGlobal === '/login' ? 'none' : 'flex',
         width: overActiveNavmenu || activeNavmenu ? '230px' : '75px'
     }
 

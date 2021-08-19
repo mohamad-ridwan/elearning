@@ -1,10 +1,12 @@
 import React from 'react'
 import './Loading.scss'
 
-function Loading({ displayWrapp }) {
+function Loading({ displayWrapp, bgColor, zIndexWrapp }) {
 
     const styleWrapp = {
-        display: displayWrapp
+        display: displayWrapp,
+        backgroundColor: bgColor,
+        zIndex: zIndexWrapp
     }
 
     return (

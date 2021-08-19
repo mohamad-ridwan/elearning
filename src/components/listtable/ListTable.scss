@@ -8,11 +8,11 @@
     width: calc(100%/7);
     font-size: $font2;
     color: $color2;
-    text-align: start;
     justify-content: flex-start;
     
     .btn-list-table{
         display: flex;
+        position: relative;
         border-radius: 3px;
         background-color: transparent;
         border: none;
@@ -21,6 +21,11 @@
         color: $color2;
         text-align: start;
         align-items: center;
+        transition: 0.2s ease-in-out;
+
+        .content-list-table{
+            z-index: 1;
+        }
 
         i{
             display: none;
@@ -28,6 +33,20 @@
             color: #fff;
             margin-left: 8px;
             margin-top: -3px;
+            z-index: 1;
+        }
+
+        .btn-list-table-active{
+            display: flex;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            background-color: #000;
+            border-radius: 3px;
+            opacity: 0;
+            transition: 0.3s ease-in-out;
         }
     }
 

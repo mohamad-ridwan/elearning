@@ -17,8 +17,6 @@ function Dashboard() {
 
     const getTokenUser = Cookies.get('e-learning')
 
-    const host = window.location.origin
-
     const history = useHistory()
 
     const txtInputCard = document.getElementsByClassName('txt-input-card')
@@ -39,7 +37,9 @@ function Dashboard() {
             .catch(err => console.log(err))
 
         API.APIGetPanduan()
-            .then(res => setPanduan(res.data))
+            .then(res => {
+                setPanduan(res.data)
+            })
             .catch(err => console.log(err))
     }
 
@@ -56,11 +56,6 @@ function Dashboard() {
 
     const styleDashboard = {
         marginLeft: activeNavmenu ? '230px' : '70px'
-    }
-
-    function toPage(path) {
-        const executePath = path.includes('http') ? path : `${host}/storage/${path}`
-        window.open(executePath, '_blank')
     }
 
     return (
@@ -82,7 +77,8 @@ function Dashboard() {
 
                                     return (
                                         <>
-                                            <a key={e._id} className="btn-panduan-dashboard" target="__blank" onClick={() => toPage(e.link)}>
+                                            <a href={e && e.youtube ? e.youtube : `${endpoint}/${e.image}`} key={e._id} className="btn-panduan-dashboard" target="__blank"
+                                            >
                                                 <i className={e.icon}></i>
                                                 {e.name}
                                             </a>

@@ -1,29 +1,35 @@
 import React from 'react';
 import './Pagination.scss'
 
-function Pagination() {
+function Pagination({ perPage, totalData, paginate, classPaginate, mouseEnter, mouseLeave, fromNumber, toNumber, lengthData }) {
+    const pageNumbers = []
+
+    for (let i = 1; i <= Math.ceil(totalData / perPage); i++) {
+        pageNumbers.push(i)
+    }
+
     return (
         <>
             <div className="wrapp-pagination">
                 <p className="total-page-show">
-                    Showing 1 to 10 of 12 entries
+                    Showing {fromNumber} to {toNumber} of {lengthData} entries
                 </p>
 
                 <div className="container-btn-pagination">
-                    <button className="btn-group-pagination btn-previous">
-                        Previous
-                    </button>
                     <ul className="column-list-number-pagination">
-                        <li>
-                            1
-                        </li>
-                        <li>
-                            2
-                        </li>
+                        {pageNumbers.map((e, i) => {
+                            return (
+                                <>
+                                    <li key={e} className={classPaginate} onClick={() => paginate(e)}
+                                        onMouseEnter={() => mouseEnter(i)}
+                                        onMouseLeave={() => mouseLeave(i)}
+                                    >
+                                        {e}
+                                    </li>
+                                </>
+                            )
+                        })}
                     </ul>
-                    <button className="btn-group-pagination btn-next">
-                        Next
-                    </button>
                 </div>
             </div>
         </>

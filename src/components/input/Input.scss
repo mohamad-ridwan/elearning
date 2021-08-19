@@ -43,6 +43,28 @@
         .txt-input-card::placeholder{
             color: $color2;
         }
+        .txt-input-card:focus{
+            border: 1px solid $color6;
+        }
+
+        .input-area-card{
+            display: none;
+            width: 100%;
+            border: 1px solid $color20;
+            border-radius: 3px;
+            resize: vertical;
+            padding: 10px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .input-area-card::placeholder{
+            color: $color26;
+        }
+
+        .input-area-card:focus{
+            border: 1px solid $color6;
+        }
 
         .btn-open-file{
             display: none;

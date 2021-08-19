@@ -7,7 +7,16 @@
     width: auto;
     margin-left: 70px;
     background-color: $color1;
-    padding: 80px 50px 20px 50px;
+    padding: 80px 30px 20px 50px;
     justify-content: flex-start;
     transition: 0.3s ease-in-out;
+
+    .nothing-jadwal-kuliah-pengganti{
+        display: flex;
+        height: 80vh;
+        margin: 0px auto;
+        align-items: center;
+        color: $color2;
+        font-size: $font1;
+    }
 }

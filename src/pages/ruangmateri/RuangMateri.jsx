@@ -1,6 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import Cookies from 'js-cookie';
+import axios from 'axios';
+import fileDownload from 'js-file-download';
 import './RuangMateri.scss'
 import Tools from '../../components/tools/Tools';
 import { PathContext } from '../../services/context/path';
@@ -9,10 +11,20 @@ import Button from '../../components/button/Button';
 import Pagination from '../../components/pagination/Pagination';
 import CardJadwal from '../../components/cardjadwal/CardJadwal';
 import API from '../../services/api';
+import ListTable from '../../components/listtable/ListTable';
+import Loading from '../../components/loading/Loading';
+import endpoint from '../../services/api/endpoint';
 
 function RuangMateri() {
 
     const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu] = useContext(PathContext)
+    const [listMateri, setListMateri] = useState([])
+    const [nameMatkul, setNameMatkul] = useState('')
+    const [videoPembelajaran, setVideoPembelajaran] = useState([])
+    const [slidePembelajaran, setSlidePembelajaran] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [perPage, setPerPage] = useState(5)
     const [tools, setTools] = useState([
         {
             name: 'Copy'
@@ -52,25 +64,6 @@ function RuangMateri() {
             name: 'UPDATE',
         }
     ])
-    const [listMateri, setListMateri] = useState([])
-    const [slidePembelajaran, setSlidePembelajaran] = useState([
-        {
-            nameFile: 'Silabus',
-            path: 'http://localhost:3000'
-        },
-        {
-            nameFile: 'Cikuang',
-            path: 'http://localhost:3000'
-        },
-        {
-            nameFile: 'Jaman Purba',
-            path: 'http://localhost:3000'
-        },
-        {
-            nameFile: 'Jaman Purba',
-            path: 'http://localhost:3000'
-        }
-    ])
     const [pathActive, setPathActive] = useState(0)
     const [buttonPath, setButtonPath] = useState([
         {
@@ -94,7 +87,14 @@ function RuangMateri() {
     const btnPageMateri = document.getElementsByClassName('btn-page-materi')
     const iconRuangMateri = document.getElementsByClassName('icon-ruang-materi')
 
+    const path = window.location.pathname
+    const getPath = path.split('/ruang-materi/')
+
+    const elPaginate = document.getElementsByClassName('paginate-materi-tambahan')
+
     function setAllAPI() {
+        setLoading(true)
+
         API.APIGetDashboard(getTokenUser)
             .then(res => {
                 if (res && res.data) {
@@ -105,11 +105,37 @@ function RuangMateri() {
                 }
             })
             .catch(err => console.log(err))
+
+        API.APIGetOneMatkul(getPath[1])
+            .then(res => {
+                const respons = res.data
+                setLoading(false)
+
+                setNameMatkul(`${respons.matakuliah} - ${respons.kodeMTK}`)
+
+                const getMateriTambahan = respons.ruangMateri.filter((e) => e.id === 'materi-tambahan')
+                setListMateri(getMateriTambahan[0].data)
+
+                const getVideoPembelajaran = respons.ruangMateri.filter((e) => e.id === 'video-pembelajaran')
+                setVideoPembelajaran(getVideoPembelajaran[0].data)
+
+                const getSlidePembelajaran = respons.ruangMateri.filter((e) => e.id === 'slide-pembelajaran')
+                setSlidePembelajaran(getSlidePembelajaran[0].data)
+
+                setTimeout(() => {
+                    if (elPaginate.length > 0) {
+                        mouseLeavePaginate();
+                    }
+                }, 0);
+            })
+            .catch(err => console.log(err))
     }
 
     function toPageActive(idx) {
         for (let i = 0; i < btnPageMateri.length; i++) {
             btnPageMateri[i].style.border = 'none'
+            btnPageMateri[i].style.color = '#333'
+            iconRuangMateri[i].style.color = '#333'
         }
 
         btnPageMateri[idx].style.borderTop = '2px solid #1a8e5f'
@@ -127,6 +153,10 @@ function RuangMateri() {
         toPageActive(0);
         window.scrollTo(0, 0)
     }, [])
+
+    const indexOfLastData = currentPage * perPage
+    const indexOfFirstData = indexOfLastData - perPage
+    const currentData = listMateri.slice(indexOfFirstData, indexOfLastData)
 
     const styleWrapp = {
         marginLeft: activeNavmenu ? '230px' : '70px'
@@ -149,17 +179,23 @@ function RuangMateri() {
         display: pathActive === 2 ? 'flex' : 'none'
     }
 
+    const styleVideoPembelajaran = {
+        display: pathActive === 1 ? 'flex' : 'none'
+    }
+
     const styleContainerPagination = {
         display: pathActive === 0 ? 'flex' : 'none'
     }
 
-    const hoverBlackBtn = document.getElementsByClassName('btn-download-pembelajaran')
+    function mouseOverBtnDownload(idx, nameClass) {
+        const hoverBlackBtn = document.getElementsByClassName(nameClass)
 
-    function mouseOverBtnDownload(idx) {
         hoverBlackBtn[idx].style.opacity = '0.2'
     }
 
-    function mouseLeaveBtnDownload(idx) {
+    function mouseLeaveBtnDownload(idx, nameClass) {
+        const hoverBlackBtn = document.getElementsByClassName(nameClass)
+
         hoverBlackBtn[idx].style.opacity = '0'
     }
 
@@ -184,6 +220,92 @@ function RuangMateri() {
         btnPageMateri[pathActive].style.color = '#1a8e5f'
         iconRuangMateri[pathActive].style.color = '#1a8e5f'
     }
+
+    const columntListMateri = document.getElementsByClassName('column-list-materi')
+
+    function mouseOverColumnListMateri(idx) {
+        if (idx % 2 === 0) {
+            columntListMateri[idx].classList.toggle('column-list-materi-active')
+        }
+    }
+
+    function mouseLeaveColumnListMateri(idx) {
+        if (idx % 2 === 0) {
+            columntListMateri[idx].classList.toggle('column-list-materi-active')
+        }
+    }
+
+    const btnListTableActive = document.getElementsByClassName('number5-materi-tambahan')
+
+    function mouseOverUnduh(idx, i) {
+        if (i === 5) {
+            btnListTableActive[idx].style.opacity = '0.2'
+        }
+    }
+
+    function mouseLeaveUnduh(idx, i) {
+        if (i === 5) {
+            btnListTableActive[idx].style.opacity = '0'
+        }
+    }
+
+    function unduhMateriTambahan(file, i) {
+        if (i === 5) {
+            axios.get(`${endpoint}/${file}`, { responseType: 'blob' })
+                .then(res => {
+                    fileDownload(res.data, file)
+                })
+        }
+    }
+
+    function downloadSlidePembelajaran(file) {
+        axios.get(`${endpoint}/${file}`, { responseType: 'blob' })
+            .then(res => {
+                fileDownload(res.data, file)
+            })
+            .catch(err => console.log(err))
+    }
+
+    function mouseEnterPaginate(i) {
+        for (let idx = 0; idx < elPaginate.length; idx++) {
+            elPaginate[idx].style.backgroundColor = '#fff'
+            elPaginate[idx].style.color = '#333'
+        }
+
+        elPaginate[i].style.backgroundColor = '#1a8e5f'
+        elPaginate[i].style.color = '#fff'
+        elPaginate[currentPage - 1].style.backgroundColor = '#1a8e5f'
+        elPaginate[currentPage - 1].style.color = '#fff'
+    }
+
+    function mouseLeavePaginate() {
+        for (let idx = 0; idx < elPaginate.length; idx++) {
+            elPaginate[idx].style.backgroundColor = '#fff'
+            elPaginate[idx].style.color = '#333'
+        }
+
+        elPaginate[currentPage - 1].style.backgroundColor = '#1a8e5f'
+        elPaginate[currentPage - 1].style.color = '#fff'
+    }
+
+    function paginate(number) {
+        setCurrentPage(number)
+        for (let idx = 0; idx < elPaginate.length; idx++) {
+            elPaginate[idx].style.backgroundColor = '#fff'
+            elPaginate[idx].style.color = '#333'
+        }
+
+        elPaginate[number - 1].style.backgroundColor = '#1a8e5f'
+        elPaginate[number - 1].style.color = '#fff'
+    }
+
+    const theadMateriTambahan = document.getElementsByClassName('thead-materi-tambahan')
+
+    setTimeout(() => {
+        if (theadMateriTambahan.length > 0) {
+            theadMateriTambahan[3].style.width = 'calc(96%/4)'
+        }
+    }, 0);
 
     return (
         <>
@@ -218,7 +340,7 @@ function RuangMateri() {
 
                     <div className="container-tools-ruang-materi" style={styleTools}>
                         <p className="title-ruang-materi">
-                            MATEMATIKA DISKRIT - 896
+                            {nameMatkul}
                         </p>
 
                         <div className="column-tools-ruang-materi">
@@ -227,51 +349,97 @@ function RuangMateri() {
                     </div>
                 </div>
 
-                <div className="column-bawah-ruang-materi" style={styleMateriTambahan}>
-                    <div className="container-scroll-ruang-materi">
-                        <tbody className="body-ruang-materi" style={styleTbody}>
-                            <HeadTable data={headTable} />
+                <div className="column-bawah-ruang-materi">
+                    <div className="container-materi-tambahan" style={styleMateriTambahan}>
+                        <div className="container-scroll-ruang-materi">
+                            <tbody className="body-ruang-materi" style={styleTbody}>
+                                <HeadTable
+                                    data={headTable}
+                                    widthTh="calc(96%/7)"
+                                    widhtCustom="calc(96%/2)"
+                                    classNameTh="thead-materi-tambahan"
+                                    number={4}
+                                />
 
-                            {listMateri && listMateri.length > 0 ? listMateri.map((e) => {
+                                {currentData && currentData.length > 0 ? currentData.map((e, idx) => {
 
-                                return (
-                                    <>
-                                        <div className="column-list-materi">
+                                    setTimeout(() => {
+                                        if (columntListMateri.length > 0) {
+                                            if (idx % 2 === 0) {
+                                                columntListMateri[idx].classList.add('column-list-materi-active')
+                                            }
+                                        }
+                                    }, 0);
 
-                                        </div>
-                                    </>
-                                )
-                            }) : (
-                                <p className="no-data-available">
-                                    No data available in table
-                                </p>
-                            )}
-                        </tbody>
+                                    const objListMateri = Object.entries(e)
+
+                                    return (
+                                        <>
+                                            <div key={e._id} className="column-list-materi"
+                                                onMouseEnter={() => mouseOverColumnListMateri(idx)}
+                                                onMouseLeave={() => mouseLeaveColumnListMateri(idx)}
+                                            >
+                                                {objListMateri.map((e, i) => {
+                                                    return (
+                                                        <>
+                                                            <ListTable
+                                                                key={i}
+                                                                widthWrapp={i === 4 ? 'calc(96%/2)' : 'calc(96%/7)' && i === 3 ? 'calc(96%/4)' : 'calc(96%/7)'}
+                                                                contentList={i === 5 ? 'Unduh' : e[1]}
+                                                                bgColorBtnList={i === 5 ? '#1a538e' : 'none'}
+                                                                cursorBtnList={i === 5 ? 'pointer' : 'text'}
+                                                                colorBtnList={i === 5 ? '#fff' : '#333'}
+                                                                icon={i === 5 ? "fas fa-download" : ''}
+                                                                displayIcon={i === 5 ? 'flex' : 'none'}
+                                                                flexDirectionBtn={i === 5 ? 'column-reverse' : 'row'}
+                                                                paddingBtnList={i === 5 ? '8px 10px 5px 10px' : '0'}
+                                                                marginIcon="0 0 2px 0"
+                                                                classTableActive={i === 5 ? 'number5-materi-tambahan' : undefined}
+                                                                mouseEnterBtn={() => mouseOverUnduh(idx, i)}
+                                                                mouseLeaveBtn={() => mouseLeaveUnduh(idx, i)}
+                                                                clickBtn={() => unduhMateriTambahan(e[1], i)}
+                                                            />
+                                                        </>
+                                                    )
+                                                })}
+                                            </div>
+                                        </>
+                                    )
+                                }) : (
+                                    <p className="no-data-available-ruang-materi">
+                                        No data available in table
+                                    </p>
+                                )}
+                            </tbody>
+                        </div>
                     </div>
-                </div>
 
-                <div className="container-slide-pembelajaran" style={styleSlidePembelajaran}>
-                    <div className="line-border-slide">
-
-                    </div>
-
-                    <div className="card-slide-pembelajaran">
-                        {slidePembelajaran && slidePembelajaran.length > 0 ? slidePembelajaran.map((e, i) => {
-
+                    <div className="container-video-pembelajaran" style={styleVideoPembelajaran}>
+                        {videoPembelajaran && videoPembelajaran.length > 0 ? videoPembelajaran.map((e, i) => {
                             return (
                                 <>
                                     <CardJadwal
-                                        borderWrapp="none"
+                                        key={e._id}
+                                        displayIconZip="none"
                                         displayColumnRed="none"
                                         displayColumnWhite="none"
                                         displayCardSlidePembelajaran="flex"
-                                        bgColorWrapp="#f4f5fb"
                                         widthWrapp="calc(96%/3)"
-                                        nameFile={e.nameFile}
-                                        classBtn="btn-download-pembelajaran"
-                                        marginWrapp="0 0 20px 0"
-                                        mouseOverBtnDownload={() => mouseOverBtnDownload(i)}
-                                        mouseLeaveBtnDownload={() => mouseLeaveBtnDownload(i)}
+                                        marginWrapp="0 15px 15px 0"
+                                        linkEmbedYoutube={e.linkEmbedYoutube}
+                                        dateCreate={e.date}
+                                        marginFontSlidePembelajaran="20px 20px 0 20px"
+                                        marginDateSlidePembelajaran="5px 20px 30px 20px"
+                                        paddingSlidePembelajaran="0 0 40px 0"
+                                        widthBtnDownload="100%"
+                                        alignItemsSlidePembelajaran="flex-start"
+                                        bgColorBtnDownload="#1a8e5f"
+                                        alignItemsBtnDownload="center"
+                                        nameBtn="Lihat Deskripsi"
+                                        nameFile={e.title}
+                                        classBtn="view-desk-video-pemb"
+                                        mouseOverBtnDownload={() => mouseOverBtnDownload(i, 'view-desk-video-pemb')}
+                                        mouseLeaveBtnDownload={() => mouseLeaveBtnDownload(i, 'view-desk-video-pemb')}
                                     />
                                 </>
                             )
@@ -279,11 +447,56 @@ function RuangMateri() {
                             <div></div>
                         )}
                     </div>
+
+                    <div className="container-slide-pembelajaran" style={styleSlidePembelajaran}>
+                        <div className="card-slide-pembelajaran">
+                            {slidePembelajaran && slidePembelajaran.length > 0 ? slidePembelajaran.map((e, i) => {
+                                return (
+                                    <>
+                                        <CardJadwal
+                                            key={e._id}
+                                            displayIframeYoutube="none"
+                                            borderWrapp="none"
+                                            bdrBottomWrapp="none"
+                                            displayColumnRed="none"
+                                            displayColumnWhite="none"
+                                            displayCardSlidePembelajaran="flex"
+                                            bgColorWrapp="#f4f5fb"
+                                            widthWrapp="calc(96%/3)"
+                                            iconPdf={e.icon}
+                                            nameFile={e.name}
+                                            bgColorBtnDownload="#1a8e5f"
+                                            classBtn="btn-download-pembelajaran"
+                                            marginWrapp="0 15px 15px 0"
+                                            nameBtn="Download"
+                                            mouseOverBtnDownload={() => mouseOverBtnDownload(i, 'btn-download-pembelajaran')}
+                                            mouseLeaveBtnDownload={() => mouseLeaveBtnDownload(i, 'btn-download-pembelajaran')}
+                                            clickBtnDownload={() => downloadSlidePembelajaran(e.image)}
+                                        />
+                                    </>
+                                )
+                            }) : (
+                                <div></div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="container-pagination-ruang-materi" style={styleContainerPagination}>
+                        <Pagination
+                            classPaginate="paginate-materi-tambahan"
+                            perPage={perPage}
+                            totalData={listMateri.length}
+                            paginate={paginate}
+                            mouseEnter={mouseEnterPaginate}
+                            mouseLeave={mouseLeavePaginate}
+                            fromNumber={currentData.length > 0 ? currentData[0].number : '0'}
+                            toNumber={currentData.length > 0 ? currentData[currentData.length - 1].number : '0'}
+                            lengthData={listMateri.length}
+                        />
+                    </div>
                 </div>
 
-                <div className="container-pagination-ruang-materi" style={styleContainerPagination}>
-                    <Pagination />
-                </div>
+                <Loading displayWrapp={loading ? 'flex' : 'none'} />
             </div>
         </>
     )

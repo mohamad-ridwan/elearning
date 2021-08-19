@@ -19,7 +19,15 @@ function JadwalKuliah() {
     const [nameHoverBtn, setNameHoverBtn] = useState('')
 
     const history = useHistory();
-    const getTokenUser = Cookies.get('e-learning')
+    const getTokenUser = Cookies.get('e-learning');
+
+    const nameMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    const nameDay = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+    const years = new Date().getFullYear();
+    const date = new Date().getDate().toString().length === 1 ? `0${new Date().getDate()}` : new Date().getDate();
+    const month = new Date().getMonth()
+    const day = new Date().getDay()
 
     function setAllAPI() {
         setLoading(true)
@@ -35,10 +43,14 @@ function JadwalKuliah() {
                             setLoading(false)
                             const respons = res.data
 
-                            const getJadwalKuliahFromUser = respons.filter((e) => e.major === user.major && e.kelas === user.class && e.campus === user.campus && e.semester === user.statusSemester)
+                            const getJadwalKuliahFromUser = respons.filter((e) => e.major === user.major && e.kelas === user.class && e.campus === user.campus && e.semester === user.statusSemester && e.id === 'jadwal-kuliah-utama')
 
                             setJadwalKuliah(getJadwalKuliahFromUser)
                         })
+                        .catch(err => console.log(err))
+                } else {
+                    history.push('/login')
+                    document.cookie = 'e-learning='
                 }
             })
             .catch(err => console.log(err))
@@ -88,6 +100,9 @@ function JadwalKuliah() {
         <>
             <div className="wrapp-jadwal-kuliah" style={styleWrapp}>
                 {jadwalKuliah && jadwalKuliah.length > 0 ? jadwalKuliah.map((e, i) => {
+
+                    const timeZoneMasuk = e.timeZoneMasuk.split(' ')
+
                     return (
                         <>
                             <CardJadwal
@@ -102,7 +117,10 @@ function JadwalKuliah() {
                                 noRuang={e.noRuang}
                                 kelPraktek={e.kelPraktek}
                                 kodeGabung={e.kodeGabung}
+                                marginWrapp="0 15px 15px 0"
+                                bgColorColumnRed={timeZoneMasuk[3] == years && timeZoneMasuk[2] == date && timeZoneMasuk[1] === nameMonth[month] && timeZoneMasuk[0] === nameDay[day - 1] ? '#1a8e5f' : '#cc2626'}
                                 toPage={() => toPage(`/absensi/${e._id}`)}
+                                toPageForumDiskusi={() => toPage(`/forum-diskusi/${e._id}`)}
                                 toPageRuangMateri={() => toPage(`/ruang-materi/${e._id}`)}
                                 toPageRuangTugas={() => toPage(`/ruang-tugas/${e._id}`)}
                                 mouseOverRuangDiskusi={() => {
@@ -135,7 +153,9 @@ function JadwalKuliah() {
                         </>
                     )
                 }) : (
-                    <div></div>
+                    <p className="nothing-jadwal-kuliah">
+                        Tidak Ada Jadwal Kuliah Untuk Saat Ini
+                    </p>
                 )}
 
                 <HoverButton

@@ -1,6 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import Cookies from 'js-cookie';
+import { CSVLink } from 'react-csv';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import ReactHTMLTableToExcel from 'react-html-table-to-excel'
 import './Absensi.scss'
 import CardJadwal from '../../components/cardjadwal/CardJadwal';
 import { PathContext } from '../../services/context/path';
@@ -11,6 +15,7 @@ import ListTable from '../../components/listtable/ListTable';
 import Pagination from '../../components/pagination/Pagination';
 import API from '../../services/api';
 import Loading from '../../components/loading/Loading';
+import ExportExcel from '../../components/exportexcel/ExportExcel';
 
 function Absensi() {
 
@@ -23,6 +28,27 @@ function Absensi() {
     const [nameBtnAbsen, setNameBtnAbsen] = useState('Belum Mulai')
     const [onCommentMhs, setOnCommentMhs] = useState(false)
     const [offBtnAbsen, setOffBtnAbsen] = useState(true)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [perPage, setPerPage] = useState(10)
+    const [headersCsv, setHeadersCsv] = useState([
+        { label: "#", key: "a" },
+        { label: "Status Absen", key: "b" },
+        { label: "Tanggal", key: "c" },
+        { label: "Matakuliah", key: "d" },
+        { label: "Pertemuan", key: "e" },
+        { label: "Rangkuman", key: "f" },
+        { label: "Berita Acara", key: "g" }
+    ])
+    const [headerPdf, setHeaderPdf] = useState([
+        { title: "#", key: "a" },
+        { title: "Status Absen", key: "b" },
+        { title: "Tanggal", key: "c" },
+        { title: "Matakuliah", key: "d" },
+        { title: "Pertemuan", key: "e" },
+        { title: "Rangkuman", key: "f" },
+        { title: "Berita Acara", key: "g" }
+    ])
+    const [dataCsv, setDataCsv] = useState([])
     const [commentMhs, setCommentMhs] = useState({
         message: '',
         komplain: 'Pengajaran Sesuai'
@@ -86,14 +112,18 @@ function Absensi() {
     const day = new Date().getDay()
     const timeNow = new Date()
 
+    const elPaginate = document.getElementsByClassName('paginate-absensi')
+
     function setAllAPI() {
         setLoading(true);
+
+        let newUser = {}
 
         API.APIGetDashboard(tokenUser)
             .then(res => {
                 if (res && res.data) {
-                    setLoading(false)
                     setUser(res.data.user.data)
+                    newUser = res.data.user.data
                 } else {
                     history.push('/login')
                     document.cookie = 'e-learning='
@@ -103,26 +133,65 @@ function Absensi() {
 
         API.APIGetOneMatkul(getPath[1])
             .then(res => {
+                setLoading(false)
                 const respons = res.data
+                setDataMatkul(respons)
 
-                if (respons) {
-                    setDataMatkul(respons)
+                const getDataCardAbsen = respons.absensi.filter((e) => e.id === 'data-card-absen')
+                setDataCardAbsen(getDataCardAbsen[0])
 
-                    const getDataCardAbsen = respons.absensi.filter((e) => e.id === 'data-card-absen')
-                    setDataCardAbsen(getDataCardAbsen[0])
+                const getJadwalAbsen = respons.absensi.filter((e) => e.id === 'jadwal-absen')
+                setJadwalAbsen(getJadwalAbsen)
+                const separateTimeZoneKeluar = respons.timeZoneKeluar.split(' ')
+                const waktuHabis = `${separateTimeZoneKeluar[0]} ${separateTimeZoneKeluar[1]} ${separateTimeZoneKeluar[2]} ${separateTimeZoneKeluar[3]} 23:59:59`
 
-                    const getJadwalAbsen = respons.absensi.filter((e) => e.id === 'jadwal-absen')
-                    setJadwalAbsen(getJadwalAbsen)
-                    const separateTimeZoneKeluar = respons.timeZoneKeluar.split(' ')
-                    const waktuHabis = `${separateTimeZoneKeluar[0]} ${separateTimeZoneKeluar[1]} ${separateTimeZoneKeluar[2]} ${separateTimeZoneKeluar[3]} 23:59:59`
+                checkJamMasuk(respons.hari, respons.timeZoneMasuk, respons.timeZoneKeluar, waktuHabis);
 
-                    checkJamMasuk(respons.hari, respons.timeZoneMasuk, respons.timeZoneKeluar, waktuHabis);
+                if (getJadwalAbsen.length > 0) {
+                    function mapOut(sourceObject, removeKeys, removeId) {
+                        const sourceKeys = Object.keys(sourceObject);
+                        const returnKeys = sourceKeys.filter(k => !removeKeys.includes(k) && !removeId.includes(k));
+
+                        let returnObject = {};
+                        returnKeys.forEach(k => {
+                            setTimeout(() => {
+                                const siswaHadir = sourceObject.dataAbsen.filter((e) => e.nim === newUser.nim)
+                                const getStatusAbsen = siswaHadir.length === 0 ? 'Tidak Hadir' : 'Hadir'
+
+                                returnObject[k] = sourceObject[k]
+                                returnObject.statusAbsen = getStatusAbsen
+                            }, 0);
+                        })
+
+                        return returnObject;
+                    }
+
+                    let newArr = []
+                    const removeProperty = getJadwalAbsen.map(obj => mapOut(obj, ['dataAbsen'], ['id']))
+                    const promiseR = Promise.resolve(removeProperty)
+
+                    promiseR.then((res) => {
+                        setTimeout(() => {
+                            res.map((e) => {
+                                newArr.push({ a: e.number, b: e.statusAbsen, c: e.tanggal, d: e.matakuliah, e: e.pertemuan, f: e.rangkuman, g: e.beritaAcara })
+                            })
+                            setDataCsv(newArr)
+                        }, 0);
+                    })
+                        .catch(err => console.log(err))
                 }
+
+                setTimeout(() => {
+                    if (elPaginate.length > 0) {
+                        mouseLeavePaginate();
+                    }
+                }, 0);
             })
+            .catch(err => console.log(err))
     }
 
     function checkJamMasuk(hari, jamMasuk, jamKeluar, waktuHabis) {
-        if (hari === nameDay[day - 1]) {
+        if (hari === nameDay[day == 0 ? 6 : day - 1].toUpperCase()) {
             if (new Date(jamMasuk) < timeNow && new Date(jamKeluar) > timeNow) {
                 setNameBtnAbsen('Absen Masuk')
             } else if (timeNow >= new Date(waktuHabis)) {
@@ -135,8 +204,12 @@ function Absensi() {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        setAllAPI();
+        setAllAPI()
     }, []);
+
+    const indexOfLastData = currentPage * perPage
+    const indexOfFirstData = indexOfLastData - perPage
+    const currentData = jadwalAbsen.slice(indexOfFirstData, indexOfLastData);
 
     const styleWrapp = {
         marginLeft: activeNavmenu ? '230px' : '70px'
@@ -263,6 +336,99 @@ function Absensi() {
 
     const iconDotsPengajaranTidakSesuai = commentMhs.komplain.toLowerCase() === 'pengajaran tidak sesuai' ? 'fas fa-dot-circle' : 'fas fa-circle'
 
+    const theadAbsensi = document.getElementsByClassName('thead-absensi')
+
+    setTimeout(() => {
+        if (theadAbsensi.length > 0) {
+            theadAbsensi[5].style.width = 'calc(96%/4)'
+        }
+    }, 0);
+
+    function mouseEnterPaginate(i) {
+        for (let idx = 0; idx < elPaginate.length; idx++) {
+            elPaginate[idx].style.backgroundColor = '#fff'
+            elPaginate[idx].style.color = '#333'
+        }
+
+        elPaginate[i].style.backgroundColor = '#1a8e5f'
+        elPaginate[i].style.color = '#fff'
+        elPaginate[currentPage - 1].style.backgroundColor = '#1a8e5f'
+        elPaginate[currentPage - 1].style.color = '#fff'
+    }
+
+    function mouseLeavePaginate() {
+        for (let idx = 0; idx < elPaginate.length; idx++) {
+            elPaginate[idx].style.backgroundColor = '#fff'
+            elPaginate[idx].style.color = '#333'
+        }
+
+        elPaginate[currentPage - 1].style.backgroundColor = '#1a8e5f'
+        elPaginate[currentPage - 1].style.color = '#fff'
+    }
+
+    function paginate(number) {
+        setCurrentPage(number)
+        for (let idx = 0; idx < elPaginate.length; idx++) {
+            elPaginate[idx].style.backgroundColor = '#fff'
+            elPaginate[idx].style.color = '#333'
+        }
+
+        elPaginate[number - 1].style.backgroundColor = '#1a8e5f'
+        elPaginate[number - 1].style.color = '#fff'
+    }
+
+    const csvReport = {
+        filename: 'E-Learning.csv',
+        headers: headersCsv,
+        data: dataCsv
+    }
+
+    const getAbsen = jadwalAbsen.map((e, i) => i === 0 ? `${e.number} ${e.dataAbsen.filter((e) => e.nim === user.nim).length === 0 ? 'Tidak Hadir' : 'Hadir'} ${e.tanggal} ${e.matakuliah} ${e.pertemuan} ${e.rangkuman} ${e.beritaAcara}` : `\n${e.number} ${e.dataAbsen.filter((e) => e.nim === user.nim).length === 0 ? 'Tidak Hadir' : 'Hadir'} ${e.tanggal} ${e.matakuliah} ${e.pertemuan} ${e.rangkuman} ${e.beritaAcara}`)
+
+    function copyTxtClipBoard() {
+        const txtCopy = `${headAbsen.map((e, i) => i === 0 ? e.name : ' ' + e.name)} \n\n${getAbsen}`;
+
+        navigator.clipboard.writeText(txtCopy)
+    }
+
+    function btnDownloadCsv() {
+        document.getElementById("btn-csv-download").click();
+    }
+
+    function btnDownloadExcel() {
+        document.getElementById("button-download-as-xls").click();
+    }
+
+    let pdfjs = new jsPDF();
+
+    function btnDownloadPdf() {
+        pdfjs.autoTable({ html: '#table-export-to-pdf' })
+
+        pdfjs.autoTable(headerPdf, dataCsv, {
+            theme: 'striped'
+        })
+
+        pdfjs.save('E-learning.pdf')
+    }
+
+    function printTable() {
+        window.print();
+    }
+
+    function btnTools(idx) {
+        if (idx === 0) {
+            copyTxtClipBoard();
+        } else if (idx === 1) {
+            btnDownloadCsv();
+        } else if (idx === 2) {
+            btnDownloadExcel();
+        } else if (idx === 3) {
+            btnDownloadPdf();
+        } else if (idx === 4) {
+            printTable();
+        }
+    }
+
     return (
         <>
             <div className="wrapp-absensi" style={styleWrapp}>
@@ -366,15 +532,24 @@ function Absensi() {
                         Rekap Absen
                     </p>
 
-                    <Tools data={tools} />
+                    <Tools
+                        data={tools}
+                        clickBtn={(i) => btnTools(i)}
+                    />
                 </div>
 
                 <div className="column-bawah-absensi">
                     <div className="container-scroll-rekap-absen">
                         <tbody className="body-absen">
-                            <HeadTable data={headAbsen} />
+                            <HeadTable
+                                data={headAbsen}
+                                widthTh="calc(96%/7)"
+                                widhtCustom="calc(96%/2)"
+                                classNameTh="thead-absensi"
+                                number={6}
+                            />
 
-                            {jadwalAbsen && jadwalAbsen.length > 0 ? jadwalAbsen.map((e, idx) => {
+                            {currentData && currentData.length > 0 ? currentData.map((e, idx) => {
 
                                 const siswaHadir = e.dataAbsen.filter((e) => e.nim === user.nim)
 
@@ -398,18 +573,20 @@ function Absensi() {
                                             onMouseEnter={() => mouseOverColumnList(idx)}
                                             onMouseLeave={() => mouseLeaveColumnList(idx)}
                                         >
-                                            <ListTable contentList={idx + 1} />
 
                                             {objListAbsen !== null ? objListAbsen.map((e, i) => {
+
                                                 return (
                                                     <>
                                                         <ListTable
                                                             key={i}
-                                                            displayWrapp={i !== 7 && i !== 0 && i !== 8 ? 'flex' : 'none'}
-                                                            contentList={e[0] !== 'dataAbsen' && e[0] !== 'created' ? e[1] : ''}
+                                                            widthWrapp={i === 7 ? 'calc(96%/2)' : 'calc(96%/7)' && i === 6 ? 'calc(96%/4)' : 'calc(96%/7)'}
+                                                            displayWrapp={i !== 0 && i !== 8 ? 'flex' : 'none'}
+                                                            contentList={e[0] !== 'dataAbsen' ? e[1] : ''}
                                                             statusAbsen={getStatusAbsen}
-                                                            displayBoxHadir={i === 1 ? 'flex' : 'none'}
+                                                            displayBoxHadir={i === 2 ? 'flex' : 'none'}
                                                             bgColorStatusAbsen={styleBoxHadir}
+                                                            cursorBtnList="text"
                                                         />
                                                     </>
                                                 )
@@ -420,17 +597,48 @@ function Absensi() {
                                     </>
                                 )
                             }) : (
-                                <p className="no-data-available-absensi">
-                                    No data available in table
-                                </p>
+                                <>
+                                    <p className="no-data-available-absensi">
+                                        No data available in table
+                                    </p>
+                                </>
                             )}
                         </tbody>
                     </div>
                 </div>
 
                 <div className="container-paginate-absensi">
-                    <Pagination />
+                    <Pagination
+                        perPage={perPage}
+                        totalData={jadwalAbsen.length}
+                        paginate={paginate}
+                        classPaginate="paginate-absensi"
+                        mouseEnter={mouseEnterPaginate}
+                        mouseLeave={mouseLeavePaginate}
+                        fromNumber={currentData.length > 0 ? currentData[0].number : '0'}
+                        toNumber={currentData.length > 0 ? currentData[currentData.length - 1].number : '0'}
+                        lengthData={jadwalAbsen.length}
+                    />
                 </div>
+
+                <div className="container-btn-csv-download">
+                    <CSVLink {...csvReport} id="btn-csv-download">
+                        Download me
+                    </CSVLink>
+                </div>
+
+                <div className="container-data-excel-download">
+                    <ReactHTMLTableToExcel
+                        table="table-to-xls"
+                        filename="E-learning"
+                        sheet="Rekap Absen"
+                        buttonText="EXPORT"
+                    />
+                </div>
+
+                <ExportExcel head={headAbsen} column={dataCsv} />
+
+                <table id="table-export-to-pdf"></table>
 
                 <Loading displayWrapp={loading ? 'flex' : 'none'} />
             </div>

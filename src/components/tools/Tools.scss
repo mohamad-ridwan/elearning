@@ -58,6 +58,10 @@
                 outline: none;
                 font-size: $font2;
             }
+
+            .input-search-absen:focus{
+                border: 1px solid $color6;
+            }
         }
     }
 }

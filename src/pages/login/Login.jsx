@@ -36,6 +36,7 @@ function Login() {
 
         API.APIGetLogoweb()
             .then(res => setLogoweb(res.data[0]))
+            .catch(err => console.log(err))
     }
 
     useEffect(() => {
@@ -126,42 +127,36 @@ function Login() {
     return (
         <>
             <div className="wrapp-login">
-                {Object.keys(logoweb).length > 0 ? (
-                    <>
-                        <form onSubmit={submitLogin} className="form-login">
-                            <img src={`${endpoint}/${logoweb.image}`} alt="logo-web" className="img-logoweb" />
+                <form onSubmit={submitLogin} className="form-login">
+                    <img src={`${endpoint}/${logoweb && logoweb.image}`} alt="image" className="img-logoweb" />
 
-                            <div className="column-input-login">
-                                <Input
-                                    label="NIM Mahasiswa"
-                                    typeInput="number"
-                                    nameInput="nim"
-                                    changeInput={changeInput}
-                                    value={inputValue.nim}
-                                    error={errorMessage && errorMessage.nim}
-                                />
-                                <Input
-                                    label="Password"
-                                    typeInput="password"
-                                    nameInput="password"
-                                    changeInput={changeInput}
-                                    value={inputValue.password}
-                                    error={errorMessage && errorMessage.password}
-                                />
-                            </div>
+                    <div className="column-input-login">
+                        <Input
+                            label="NIM Mahasiswa"
+                            typeInput="number"
+                            nameInput="nim"
+                            changeInput={changeInput}
+                            value={inputValue.nim}
+                            error={errorMessage && errorMessage.nim}
+                        />
+                        <Input
+                            label="Password"
+                            typeInput="password"
+                            nameInput="password"
+                            changeInput={changeInput}
+                            value={inputValue.password}
+                            error={errorMessage && errorMessage.password}
+                        />
+                    </div>
 
-                            <div className="column-btn-login">
-                                <a href="#" className="btn-lupa-password">
-                                    Lupa Password ?
-                                </a>
+                    <div className="column-btn-login">
+                        <a href="#" className="btn-lupa-password">
+                            Lupa Password ?
+                        </a>
 
-                                <Button nameBtn="MASUK" />
-                            </div>
-                        </form>
-                    </>
-                ) : (
-                    <div></div>
-                )}
+                        <Button nameBtn="MASUK" />
+                    </div>
+                </form>
             </div>
         </>
     )

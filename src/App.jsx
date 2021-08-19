@@ -5,13 +5,15 @@ import Dashboard from './pages/dashboard/Dashboard';
 import Navbar from './components/navbar/Navbar';
 import Navmenu from './components/navmenu/Navmenu';
 import IndexProvider from './services/context';
-import Storage from './pages/storage/Storage';
 import Profile from './pages/profile/Profile';
 import JadwalKuliah from './pages/jadwalkuliah/JadwalKuliah';
 import KuliahPengganti from './pages/kuliahpengganti/KuliahPengganti';
 import Absensi from './pages/absensi/Absensi';
 import RuangMateri from './pages/ruangmateri/RuangMateri';
 import RuangTugas from './pages/ruangtugas/RuangTugas';
+import SendTugas from './pages/sendtugas/SendTugas';
+import ForumDiskusi from './pages/forumdiskusi/ForumDiskusi';
+import KomentarDiskusi from './pages/komentardiskusi/KomentarDiskusi';
 
 function App() {
   return (
@@ -22,6 +24,18 @@ function App() {
           <Navmenu />
 
           <Switch>
+
+            <Route path='/forum-diskusi/komentar/:pembahasan/:id/:_id'>
+              <KomentarDiskusi />
+            </Route>
+
+            <Route path='/forum-diskusi/:id'>
+              <ForumDiskusi />
+            </Route>
+
+            <Route path='/ruang-tugas/send/:id/:id'>
+              <SendTugas />
+            </Route>
 
             <Route path='/ruang-tugas/:id'>
               <RuangTugas />
@@ -45,10 +59,6 @@ function App() {
 
             <Route path='/profile'>
               <Profile />
-            </Route>
-
-            <Route path='/storage/:id'>
-              <Storage />
             </Route>
 
             <Route path='/login'>

@@ -6,7 +6,7 @@
     position: fixed;
     padding: 5px 7px 4px 7px;
     justify-content: center;
-    z-index: 101;
+    z-index: 99;
     opacity: 0;
     animation: opacity 0.2s ease-in-out forwards;
 
@@ -57,7 +57,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 99;
+    z-index: 98;
 }
 
 @keyframes opacity{

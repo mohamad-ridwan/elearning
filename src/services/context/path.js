@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect } from 'react'
-import API from '../api'
 
 export const PathContext = createContext()
 
