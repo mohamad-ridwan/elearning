@@ -1,12 +1,20 @@
 import React from 'react'
 import './ExportExcel.scss'
 
-function ExportExcel({ head, column }) {
+function ExportExcel({ head, column, displayTable, bgColorThead }) {
+
+    const styleTable = {
+        display: displayTable
+    }
+
+    const styleThead = {
+        backgroundColor: bgColorThead
+    }
 
     return (
         <>
-            <table border="1" id="table-to-xls" className="table-to-xls">
-                <thead className="head-export-xls">
+            <table border="1" id="table-to-xls" className="table-to-xls" style={styleTable}>
+                <thead className="head-export-xls" style={styleThead}>
                     <tr>
                         {head && head.length > 0 ? head.map((e, i) => {
                             return (
@@ -22,11 +30,12 @@ function ExportExcel({ head, column }) {
                     </tr>
                 </thead>
 
-                <tbody className="body-export-xls">
+                <tbody className="tbody-export-xls">
                     {column && column.length > 0 ? column.map((e, i) => {
+
                         return (
                             <>
-                                <tr key={i}>
+                                <tr key={i} className="tr-export-excel">
                                     <td>
                                         {e.a}
                                     </td>

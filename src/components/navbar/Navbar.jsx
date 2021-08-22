@@ -18,6 +18,7 @@ function Navbar() {
     const getTokenUser = Cookies.get('e-learning')
 
     const history = useHistory()
+    const getPath = window.location.pathname
 
     function setAllAPI() {
         API.APIGetDashboard(getTokenUser)
@@ -39,7 +40,7 @@ function Navbar() {
     }, [])
 
     const styleNavbar = {
-        display: pathGlobal === '/login' || pathGlobal === '/storage' ? 'none' : 'flex',
+        display: getPath === '/login' || getPath.includes('/print-table') ? 'none' : 'flex',
         left: activeNavmenu ? '230px' : '75px'
     }
 

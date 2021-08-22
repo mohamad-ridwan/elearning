@@ -3,6 +3,9 @@ import { useHistory } from 'react-router';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import fileDownload from 'js-file-download';
+import { CSVLink } from 'react-csv';
+import jsPDF from 'jspdf';
+import ReactHTMLTableToExcel from 'react-html-table-to-excel'
 import './RuangMateri.scss'
 import Tools from '../../components/tools/Tools';
 import { PathContext } from '../../services/context/path';
@@ -14,10 +17,11 @@ import API from '../../services/api';
 import ListTable from '../../components/listtable/ListTable';
 import Loading from '../../components/loading/Loading';
 import endpoint from '../../services/api/endpoint';
+import ExportExcel from '../../components/exportexcel/ExportExcel';
 
 function RuangMateri() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable] = useContext(PathContext)
     const [listMateri, setListMateri] = useState([])
     const [nameMatkul, setNameMatkul] = useState('')
     const [videoPembelajaran, setVideoPembelajaran] = useState([])
@@ -25,6 +29,25 @@ function RuangMateri() {
     const [loading, setLoading] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState(5)
+    const [dataCsv, setDataCsv] = useState([])
+    const [headersCsv, setHeadersCsv] = useState([
+        { label: "NO", key: "a" },
+        { label: "Kode MTK", key: "b" },
+        { label: "Kelas", key: "c" },
+        { label: "Judul", key: "d" },
+        { label: "Deskripsi", key: "e" },
+        { label: "File", key: "f" },
+        { label: "Update", key: "g" }
+    ])
+    const [headerPdf, setHeaderPdf] = useState([
+        { title: "No", key: "a" },
+        { title: "Kode MTK", key: "b" },
+        { title: "Kelas", key: "c" },
+        { title: "Judul", key: "d" },
+        { title: "Deskripsi", key: "e" },
+        { title: "File", key: "f" },
+        { title: "Update", key: "g" }
+    ])
     const [tools, setTools] = useState([
         {
             name: 'Copy'
@@ -114,13 +137,24 @@ function RuangMateri() {
                 setNameMatkul(`${respons.matakuliah} - ${respons.kodeMTK}`)
 
                 const getMateriTambahan = respons.ruangMateri.filter((e) => e.id === 'materi-tambahan')
-                setListMateri(getMateriTambahan[0].data)
+                setListMateri(getMateriTambahan[0] && getMateriTambahan[0].data ? getMateriTambahan[0].data : [])
 
                 const getVideoPembelajaran = respons.ruangMateri.filter((e) => e.id === 'video-pembelajaran')
-                setVideoPembelajaran(getVideoPembelajaran[0].data)
+                setVideoPembelajaran(getVideoPembelajaran[0] && getVideoPembelajaran[0].data ? getVideoPembelajaran[0].data : [])
 
                 const getSlidePembelajaran = respons.ruangMateri.filter((e) => e.id === 'slide-pembelajaran')
-                setSlidePembelajaran(getSlidePembelajaran[0].data)
+                setSlidePembelajaran(getSlidePembelajaran[0] && getSlidePembelajaran[0].data ? getSlidePembelajaran[0].data : [])
+
+                if (getMateriTambahan[0] && getMateriTambahan[0].data.length > 0) {
+                    let newArr = []
+
+                    getMateriTambahan[0].data.map((e) => {
+                        setTimeout(() => {
+                            newArr.push({ a: e.number, b: e.kodeMTK, c: e.kelas, d: e.judul, e: e.deskripsi, f: 'Unduh', g: e.update })
+                            setDataCsv(newArr)
+                        }, 0);
+                    })
+                }
 
                 setTimeout(() => {
                     if (elPaginate.length > 0) {
@@ -151,6 +185,7 @@ function RuangMateri() {
     useEffect(() => {
         setAllAPI();
         toPageActive(0);
+        setPathGlobal(`/ruang-materi/${getPath[1]}`);
         window.scrollTo(0, 0)
     }, [])
 
@@ -307,6 +342,65 @@ function RuangMateri() {
         }
     }, 0);
 
+    const indexOfLastDataCsv = currentPage * perPage
+    const indexOfFirstDataCsv = indexOfLastData - perPage
+    const currentDataCsv = dataCsv.slice(indexOfFirstDataCsv, indexOfLastDataCsv)
+
+    const csvReport = {
+        filename: 'E-Learning.csv',
+        headers: headersCsv,
+        data: currentDataCsv
+    }
+
+    function btnDownloadCsv() {
+        document.getElementById('btn-csv-download-ruang-materi').click();
+    }
+
+    const getDataMateri = currentData.map((e, i) => i === 0 ? `${e.number} ${e.kodeMTK} ${e.kelas} ${e.judul} ${e.deskripsi} Unduh ${e.update}` : `\n${e.number} ${e.kodeMTK} ${e.kelas} ${e.judul} ${e.deskripsi} Unduh ${e.update}`)
+
+    function copyTxtClipBoard() {
+        const txtCopy = `${headTable.map((e, i) => i === 0 ? e.name : ' ' + e.name)} \n\n${getDataMateri}`;
+
+        navigator.clipboard.writeText(txtCopy);
+    }
+
+    function btnDownloadExcel() {
+        document.getElementById("button-download-as-xls").click();
+    }
+
+    let pdfjs = new jsPDF();
+
+    function btnDownloadPdf() {
+        pdfjs.autoTable({ html: '#table-export-to-pdf-ruang-materi' })
+
+        pdfjs.autoTable(headerPdf, currentDataCsv, {
+            theme: 'striped'
+        })
+
+        pdfjs.save('E-learning.pdf')
+    }
+
+    function toPagePrintTable() {
+        setHeaderTable(headTable)
+        setBodyTable(currentDataCsv)
+        setPathPrintTable(`/ruang-materi/${getPath[1]}`)
+        history.push(`/print-table/${getPath[1]}`)
+    }
+
+    function btnTools(idx) {
+        if (idx === 0) {
+            copyTxtClipBoard();
+        } else if (idx === 1) {
+            btnDownloadCsv();
+        } else if (idx === 2) {
+            btnDownloadExcel();
+        } else if (idx === 3) {
+            btnDownloadPdf();
+        } else if (idx === 4) {
+            toPagePrintTable();
+        }
+    }
+
     return (
         <>
             <div className="wrapp-ruang-materi" style={styleWrapp}>
@@ -344,7 +438,10 @@ function RuangMateri() {
                         </p>
 
                         <div className="column-tools-ruang-materi">
-                            <Tools data={tools} />
+                            <Tools
+                                data={tools}
+                                clickBtn={(i) => btnTools(i)}
+                            />
                         </div>
                     </div>
                 </div>
@@ -495,6 +592,25 @@ function RuangMateri() {
                         />
                     </div>
                 </div>
+
+                <div className="container-csv-ruang-materi">
+                    <CSVLink {...csvReport} id="btn-csv-download-ruang-materi">
+                        Download me
+                    </CSVLink>
+                </div>
+
+                <div className="container-excel-ruang-materi">
+                    <ReactHTMLTableToExcel
+                        table="table-to-xls"
+                        filename="E-learning"
+                        sheet="materi"
+                        buttonText="EXPORT"
+                    />
+                </div>
+
+                <ExportExcel displayTable="none" head={headTable} column={currentDataCsv} />
+
+                <table id="table-export-to-pdf-ruang-materi"></table>
 
                 <Loading displayWrapp={loading ? 'flex' : 'none'} />
             </div>

@@ -19,7 +19,7 @@ import ExportExcel from '../../components/exportexcel/ExportExcel';
 
 function Absensi() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable] = useContext(PathContext)
     const [dataCardAbsen, setDataCardAbsen] = useState({})
     const [jadwalAbsen, setJadwalAbsen] = useState([])
     const [user, setUser] = useState({})
@@ -205,6 +205,7 @@ function Absensi() {
     useEffect(() => {
         window.scrollTo(0, 0);
         setAllAPI()
+        setPathGlobal(`/absensi/${getPath[1]}`);
     }, []);
 
     const indexOfLastData = currentPage * perPage
@@ -377,18 +378,22 @@ function Absensi() {
         elPaginate[number - 1].style.color = '#fff'
     }
 
+    const indexOfLastDataCsv = currentPage * perPage
+    const indexOfFirstDataCsv = indexOfLastData - perPage
+    const currentDataCsv = dataCsv.slice(indexOfFirstDataCsv, indexOfLastDataCsv)
+
     const csvReport = {
         filename: 'E-Learning.csv',
         headers: headersCsv,
-        data: dataCsv
+        data: currentDataCsv
     }
 
-    const getAbsen = jadwalAbsen.map((e, i) => i === 0 ? `${e.number} ${e.dataAbsen.filter((e) => e.nim === user.nim).length === 0 ? 'Tidak Hadir' : 'Hadir'} ${e.tanggal} ${e.matakuliah} ${e.pertemuan} ${e.rangkuman} ${e.beritaAcara}` : `\n${e.number} ${e.dataAbsen.filter((e) => e.nim === user.nim).length === 0 ? 'Tidak Hadir' : 'Hadir'} ${e.tanggal} ${e.matakuliah} ${e.pertemuan} ${e.rangkuman} ${e.beritaAcara}`)
+    const getAbsen = currentData.map((e, i) => i === 0 ? `${e.number} ${e.dataAbsen.filter((e) => e.nim === user.nim).length === 0 ? 'Tidak Hadir' : 'Hadir'} ${e.tanggal} ${e.matakuliah} ${e.pertemuan} ${e.rangkuman} ${e.beritaAcara}` : `\n${e.number} ${e.dataAbsen.filter((e) => e.nim === user.nim).length === 0 ? 'Tidak Hadir' : 'Hadir'} ${e.tanggal} ${e.matakuliah} ${e.pertemuan} ${e.rangkuman} ${e.beritaAcara}`)
 
     function copyTxtClipBoard() {
         const txtCopy = `${headAbsen.map((e, i) => i === 0 ? e.name : ' ' + e.name)} \n\n${getAbsen}`;
 
-        navigator.clipboard.writeText(txtCopy)
+        navigator.clipboard.writeText(txtCopy);
     }
 
     function btnDownloadCsv() {
@@ -404,15 +409,18 @@ function Absensi() {
     function btnDownloadPdf() {
         pdfjs.autoTable({ html: '#table-export-to-pdf' })
 
-        pdfjs.autoTable(headerPdf, dataCsv, {
+        pdfjs.autoTable(headerPdf, currentDataCsv, {
             theme: 'striped'
         })
 
         pdfjs.save('E-learning.pdf')
     }
 
-    function printTable() {
-        window.print();
+    function toPagePrintTable() {
+        setHeaderTable(headAbsen)
+        setBodyTable(currentDataCsv)
+        setPathPrintTable(`/absensi/${getPath[1]}`)
+        history.push(`/print-table/${getPath[1]}`)
     }
 
     function btnTools(idx) {
@@ -425,7 +433,7 @@ function Absensi() {
         } else if (idx === 3) {
             btnDownloadPdf();
         } else if (idx === 4) {
-            printTable();
+            toPagePrintTable();
         }
     }
 
@@ -540,7 +548,7 @@ function Absensi() {
 
                 <div className="column-bawah-absensi">
                     <div className="container-scroll-rekap-absen">
-                        <tbody className="body-absen">
+                        <tbody className="table-absen">
                             <HeadTable
                                 data={headAbsen}
                                 widthTh="calc(96%/7)"
@@ -636,7 +644,7 @@ function Absensi() {
                     />
                 </div>
 
-                <ExportExcel head={headAbsen} column={dataCsv} />
+                <ExportExcel displayTable="none" head={headAbsen} column={currentDataCsv} />
 
                 <table id="table-export-to-pdf"></table>
 

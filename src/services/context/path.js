@@ -11,9 +11,12 @@ const PathProvider = ({ children }) => {
     const [activeNavmenuDefault, setActiveNavmenuDefault] = useState(false)
     const [dataUserForNavbar, setDataUserForNavbar] = useState({})
     const [idxActiveGlobal, setIdxActiveGlobal] = useState()
+    const [headerTable, setHeaderTable] = useState([])
+    const [bodyTable, setBodyTable] = useState([])
+    const [pathPrintTable, setPathPrintTable] = useState('')
 
     return (
-        <PathContext.Provider value={[pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal]}>
+        <PathContext.Provider value={[pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable]}>
             {children}
         </PathContext.Provider>
     )

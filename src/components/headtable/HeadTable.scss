@@ -4,45 +4,50 @@
     display: flex;
     width: 100%;
     background-color: $color16;
-    
-    th{
+
+    .table-row-head-absen{
         display: flex;
-        font-size: $font2;
-        color: $color2;
-        width: calc(100%/7);
-        padding: 10px;
-        align-items: center;
-        justify-content: space-between;
-        cursor: pointer;
-        text-align: start;
+        width: 100%;
 
-        .column-icon-filter-table{
+        th{
             display: flex;
+            font-size: $font2;
+            color: $color2;
+            width: 100%;
+            padding: 10px;
             align-items: center;
-
-            .btn-filter-table-up{
-                display: flex;
-                color: $color4;
-                font-size: 7px;
-                background-color: transparent;
-                border: none;
-                outline: none;
-                cursor: pointer;
-                transition: 0.2s ease-in-out;
-                opacity: 0.3;
-            }
+            justify-content: space-between;
+            cursor: pointer;
+            text-align: start;
     
-            .btn-filter-table-down{
+            .column-icon-filter-table{
                 display: flex;
-                color: $color6;
-                font-size: 7px;
-                background-color: transparent;
-                border: none;
-                outline: none;
-                cursor: pointer;
-                transition: 0.2s ease-in-out;
-                margin-left: 0px;
-                opacity: 0.3;
+                align-items: center;
+    
+                .btn-filter-table-up{
+                    display: flex;
+                    color: $color4;
+                    font-size: 7px;
+                    background-color: transparent;
+                    border: none;
+                    outline: none;
+                    cursor: pointer;
+                    transition: 0.2s ease-in-out;
+                    opacity: 0.3;
+                }
+        
+                .btn-filter-table-down{
+                    display: flex;
+                    color: $color6;
+                    font-size: 7px;
+                    background-color: transparent;
+                    border: none;
+                    outline: none;
+                    cursor: pointer;
+                    transition: 0.2s ease-in-out;
+                    margin-left: 0px;
+                    opacity: 0.3;
+                }
             }
         }
     }

@@ -1,0 +1,42 @@
+@import '../../utils/variable.scss';
+
+.table-print-table{
+   display: flex;
+   width: 100%;
+   flex-direction: column;
+
+   .title-e-elearning{
+      display: flex;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+   }
+
+   .tbody-print-table{
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid $color16;
+      border-left: 1px solid $color16;
+      border-right: 1px solid $color16;
+
+      .tr-print-table{
+         display: flex;
+         background-color: $color17;
+      }
+
+      .tr-print-table-active{
+         background-color: #fff;
+      }
+   }
+}
+
+.background-black{
+   display: flex;
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background-color: $color2;
+   z-index: -1;
+}

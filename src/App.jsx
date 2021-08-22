@@ -14,6 +14,7 @@ import RuangTugas from './pages/ruangtugas/RuangTugas';
 import SendTugas from './pages/sendtugas/SendTugas';
 import ForumDiskusi from './pages/forumdiskusi/ForumDiskusi';
 import KomentarDiskusi from './pages/komentardiskusi/KomentarDiskusi';
+import PrintTable from './pages/printtable/PrintTable';
 
 function App() {
   return (
@@ -24,6 +25,10 @@ function App() {
           <Navmenu />
 
           <Switch>
+
+            <Route path='/print-table/:id'>
+              <PrintTable />
+            </Route>
 
             <Route path='/forum-diskusi/komentar/:pembahasan/:id/:_id'>
               <KomentarDiskusi />

@@ -1,11 +1,12 @@
 import React from 'react';
 import './ListTable.scss'
 
-function ListTable({ contentList, statusAbsen, displayWrapp, displayBoxHadir, bgColorStatusAbsen, widthWrapp, bgColorBtnList, paddingBtnList, colorBtnList, cursorBtnList, icon, displayIcon, clickBtn, classBtn, flexDirectionBtn, marginIcon, mouseEnterBtn, mouseLeaveBtn, classTableActive, fontSizeBtnList, fontWeightBtnList, classWrapp }) {
+function ListTable({ contentList, statusAbsen, displayWrapp, displayBoxHadir, bgColorStatusAbsen, widthWrapp, bgColorBtnList, paddingBtnList, colorBtnList, cursorBtnList, icon, displayIcon, clickBtn, classBtn, flexDirectionBtn, marginIcon, mouseEnterBtn, mouseLeaveBtn, classTableActive, fontSizeBtnList, fontWeightBtnList, classWrapp, borderWrapp }) {
 
     const styleWrapp = {
         display: displayWrapp,
-        width: widthWrapp
+        width: widthWrapp,
+        border: borderWrapp
     }
 
     const styleBtnList = {
@@ -30,7 +31,7 @@ function ListTable({ contentList, statusAbsen, displayWrapp, displayBoxHadir, bg
 
     return (
         <>
-            <tr className={`list-table ${classWrapp}`} style={styleWrapp}>
+            <td className={`list-table ${classWrapp}`} style={styleWrapp}>
                 <button className={`btn-list-table ${classBtn}`} style={styleBtnList}
                     onClick={clickBtn}
                     onMouseEnter={mouseEnterBtn}
@@ -46,7 +47,7 @@ function ListTable({ contentList, statusAbsen, displayWrapp, displayBoxHadir, bg
                 <p className="box-hadir" style={styleBoxHadir}>
                     {statusAbsen}
                 </p>
-            </tr>
+            </td>
         </>
     )
 }

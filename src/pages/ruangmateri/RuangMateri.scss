@@ -131,6 +131,14 @@
             animation: opacity 0.3s ease-in-out forwards;
         }
     }
+
+    .container-csv-ruang-materi{
+        display: none;
+    }
+
+    .container-excel-ruang-materi{
+        display: none;
+    }
 }
 
 @keyframes opacity{

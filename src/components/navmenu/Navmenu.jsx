@@ -40,6 +40,7 @@ function Navmenu() {
     ])
 
     const history = useHistory()
+    const getPath = window.location.pathname
 
     const btnBarMenu = document.getElementsByClassName('btn-bar-navmenu')
 
@@ -48,7 +49,7 @@ function Navmenu() {
     const iconBarMenu = document.getElementsByClassName('fa-list-ul')
 
     const styleNavmenu = {
-        display: pathGlobal === '/login' ? 'none' : 'flex',
+        display: getPath === '/login' || getPath.includes('/print-table') ? 'none' : 'flex',
         width: overActiveNavmenu || activeNavmenu ? '230px' : '75px'
     }
 
