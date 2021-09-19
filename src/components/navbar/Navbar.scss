@@ -1,5 +1,23 @@
 @import '../../utils/variable.scss';
 
+@mixin maxMobile {
+    @media (max-width: $navbarMobile) {
+        @content;
+    }
+}
+
+@mixin minMobile {
+    @media (min-width: 577px) and (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: $mobile) {
+        @content;
+    }
+}
+
 .wrapp-navbar{
     display: flex;
     position: fixed;
@@ -12,6 +30,12 @@
     justify-content: space-between;
     z-index: 93;
     transition: 0.3s ease-in-out;
+
+    @include maxMobile(){
+        box-shadow: none;
+        padding: 10px 10px;
+        left: 0;
+    }
 
     .column-kiri-navbar{
         display: flex;
@@ -35,13 +59,57 @@
                 padding: 10px;
             }
 
-            .active-icon-bar-menu{
+            .icon-bar-menu-mobile{
+                @include maxMobile(){
+                    color: $color6;
+                }
+            }
+
+            .active-icon-bar-menu-mobile{
+                @include maxMobile(){
+                    color: #fff;
+                }   
+            }
+
+            .icon-bar-menu-desktop{
+                color: $color6;
+                @include maxMobile(){
+                    color: $color6;
+                }
+            }
+
+            .active-icon-bar-menu-desktop{
                 color: #fff;
+                @include maxMobile(){
+                    color: $color6;
+                }
             }
         }
 
-        .active-btn-navmenu{
+        .btn-navmenu-mobile{
+            @include maxMobile(){
+                background-color: transparent;
+            }
+        }
+
+        .active-btn-navmenu-mobile{
+            @include maxMobile(){
+                background-color: $color6;
+            }
+        }
+
+        .btn-navmenu-desktop{
+            background-color: transparent;
+            @include maxMobile(){
+                background-color: $color6;
+            }
+        }
+
+        .active-btn-navmenu-desktop{
             background-color: $color6;
+            @include maxMobile(){
+                background-color: transparent;
+            }
         }
 
         .name-web{
@@ -50,11 +118,19 @@
             color: $color9;
             margin-left: 10px;
             cursor: default;
+
+            @include maxMobile(){
+                display: none;
+            }
         }
     }
 
     .column-kanan-navbar{
         display: flex;
+
+        @include maxMobile(){
+            display: none;
+        }
 
         .btn-profile-navbar{
             display: flex;
@@ -65,6 +141,11 @@
             color: $color9;
             align-items: center;
             background-color: transparent;
+            transition: 0.2s ease-in-out;
+
+            &:hover{
+                color: $color6;
+            }
 
             .column-img-profile-navbar{
                 display: flex;
@@ -77,6 +158,112 @@
                 margin-left: 10px;
 
                 .img-profile-navbar{
+                    display: flex;
+                    height: 100%;
+                    width: 100%;
+                    border-radius: 500px;
+                    object-fit: cover;
+                }
+            }
+
+            i{
+                color: #fff;
+            }
+        }
+    }
+}
+
+.left-navbar-mobile{
+    @include maxMobile(){
+        left: 0;
+    }
+}
+
+.left-navbar-mobile-active{
+    @include maxMobile(){
+        left: 230px;
+    }
+}
+
+.left-navbar-desktop{
+    left: 75px;
+    @include maxMobile(){
+        left: 0;
+    }
+}
+
+.left-navbar-desktop-active{
+    left: 230px;
+    @include maxMobile(){
+        left: 0;
+    }
+}
+
+.wrapp-navbar-mobile{
+    display: none;
+    position: fixed;
+    height: auto;
+    left: 0px;
+    top: 54px;
+    right: 0;
+    background-color: transparent;
+    padding: 10px 10px;
+    box-shadow: none;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 92;
+
+    @include maxMobile(){
+        display: flex;
+        box-shadow: 0px 2px 15px -2px $color24;
+        border-top: 1px solid $color16;
+        background-color: #fff;
+    }
+
+    .name-web-mobile{
+        display: none;
+        font-size: $font2;
+        color: $color9;
+        cursor: default;
+
+        @include maxMobile(){
+            display: flex;
+        }
+    }
+
+    .column-kanan-navbar-mobile{
+        display: none;
+
+        @include maxMobile(){
+            display: flex;
+        }
+
+        .btn-profile-navbar-mobile{
+            display: flex;
+            font-size: $font2;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            color: $color9;
+            align-items: center;
+            background-color: transparent;
+            transition: 0.2s ease-in-out;
+
+            &:hover{
+                color: $color6;
+            }
+
+            .column-img-profile-navbar-mobile{
+                display: flex;
+                height: 34px;
+                width: 34px;
+                border-radius: 500px;
+                justify-content: center;
+                align-items: center;
+                background-color: $color6;
+                margin-left: 10px;
+
+                .img-profile-navbar-mobile{
                     display: flex;
                     height: 100%;
                     width: 100%;

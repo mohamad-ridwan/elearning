@@ -15,6 +15,7 @@ import SendTugas from './pages/sendtugas/SendTugas';
 import ForumDiskusi from './pages/forumdiskusi/ForumDiskusi';
 import KomentarDiskusi from './pages/komentardiskusi/KomentarDiskusi';
 import PrintTable from './pages/printtable/PrintTable';
+import DetailDeskripsi from './pages/detaildeskripsi/DetailDeskripsi';
 
 function App() {
   return (
@@ -25,6 +26,10 @@ function App() {
           <Navmenu />
 
           <Switch>
+
+            <Route path='/ruang-materi/video-pembelajaran/detail-deskripsi/:id/:id'>
+              <DetailDeskripsi />
+            </Route>
 
             <Route path='/print-table/:id'>
               <PrintTable />

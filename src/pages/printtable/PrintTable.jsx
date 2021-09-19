@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { useHistory } from 'react-router';
 import './PrintTable.scss'
 import { PathContext } from '../../services/context/path'
@@ -7,10 +7,9 @@ import ListTable from '../../components/listtable/ListTable'
 
 function PrintTable() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable] = useContext(PathContext)
 
     const history = useHistory();
-    const getPath = window.location.pathname.split('/')
 
     function setPageSize(cssPageSize) {
         const style = document.createElement('style')
@@ -37,14 +36,16 @@ function PrintTable() {
     const theadAbsensi = document.getElementsByClassName('thead-absensi-print-table')
 
     setTimeout(() => {
-        if (theadAbsensi.length > 0) {
-            theadAbsensi[5].style.width = 'calc(96%/4)'
+        if (theadAbsensi.length > 0 && idxHeadPrintTable.length > 0) {
+            idxHeadPrintTable.map((e) => {
+                theadAbsensi[e.idx].style.width = `${e.width}`
+            })
         }
     }, 0);
 
     const trElement = document.getElementsByClassName('tr-print-table')
 
-    window.onafterprint = (e) => {
+    window.onafterprint = () => {
         history.push(pathPrintTable)
     }
 
@@ -58,8 +59,6 @@ function PrintTable() {
                 <HeadTable
                     data={headerTable}
                     displayIcon="none"
-                    widthTh="calc(96%/7)"
-                    widhtCustom="calc(96%/2)"
                     classNameTh="thead-absensi-print-table"
                     bdrTopAbsen="2px solid #dee5f1"
                     bdrLeftAbsen="2px solid #dee5f1"
@@ -88,7 +87,7 @@ function PrintTable() {
                                         return (
                                             <>
                                                 <ListTable
-                                                    widthWrapp={i === 6 ? 'calc(96%/2)' : i === 5 ? 'calc(96%/4)' : 'calc(96%/7)'}
+                                                    widthWrapp={i === idxOnePrintTable ? 'calc(96%/2)' : i === idxTwoPrintTable ? 'calc(96%/4)' : 'calc(96%/7)'}
                                                     contentList={e[1]}
                                                     borderWrapp="1px solid #dee5f1"
                                                 />

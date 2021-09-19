@@ -1,16 +1,40 @@
 @import '../../utils/variable.scss';
 
+@mixin maxMobile {
+    @media (max-width: $navbarMobile) {
+        @content;
+    }
+}
+
+@mixin minMobile {
+    @media (min-width: 577px) and (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: $mobile) {
+        @content;
+    }
+}
+
 .column-tools-absen{
     display: flex;
-    padding: 15px 10px;
+    flex-wrap: wrap;
+    padding: 5px 10px 15px 10px;
     width: 100%;
     justify-content: space-between;
     align-items: center;
+
+    @include maxMobile(){
+        justify-content: center;
+    }
 
     .column-kiri-tools-absen{
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        margin-top: 10px;
 
         .btn-tools-group{
             display: flex;
@@ -37,6 +61,7 @@
     .column-kanan-tools-absen{
         display: flex;
         align-items: center;
+        margin-top: 10px;
 
         .txt-search-absen{
             display: flex;
@@ -48,10 +73,11 @@
         .container-search-absen{
             display: flex;
             position: relative;
+            align-items: center;
         
             .input-search-absen{
                 display: flex;
-                padding: 5px 8px;
+                padding: 5px 20px 5px 8px;
                 border-radius: 2px;
                 border: 1px solid $color16;
                 transition: 0.2s ease-in-out;
@@ -61,6 +87,20 @@
 
             .input-search-absen:focus{
                 border: 1px solid $color6;
+            }
+
+            i{
+                display: none;
+                position: absolute;
+                right: 8px;
+                margin-top: 1px;
+                font-size: $font2;
+                cursor: pointer;
+                color: $color6;
+                transition: 0.2s ease-in-out;
+                &:hover{
+                    color: $color22;
+                }
             }
         }
     }

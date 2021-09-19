@@ -10,7 +10,7 @@ import Loading from '../../components/loading/Loading';
 
 function JadwalKuliah() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop, inActiveNavAfterLoadPage] = useContext(PathContext)
     const [jadwalKuliah, setJadwalKuliah] = useState([])
     const [loading, setLoading] = useState(false)
     const [onDisplayHoverBtn, setOnDisplayHoverBtn] = useState(false)
@@ -46,6 +46,19 @@ function JadwalKuliah() {
                             const getJadwalKuliahFromUser = respons.filter((e) => e.major === user.major && e.kelas === user.class && e.campus === user.campus && e.semester === user.statusSemester && e.id === 'jadwal-kuliah-utama')
 
                             setJadwalKuliah(getJadwalKuliahFromUser)
+
+                            // console.log(res)
+                            const tesF = respons.filter((e) => e.ruangDiskusi.length > 0)
+
+                            function getRd(data) {
+                                data.forEach((e) => {
+                                    const komentar = e.ruangDiskusi.filter((e) => e.komentar)
+                                    const getUser = komentar.filter((e) => e.author.nim == 15200060)
+                                    console.log(getUser)
+                                })
+                            }
+
+                            getRd(tesF)
                         })
                         .catch(err => console.log(err))
                 } else {
@@ -58,12 +71,12 @@ function JadwalKuliah() {
 
     useEffect(() => {
         window.scrollTo(0, 0)
+        setTimeout(() => {
+            activeBodyDesktop('wrapp-jadwal-kuliah', 'wrapp-jadwal-kuliah-active');
+            inActiveNavAfterLoadPage();
+        }, 0);
         setAllAPI();
     }, [])
-
-    const styleWrapp = {
-        marginLeft: activeNavmenu ? '230px' : '70px'
-    }
 
     function toPage(path) {
         history.push(path)
@@ -98,7 +111,7 @@ function JadwalKuliah() {
 
     return (
         <>
-            <div className="wrapp-jadwal-kuliah" style={styleWrapp}>
+            <div className="wrapp-jadwal-kuliah">
                 {jadwalKuliah && jadwalKuliah.length > 0 ? jadwalKuliah.map((e, i) => {
 
                     const timeZoneMasuk = e.timeZoneMasuk.split(' ')

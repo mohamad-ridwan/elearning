@@ -33,30 +33,18 @@ function ExportExcel({ head, column, displayTable, bgColorThead }) {
                 <tbody className="tbody-export-xls">
                     {column && column.length > 0 ? column.map((e, i) => {
 
+                        const obj = Object.entries(e)
+
                         return (
                             <>
                                 <tr key={i} className="tr-export-excel">
-                                    <td>
-                                        {e.a}
-                                    </td>
-                                    <td>
-                                        {e.b}
-                                    </td>
-                                    <td>
-                                        {e.c}
-                                    </td>
-                                    <td>
-                                        {e.d}
-                                    </td>
-                                    <td>
-                                        {e.e}
-                                    </td>
-                                    <td>
-                                        {e.f}
-                                    </td>
-                                    <td>
-                                        {e.g}
-                                    </td>
+                                    {obj.map((e) => {
+                                        return (
+                                            <>
+                                                <td>{e[1]}</td>
+                                            </>
+                                        )
+                                    })}
                                 </tr>
                             </>
                         )

@@ -10,12 +10,13 @@ import { PathContext } from '../../services/context/path';
 
 function SendTugas() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop, inActiveNavAfterLoadPage] = useContext(PathContext)
     const [linkTugas, setLinkTugas] = useState('')
     const [dataUser, setDataUser] = useState({})
     const [dataMatkul, setDataMatkul] = useState({})
     const [errMessage, setErrMessage] = useState('')
     const [loading, setLoading] = useState(false)
+    const [loadingPage, setLoadingPage] = useState(false)
 
     const history = useHistory()
     const getTokenUser = Cookies.get('e-learning')
@@ -32,6 +33,8 @@ function SendTugas() {
     const getId = getPath.split('/')
 
     function setAllAPI() {
+        setLoadingPage(true)
+
         API.APIGetDashboard(getTokenUser)
             .then(res => {
                 if (res && res.data) {
@@ -45,18 +48,19 @@ function SendTugas() {
 
         API.APIGetOneMatkul(getId[3])
             .then(res => {
+                setLoadingPage(false)
                 setDataMatkul(res.data)
             })
             .catch(err => console.log(err))
     }
 
     useEffect(() => {
+        setTimeout(() => {
+            activeBodyDesktop('wrapp-form-send-tugas', 'wrapp-form-send-tugas-active');
+            inActiveNavAfterLoadPage();
+        }, 0);
         setAllAPI();
     }, [])
-
-    const styleWrapp = {
-        marginLeft: activeNavmenu ? '230px' : '70px'
-    }
 
     const cancelBtn = document.getElementsByClassName('btn-cancel-upload-tugas')
 
@@ -107,10 +111,12 @@ function SendTugas() {
                             setLinkTugas('')
                             setLoading(false)
                             window.alert('berhasil kirim tugas!')
+                            clickCancel();
                             return res;
                         })
                         .catch(err => {
                             setLoading(false)
+                            alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
                             console.log(err)
                         })
                 } else {
@@ -122,7 +128,7 @@ function SendTugas() {
 
     return (
         <>
-            <div className="wrapp-form-send-tugas" style={styleWrapp}>
+            <div className="wrapp-form-send-tugas">
                 <div className="container-form-send-tugas">
                     <p className="title-form-send-tugas">
                         Form Upload Tugas
@@ -163,7 +169,10 @@ function SendTugas() {
                 <Loading
                     displayWrapp={loading ? 'flex' : 'none'}
                     bgColor="rgba(0,0,0,0.5)"
+                    zIndexWrapp="99999999999999"
                 />
+
+                <Loading displayWrapp={loadingPage ? 'flex' : 'none'} />
             </div>
         </>
     )

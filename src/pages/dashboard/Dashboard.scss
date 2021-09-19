@@ -1,5 +1,23 @@
 @import '../../utils/variable.scss';
 
+@mixin maxMobile {
+    @media (max-width: $navbarMobile) {
+        @content;
+    }
+}
+
+@mixin minMobile {
+    @media (min-width: 577px) and (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: $mobile) {
+        @content;
+    }
+}
+
 .wrapp-dashboard{
     display: flex;
     min-height: 100vh;
@@ -9,6 +27,20 @@
     transition: 0.3s ease-in-out;
     padding: 100px 50px 250px 50px;
     overflow-y: auto;
+    overflow-x: hidden;
+
+    @include maxMobile(){
+        padding: 150px 10px 50px 10px;
+        margin-left: 0;
+    }
+
+    @include minMobile(){
+        padding: 100px 40px 50px 40px;
+    }
+
+    @include mobile(){
+        flex-direction: column;
+    }
 
     .column-kiri-dashboard{
         display: flex;
@@ -19,6 +51,10 @@
         border: 1px solid $color19;
         margin-right: 20px;
         padding: 20px;
+
+        @include mobile(){
+            width: 100%;
+        }
 
         .column-name-user-dashboard{
             display: flex;
@@ -92,6 +128,10 @@
         border: 1px solid $color19;
         padding: 20px;
 
+        @include mobile(){
+            width: 100%;
+        }
+
         .title-profile-mahasiswa{
             display: flex;
             font-size: 14px;
@@ -99,5 +139,12 @@
             font-weight: bold;
             margin-bottom: 30px;
         }
+    }
+}
+
+.wrapp-dashboard-active{
+    margin-left: 230px;
+    @include maxMobile(){
+        margin-left: 0;
     }
 }

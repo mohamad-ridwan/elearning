@@ -1,5 +1,23 @@
 @import '../../utils/variable.scss';
 
+@mixin maxMobile {
+    @media (max-width: $navbarMobile) {
+        @content;
+    }
+}
+
+@mixin minMobile {
+    @media (min-width: 577px) and (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: $mobile) {
+        @content;
+    }
+}
+
 .wrapp-forum-diskusi{
     display: flex;
     flex-direction: column;
@@ -7,6 +25,15 @@
     background-color: $color1;
     transition: 0.3s ease-in-out;
     padding: 80px 50px 40px 50px;
+
+    @include maxMobile(){
+        padding: 130px 10px 40px 10px;
+        margin-left: 0;
+    }
+
+    @include minMobile(){
+        padding: 80px 40px 20px 40px;
+    }
 
     .modal-input-form-diskusi{
         display: none;
@@ -37,6 +64,7 @@
             height: auto;
             width: 500px;
             background-color: #fff;
+            margin: 0 10px;
             border-radius: 4px;
             z-index: 1;
             box-shadow: 0 2px 6px -1px rgba(0,0,0,0.3);
@@ -142,6 +170,13 @@
                 width: auto;
             }
         }
+    }
+}
+
+.wrapp-forum-diskusi-active{
+    margin-left: 230px;
+    @include maxMobile(){
+        margin-left: 0;
     }
 }
 

@@ -1,10 +1,28 @@
 @import '../../utils/variable.scss';
 
+@mixin maxMobile {
+    @media (max-width: $navbarMobile) {
+        @content;
+    }
+}
+
+@mixin minMobile {
+    @media (min-width: 577px) and (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: $mobile) {
+        @content;
+    }
+}
+
 .wrapp-navmenu{
     display: flex;
     flex-direction: column;
     position: fixed;
-    left: 0;
+    left: 0px;
     top: 0;
     bottom: 0;
     padding: 20px 0;
@@ -15,6 +33,11 @@
     z-index: 97;
     box-shadow: 2px 0 15px -1px $color25;
     overflow: hidden;
+
+    @include maxMobile(){
+        left: -230px;
+        width: 230px;
+    }
 
     .txt-menu{
         display: flex;
@@ -53,14 +76,67 @@
                 border-radius: 2px;
                 transition: 0.4s ease-in-out;
             }
+
+            .name-btn-bar-navmenu{
+                display: none;
+                @include maxMobile(){
+                    display: flex;
+                }
+            }
+
+            .name-btn-bar-navmenu-mobile{
+                display: none;
+                @include maxMobile(){
+                    display: flex;
+                }
+            }
+
+            .name-btn-bar-navmenu-desktop{
+                display: none;
+                @include maxMobile(){
+                    display: flex;
+                }
+            }
+
+            .name-btn-bar-navmenu-desktop-active{
+                display: flex;
+                @include maxMobile(){
+                    display: flex;
+                }
+            }
     
             .icon-arrow{
-                display: flex;
+                display: none;
                 position: absolute;
                 right: 0;
                 font-size: 14px;
                 background-color: transparent;
                 transition: 0.2s ease-in-out;
+
+                @include maxMobile(){
+                    display: flex;
+                }
+            }
+
+            .icon-arrow-mobile{
+                display: none;
+                @include maxMobile(){
+                    display: flex;
+                }
+            }
+
+            .icon-arrow-desktop{
+                display: none;
+                @include maxMobile(){
+                    display: flex;
+                }
+            }
+
+            .icon-arrow-desktop-active{
+                display: flex;
+                @include maxMobile(){
+                    display: flex;
+                }
             }
         }
     
@@ -97,5 +173,47 @@
                 }
             }
         }
+
+        .container-nav-collapse-mobile{
+            @include maxMobile(){
+                height: 0;
+            }
+        }
+
+        .container-nav-collapse-mobile-active{
+            @include maxMobile(){
+                height: 62px;
+            }
+        }
+
+        .container-nav-collapse-desktop{
+            height: 0;
+            @include maxMobile(){
+                height: 0;
+            }
+        }
+
+        .container-nav-collapse-desktop-active{
+            height: 62px;
+            @include maxMobile(){
+                height: 0;
+            }
+        }
     }
+}
+
+.left-wrapp-navmenu-mobile{
+    @include maxMobile(){
+        left: -230px;
+    }
+}
+
+.left-wrapp-navmenu-mobile-active{
+    @include maxMobile(){
+        left: 0;
+    }
+}
+
+.width-wrapp-navmenu-desktop-active{
+    width: 230px;
 }

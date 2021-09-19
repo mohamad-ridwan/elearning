@@ -10,7 +10,7 @@ import Loading from '../../components/loading/Loading';
 
 function KuliahPengganti() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop, inActiveNavAfterLoadPage] = useContext(PathContext)
     const [kuliahPengganti, setKuliahPengganti] = useState([])
     const [positionLeft, setPositionLeft] = useState('')
     const [positionTop, setPositionTop] = useState('')
@@ -58,12 +58,12 @@ function KuliahPengganti() {
 
     useEffect(() => {
         setAllAPI();
+        setTimeout(() => {
+            activeBodyDesktop('wrapp-kuliah-pengganti', 'wrapp-kuliah-pengganti-active')
+            inActiveNavAfterLoadPage();
+        }, 0);
         window.scrollTo(0, 0)
     }, [])
-
-    const styleWrapp = {
-        marginLeft: activeNavmenu ? '230px' : '70px'
-    }
 
     function mouseOverBtn(name, idxBtn, nameClass) {
         const btnBlueGroup = document.getElementsByClassName(`btn-ruang-${nameClass}`)
@@ -98,7 +98,7 @@ function KuliahPengganti() {
 
     return (
         <>
-            <div className="wrapp-kuliah-pengganti" style={styleWrapp}>
+            <div className="wrapp-kuliah-pengganti">
                 {kuliahPengganti && kuliahPengganti.length > 0 ? kuliahPengganti.map((e, i) => {
 
                     const timeZoneMasuk = e.timeZoneMasuk.split(' ')

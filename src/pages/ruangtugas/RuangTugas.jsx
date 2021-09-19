@@ -3,6 +3,9 @@ import Cookies from 'js-cookie';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import fileDownload from 'js-file-download';
+import { CSVLink } from 'react-csv';
+import ReactHTMLTableToExcel from 'react-html-table-to-excel'
+import jsPDF from 'jspdf';
 import './RuangTugas.scss'
 import Button from '../../components/button/Button';
 import Tools from '../../components/tools/Tools';
@@ -14,10 +17,11 @@ import Pagination from '../../components/pagination/Pagination';
 import API from '../../services/api';
 import Loading from '../../components/loading/Loading';
 import endpoint from '../../services/api/endpoint';
+import ExportExcel from '../../components/exportexcel/ExportExcel';
 
 function RuangTugas() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop, inActiveNavAfterLoadPage] = useContext(PathContext)
     const [listTable, setListTable] = useState([])
     const [dataNilaiTugas, setDataNilaiTugas] = useState([])
     const [loading, setLoading] = useState(false)
@@ -27,6 +31,33 @@ function RuangTugas() {
     const [idDocument, setIdDocument] = useState('')
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState(5)
+    const [dataCsv, setDataCsv] = useState([])
+    const [newDataCsv, setNewDataCsv] = useState([])
+    const [inputSearch, setInputSearch] = useState('')
+    const [headersCsv, setHeadersCsv] = useState([
+        { label: "No", key: "a" },
+        { label: "Kode MTK", key: "b" },
+        { label: "Kelas", key: "c" },
+        { label: "Judul", key: "d" },
+        { label: "Des", key: "e" },
+        { label: "Pertemuan", key: "f" },
+        { label: "Mulai", key: "g" },
+        { label: "Selesai", key: "h" },
+        { label: "Created", key: "i" },
+        { label: "Aksi", key: "j" },
+    ])
+    const [headerPdf, setHeaderPdf] = useState([
+        { title: "No", key: "a" },
+        { title: "Kode MTK", key: "b" },
+        { title: "Kelas", key: "c" },
+        { title: "Judul", key: "d" },
+        { title: "Des", key: "e" },
+        { title: "Pertemuan", key: "f" },
+        { title: "Mulai", key: "g" },
+        { title: "Selesai", key: "h" },
+        { title: "Created", key: "i" },
+        { title: "Aksi", key: "j" },
+    ])
     const [tools, setTools] = useState([
         {
             name: 'Copy'
@@ -126,10 +157,6 @@ function RuangTugas() {
 
     const elPaginate = document.getElementsByClassName('paginate-data-penugasan')
 
-    const styleWrapp = {
-        marginLeft: activeNavmenu ? '230px' : '70px'
-    }
-
     const btnGroupHoverBtn = document.getElementsByClassName('btn-group-hover-button')
 
     function setAllAPI() {
@@ -142,14 +169,29 @@ function RuangTugas() {
 
                     API.APIGetOneMatkul(getPath[1])
                         .then(res => {
+                            setTimeout(() => {
+                                setLoading(false)
+                            }, 500);
                             const respons = res.data
-                            setLoading(false)
 
                             setIdDocument(respons._id)
                             setListTable(respons.ruangTugas)
 
                             const getNilaiTugasWithUser = respons.dataNilaiTugas.filter((e) => e.name === user.name && e.nim === user.nim)
                             setDataNilaiTugas(getNilaiTugasWithUser)
+
+                            if (respons.ruangTugas.length > 0) {
+                                let newArr = []
+
+                                respons.ruangTugas.map((e) => {
+                                    setTimeout(() => {
+                                        newArr.push({ a: e.number, b: e.kodeMTK, c: e.kelas, d: e.judul, e: e.deskripsi, f: e.pertemuan, g: e.mulai, h: e.selesai, i: e.created, j: e.image })
+                                        setTimeout(() => {
+                                            setDataCsv(newArr)
+                                        }, 0);
+                                    }, 0);
+                                })
+                            }
 
                             setTimeout(() => {
                                 if (elPaginate.length > 0) {
@@ -199,14 +241,16 @@ function RuangTugas() {
     }
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+        setTimeout(() => {
+            activeBodyDesktop('wrapp-ruang-tugas', 'wrapp-ruang-tugas-active');
+            inActiveNavAfterLoadPage();
+        }, 0);
         setAllAPI();
         toPageActive(0);
         changeBgColorBtnGroup();
+        setPathGlobal(`/ruang-tugas/${getPath[1]}`);
     }, [])
-
-    const indexOfLastData = currentPage * perPage
-    const indexOfFirstData = indexOfLastData - perPage
-    const currentData = listTable.slice(indexOfFirstData, indexOfLastData)
 
     const styleTools = {
         display: pathActive === 0 ? 'flex' : 'none'
@@ -218,20 +262,6 @@ function RuangTugas() {
 
     const styleDataNilaiTugas = {
         display: pathActive === 1 ? 'flex' : 'none'
-    }
-
-    const columnList = document.getElementsByClassName('column-list-ruang-tugas')
-
-    function mouseOverColumnList(idx) {
-        if (idx % 2 === 0) {
-            columnList[idx].classList.toggle('column-list-ruang-tugas-active')
-        }
-    }
-
-    function mouseLeaveColumnList(idx) {
-        if (idx % 2 === 0) {
-            columnList[idx].classList.toggle('column-list-ruang-tugas-active')
-        }
     }
 
     const btnListTable = document.getElementsByClassName('pilih')
@@ -248,6 +278,7 @@ function RuangTugas() {
 
         setFilePath(file)
         setPertemuan(numPertemuan)
+        document.body.style.overflowY = 'hidden'
     }
 
     function unduhFile() {
@@ -256,12 +287,17 @@ function RuangTugas() {
                 closeModal();
                 fileDownload(res.data, filePath)
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err)
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                closeModal();
+            })
     }
 
     function closeModal() {
         setOnDisplayHoverBtn(false)
         setDisplayCloseModal(false)
+        document.body.style.overflowY = 'scroll'
     }
 
     const hoverBlack = document.getElementsByClassName('hover-black')
@@ -294,20 +330,6 @@ function RuangTugas() {
 
         btnPageRuangTugas[pathActive].style.color = '#1a8e5f'
         iconRuangTugas[pathActive].style.color = '#1a8e5f'
-    }
-
-    const columnDataNilaiTugas = document.getElementsByClassName('column-list-data-nilai-tugas')
-
-    function mouseOverColumnNilai(idx) {
-        if (idx % 2 === 0) {
-            columnDataNilaiTugas[idx].classList.toggle('column-list-data-nilai-tugas-active')
-        }
-    }
-
-    function mouseLeaveColumnNilai(idx) {
-        if (idx % 2 === 0) {
-            columnDataNilaiTugas[idx].classList.toggle('column-list-data-nilai-tugas-active')
-        }
     }
 
     const elementBtnPilih = document.getElementsByClassName('btn-pilih-active')
@@ -386,9 +408,102 @@ function RuangTugas() {
         }
     }, 0);
 
+    const indexOfLastDataCsv = currentPage * perPage
+    const indexOfFirstDataCsv = indexOfLastDataCsv - perPage
+    const currentDataCsv = dataCsv.slice(indexOfFirstDataCsv, indexOfLastDataCsv)
+
+    const resultSearch = currentDataCsv.length > 0 ? currentDataCsv.filter((e) => e.b.toLowerCase().includes(inputSearch) || e.c.toLowerCase().includes(inputSearch) || e.d.toLowerCase().includes(inputSearch) || e.e.toLowerCase().includes(inputSearch) || e.f.toLowerCase().includes(inputSearch) || e.g.toLowerCase().includes(inputSearch) || e.h.toLowerCase().includes(inputSearch) || e.i.toLowerCase().includes(inputSearch)) : []
+
+    const dataTablePenugasan = resultSearch.map((e, i) => i === 0 ? `${i + 1} ${e.b} ${e.c} ${e.d} ${e.e} ${e.f} ${e.g} ${e.h} ${e.i} Pilih Unduh Kerjakan` : `\n${i + 1} ${e.b} ${e.c} ${e.d} ${e.e} ${e.f} ${e.g} ${e.h} ${e.i} Pilih Unduh Kerjakan`)
+
+    function copyTxtClipBoard() {
+        const txtCopy = `${headTable.map((e, i) => i === 0 ? e.name : ' ' + e.name)} \n\n${dataTablePenugasan}`;
+
+        navigator.clipboard.writeText(txtCopy);
+    }
+
+    function changeDataCsv() {
+        return new Promise((resolve, reject) => {
+            let newArr = []
+
+            resultSearch.map((e, i) => {
+                setTimeout(() => {
+                    newArr.push({ a: i + 1, b: e.b, c: e.c, d: e.d, e: e.e, f: e.f, g: e.g, h: e.h, i: e.i, j: 'Pilih Unduh kerjakan' })
+                }, 0)
+            })
+            setTimeout(() => {
+                setNewDataCsv(newArr)
+                resolve(newArr)
+            }, 0);
+        })
+    }
+
+    function btnDownloadCsv() {
+        changeDataCsv().then(res => {
+            document.getElementById('btn-csv-ruang-tugas').click();
+            return res;
+        })
+    }
+
+    function btnDownloadExcel() {
+        changeDataCsv().then(res => {
+            document.getElementById("button-download-as-xls").click();
+            return res;
+        })
+    }
+
+    let pdfjs = new jsPDF();
+
+    function btnDownloadPdf() {
+        changeDataCsv().then(res => {
+            pdfjs.autoTable({ html: '#table-export-to-pdf-ruang-tugas' })
+
+            pdfjs.autoTable(headerPdf, res, {
+                theme: 'striped'
+            })
+
+            pdfjs.save('E-learning.pdf')
+        })
+    }
+
+    function toPagePrintTable() {
+        setHeaderTable(headTable)
+        setPathPrintTable(`/ruang-tugas/${getPath[1]}`)
+        setIdxOnePrintTable(4)
+        setIdxTwoPrintTable(3)
+        setIdxHeadPrintTable([{ idx: 4, width: 'calc(96%/2)' }, { idx: 3, width: 'calc(96%/4)' }])
+
+        changeDataCsv().then(res => {
+            setBodyTable(res)
+            history.push(`/print-table/${getPath[1]}`)
+        })
+    }
+
+    function btnTools(idx) {
+        if (idx === 0) {
+            copyTxtClipBoard();
+        } else if (idx === 1) {
+            btnDownloadCsv();
+        } else if (idx === 2) {
+            btnDownloadExcel();
+        } else if (idx === 3) {
+            btnDownloadPdf();
+        } else if (idx === 4) {
+            toPagePrintTable();
+        }
+    }
+
+    function changeInput(e) {
+        setInputSearch(e.target.value)
+    }
+
+    function iconDelInput() {
+        setInputSearch('')
+    }
+
     return (
         <>
-            <div className="wrapp-ruang-tugas" style={styleWrapp}>
+            <div className="wrapp-ruang-tugas">
                 <div className="column-atas-ruang-tugas">
                     <div className="column-btn-page-ruang-tugas">
                         {buttonPath.map((e, i) => {
@@ -417,7 +532,14 @@ function RuangTugas() {
                     </div>
 
                     <div className="column-tools-ruang-tugas" style={styleTools}>
-                        <Tools data={tools} />
+                        <Tools
+                            data={tools}
+                            clickBtn={(i) => btnTools(i)}
+                            inputSearch={changeInput}
+                            displayIconDel={inputSearch.length > 0 ? 'flex' : 'none'}
+                            valueSearch={inputSearch}
+                            clickIconDel={iconDelInput}
+                        />
                     </div>
                 </div>
 
@@ -433,31 +555,27 @@ function RuangTugas() {
                                     number={4}
                                 />
 
-                                {currentData && currentData.length > 0 ? currentData.map((e, idx) => {
-
-                                    setTimeout(() => {
-                                        if (columnList.length > 0) {
-                                            if (idx % 2 === 0) {
-                                                columnList[idx].classList.add('column-list-ruang-tugas-active')
-                                            }
-                                        }
-                                    }, 0);
+                                {resultSearch && resultSearch.length > 0 ? resultSearch.map((e, idx) => {
 
                                     const objListAbsen = Object.entries(e)
 
                                     return (
                                         <>
                                             <div key={e._id} className="column-list-ruang-tugas"
-                                                onMouseEnter={() => mouseOverColumnList(idx)}
-                                                onMouseLeave={() => mouseLeaveColumnList(idx)}
+                                                style={{
+                                                    backgroundColor: idx % 2 === 0 ? '#fff' : '#f5f7fb'
+                                                }}
                                             >
+                                                <ListTable
+                                                    contentList={idx + 1}
+                                                />
                                                 {objListAbsen.map((e, i) => {
 
-                                                    const paddingBoxList = e[0].toLowerCase() === 'pertemuan' ? '5px 10px' : '0'
+                                                    const paddingBoxList = e[0].toLowerCase() === 'f' ? '5px 10px' : '0'
 
-                                                    const bgColorBoxList = e[0].toLowerCase() === 'pertemuan' ? '#1a538e' : 'transparent'
+                                                    const bgColorBoxList = e[0].toLowerCase() === 'f' ? '#1a538e' : 'transparent'
 
-                                                    const colorBtnList = e[0].toLowerCase() === 'pertemuan' ? '#fff' : '#333'
+                                                    const colorBtnList = e[0].toLowerCase() === 'f' ? '#fff' : '#333'
 
                                                     return (
                                                         <>
@@ -466,8 +584,8 @@ function RuangTugas() {
                                                                 paddingBtnList={paddingBoxList}
                                                                 bgColorBtnList={bgColorBoxList}
                                                                 colorBtnList={colorBtnList}
-                                                                contentList={e[0] === 'image' ? '' : e[1]}
-                                                                displayWrapp={e[0] === 'image' ? 'none' : 'flex'}
+                                                                contentList={e[0] === 'j' ? '' : e[1]}
+                                                                displayWrapp={e[0] === 'j' ? 'none' : 'flex' && e[0] === 'a' ? 'none' : 'flex'}
                                                                 cursorBtnList="text"
                                                             />
                                                         </>
@@ -485,7 +603,7 @@ function RuangTugas() {
                                                     contentList="Pilih"
                                                     classBtn="pilih"
                                                     classTableActive="btn-pilih-active"
-                                                    clickBtn={() => clickBtnPilih(idx, e.image, e.pertemuan)}
+                                                    clickBtn={() => clickBtnPilih(idx, e.j, e.f)}
                                                     mouseEnterBtn={() => mouseOverBtnPilih(idx)}
                                                     mouseLeaveBtn={() => mouseLeaveBtnPilih(idx)}
                                                 />
@@ -516,20 +634,13 @@ function RuangTugas() {
 
                                 {dataNilaiTugas && dataNilaiTugas.length > 0 ? dataNilaiTugas.map((e, idx) => {
 
-                                    setTimeout(() => {
-                                        if (columnDataNilaiTugas.length > 0) {
-                                            if (idx % 2 === 0) {
-                                                columnDataNilaiTugas[idx].classList.add('column-list-data-nilai-tugas-active')
-                                            }
-                                        }
-                                    }, 0);
-
                                     const obj = Object.entries(e.dataTugas)
                                     return (
                                         <>
                                             <div className="column-list-data-nilai-tugas" key={e._id}
-                                                onMouseEnter={() => mouseOverColumnNilai(idx)}
-                                                onMouseLeave={() => mouseLeaveColumnNilai(idx)}
+                                                style={{
+                                                    backgroundColor: idx % 2 === 0 ? '#fff' : '#f5f7fb'
+                                                }}
                                             >
                                                 {obj.map((e, i) => {
                                                     return (
@@ -568,8 +679,8 @@ function RuangTugas() {
                             paginate={paginate}
                             mouseEnter={mouseEnterPaginate}
                             mouseLeave={mouseLeavePaginate}
-                            fromNumber={currentData.length > 0 ? currentData[0].number : '0'}
-                            toNumber={currentData.length > 0 ? currentData[currentData.length - 1].number : '0'}
+                            fromNumber={resultSearch.length > 0 ? resultSearch.length - resultSearch.length + 1 : '0'}
+                            toNumber={resultSearch.length > 0 ? resultSearch.length : '0'}
                             lengthData={listTable.length}
                         />
                     </div>
@@ -604,6 +715,29 @@ function RuangTugas() {
                     click2={toPageUploadTugas}
                     closeModal={closeModal}
                 />
+
+                <div className="container-csv-ruang-tugas">
+                    <CSVLink
+                        filename='E-Learning.csv'
+                        headers={headersCsv}
+                        data={newDataCsv}
+                        id="btn-csv-ruang-tugas">
+                        Download me
+                    </CSVLink>
+                </div>
+
+                <div className="container-excel-ruang-tugas">
+                    <ReactHTMLTableToExcel
+                        table="table-to-xls"
+                        filename="E-learning"
+                        sheet="Data Tugas"
+                        buttonText="EXPORT"
+                    />
+                </div>
+
+                <ExportExcel displayTable="none" head={headTable} column={newDataCsv} />
+
+                <table id="table-export-to-pdf-ruang-tugas"></table>
 
                 <Loading displayWrapp={loading ? 'flex' : 'none'} />
             </div>

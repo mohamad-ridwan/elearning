@@ -1,5 +1,35 @@
 @import '../../utils/variable.scss';
 
+@mixin maxMobile {
+    @media (max-width: $navbarMobile) {
+        @content;
+    }
+}
+
+@mixin minMobile {
+    @media (min-width: 577px) and (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin responsiveTable {
+    @media (max-width: 1350px) {
+        @content;
+    }
+}
+
+@mixin responsiveTableNilaiTugas {
+    @media (max-width: 1600px) {
+        @content;
+    }
+}
+
 .wrapp-ruang-tugas{
     display: flex;
     flex-direction: column;
@@ -7,6 +37,15 @@
     background-color: $color1;
     transition: 0.3s ease-in-out;
     padding: 80px 50px 40px 50px;
+
+    @include maxMobile(){
+        padding: 130px 10px 40px 10px;
+        margin-left: 0;
+    }
+
+    @include minMobile(){
+        padding: 80px 40px 20px 40px;
+    }
 
     .column-atas-ruang-tugas{
         display: flex;
@@ -56,16 +95,16 @@
                     flex-direction: column;
                     width: auto;
                     border-left: 1px solid $color16;
+
+                    @include responsiveTable(){
+                        width: 1200px;
+                    }
     
                     .column-list-ruang-tugas{
                         display: flex;
                         border-bottom: 1px solid $color16;
                         transition: 0.2s ease-in-out;
                         background-color: $color17;
-                    }
-    
-                    .column-list-ruang-tugas-active{
-                        background-color: #fff;
                     }
     
                     .no-data-available-ruang-tugas{
@@ -100,16 +139,16 @@
                     flex-direction: column;
                     width: auto;
                     border-left: 1px solid $color16;
+
+                    @include responsiveTableNilaiTugas(){
+                        width: 1400px;
+                    }
     
                     .column-list-data-nilai-tugas{
                         display: flex;
                         border-bottom: 1px solid $color16;
                         transition: 0.2s ease-in-out;
                         background-color: $color17;
-                    }
-    
-                    .column-list-data-nilai-tugas-active{
-                        background-color: #fff;
                     }
     
                     .no-data-available-data-nilai-tugas{
@@ -135,6 +174,21 @@
             opacity: 0;
             animation: opacity 0.3s ease-in-out forwards;
         }
+    }
+
+    .container-csv-ruang-tugas{
+        display: none;
+    }
+
+    .container-excel-ruang-tugas{
+        display: none;
+    }
+}
+
+.wrapp-ruang-tugas-active{
+    margin-left: 230px;
+    @include maxMobile(){
+        margin-left: 0;
     }
 }
 

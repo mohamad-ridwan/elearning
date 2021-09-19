@@ -10,9 +10,10 @@ import { PathContext } from '../../services/context/path';
 
 function Login() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop] = useContext(PathContext)
     const [logoweb, setLogoweb] = useState({})
     const [errorMessage, setErrorMessage] = useState({})
+    const [loadingLogin, setLoadingLogin] = useState(false)
     const [inputValue, setInputValue] = useState({
         nim: '',
         password: ''
@@ -39,9 +40,90 @@ function Login() {
             .catch(err => console.log(err))
     }
 
+    function getClassPage(nameClass, removeActiveClass, idx) {
+        const classWrapp = document.getElementsByClassName(nameClass)
+        if (classWrapp.length > 0) {
+            classWrapp[idx].classList.remove(removeActiveClass)
+        }
+    }
+
+    function inActiveContentsPage() {
+        // dashboard
+        getClassPage('wrapp-dashboard', 'wrapp-dashboard-active', 0);
+    }
+
+    const wrappNavbar = document.getElementsByClassName('wrapp-navbar')
+
+    // navmenu
+    const navCollapse = document.getElementsByClassName('container-nav-collapse')
+    const btnNavmenu = document.getElementsByClassName('btn-navmenu')
+    const iconBarMenu = document.getElementsByClassName('fa-list-ul')
+    const wrappNavmenu = document.getElementsByClassName('wrapp-navmenu')
+    const nameBtnBarNavmenu = document.getElementsByClassName('name-btn-bar-navmenu')
+    const iconArrow = document.getElementsByClassName('icon-arrow')
+    const btnBarMenu = document.getElementsByClassName('btn-bar-navmenu')
+
+    function inActiveNavmenuDesktop() {
+        // left navbar
+        wrappNavbar[0].classList.remove('left-navbar-desktop')
+        wrappNavbar[0].classList.remove('left-navbar-desktop-active')
+
+        wrappNavbar[0].classList.remove('left-navbar-mobile')
+        wrappNavbar[0].classList.remove('left-navbar-mobile-active')
+
+        // btn navmenu
+        btnNavmenu[0].classList.remove('active-btn-navmenu-desktop')
+        btnNavmenu[0].classList.remove('btn-navmenu-desktop')
+
+        btnNavmenu[0].classList.remove('active-btn-navmenu-mobile')
+        btnNavmenu[0].classList.remove('btn-navmenu-mobile')
+
+        iconBarMenu[0].classList.remove('active-icon-bar-menu-desktop')
+        iconBarMenu[0].classList.remove('icon-bar-menu-desktop')
+
+        iconBarMenu[0].classList.remove('active-icon-bar-menu-mobile')
+        iconBarMenu[0].classList.remove('icon-bar-menu-mobile')
+
+        // navmenu
+        wrappNavmenu[0].classList.remove('left-wrapp-navmenu-mobile')
+        wrappNavmenu[0].classList.remove('left-wrapp-navmenu-mobile-active')
+
+        wrappNavmenu[0].classList.remove('width-wrapp-navmenu-desktop-active')
+
+        for (let i = 0; i < nameBtnBarNavmenu.length; i++) {
+            nameBtnBarNavmenu[i].classList.remove('name-btn-bar-navmenu-mobile')
+
+            nameBtnBarNavmenu[i].classList.remove('name-btn-bar-navmenu-desktop')
+            nameBtnBarNavmenu[i].classList.remove('name-btn-bar-navmenu-desktop-active')
+        }
+        iconArrow[2].classList.remove('icon-arrow-mobile')
+
+        iconArrow[2].classList.remove('icon-arrow-desktop')
+        iconArrow[2].classList.remove('icon-arrow-desktop-active')
+
+        navCollapse[0].classList.remove('container-nav-collapse-desktop')
+        navCollapse[0].classList.remove('container-nav-collapse-desktop-active')
+
+        navCollapse[0].classList.remove('container-nav-collapse-mobile-active')
+        navCollapse[0].classList.remove('container-nav-collapse-mobile')
+
+        for (let i = 0; i < 4; i++) {
+            btnBarMenu[i].classList.remove('active-bar-navmenu')
+        }
+    }
+
     useEffect(() => {
         setAllAPI();
         setPathGlobal('/login')
+        setActiveNavmenu(false)
+        setActiveNavCollapse(false)
+        setOverActiveNavmenu(false)
+        setActiveNavmenuDefault(false)
+        setOverActiveNavmenuDefault(false)
+        setActiveIconDrop(false)
+        setIdxActiveGlobal()
+        inActiveNavmenuDesktop();
+        inActiveContentsPage();
     }, [])
 
     function changeInput(e) {
@@ -71,6 +153,8 @@ function Login() {
     }
 
     function checkDataUser() {
+        setLoadingLogin(true);
+
         const data = {
             nim: inputValue.nim,
             password: inputValue.password
@@ -98,9 +182,12 @@ function Login() {
                 }
 
                 setErrorMessage(err)
+                setLoadingLogin(false)
             })
             .catch(err => {
                 console.log(err)
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                setLoadingLogin(false)
             })
     }
 
@@ -118,7 +205,9 @@ function Login() {
         }
 
         if (Object.keys(err).length === 0) {
-            checkDataUser();
+            if (loadingLogin === false) {
+                checkDataUser();
+            }
         }
 
         setErrorMessage(err)
@@ -154,7 +243,10 @@ function Login() {
                             Lupa Password ?
                         </a>
 
-                        <Button nameBtn="MASUK" />
+                        <Button
+                            nameBtn="MASUK"
+                            displayLoadBtn={loadingLogin ? 'flex' : 'none'}
+                        />
                     </div>
                 </form>
             </div>

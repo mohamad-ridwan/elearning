@@ -12,7 +12,7 @@ import Loading from '../../components/loading/Loading';
 
 function KomentarDiskusi() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop, inActiveNavAfterLoadPage] = useContext(PathContext)
     const [dataFormDiskusi, setDataFormDiskusi] = useState({})
     const [dataKomentar, setDataKomentar] = useState([])
     const [user, setUser] = useState({})
@@ -52,6 +52,13 @@ function KomentarDiskusi() {
         API.APIGetOneMatkul(getPath[5])
             .then(res => {
                 setLoading(false)
+                setLoadingSendMsg(false)
+                setMessage('')
+                const containerChatDiskusi = document.getElementsByClassName('container-chat-diskusi')[0]
+
+                setTimeout(() => {
+                    containerChatDiskusi.scrollTo({ top: 0, behavior: 'smooth' })
+                }, 0);
 
                 const respons = res.data
                 setId(respons._id)
@@ -67,12 +74,12 @@ function KomentarDiskusi() {
     }
 
     useEffect(() => {
+        setTimeout(() => {
+            activeBodyDesktop('wrapp-komentar-diskusi', 'wrapp-komentar-diskusi-active');
+            inActiveNavAfterLoadPage();
+        }, 0);
         setAllAPI(true);
     }, [])
-
-    const styleWrapp = {
-        marginLeft: activeNavmenu ? '230px' : '70px'
-    }
 
     const styleContainerChat = {
         backgroundImage: `url(${bgchat})`
@@ -83,8 +90,6 @@ function KomentarDiskusi() {
     }
 
     const { name, nim, email, image } = user && user
-
-    const containerChatDiskusi = document.getElementsByClassName('container-chat-diskusi')[0]
 
     const color = ['#a8eb34', '#34ebc0', '#34d0eb', '#344ceb', '#c334eb', '#eb343d', '#ebc934', '#126362']
 
@@ -107,19 +112,18 @@ function KomentarDiskusi() {
             date: `${years}-${month}-${date} ${hours}:${minutes}:${seconds}`
         }
 
-        if (message.length > 0 && !loadingSendMsg) {
+        if (message.length > 0 && loadingSendMsg === false) {
             setLoadingSendMsg(true)
 
             API.APIPostKomentar(id, dataFormDiskusi && dataFormDiskusi.id, data)
                 .then(res => {
-                    setMessage('')
                     setAllAPI(false);
-                    setLoadingSendMsg(false)
-                    containerChatDiskusi.scrollTo({ top: 0, behavior: 'smooth' })
 
                     return res;
                 })
-                .catch(err => console.log(err))
+                .catch(err => {
+                    console.log(err)
+                })
         }
     }
 
@@ -133,7 +137,7 @@ function KomentarDiskusi() {
 
     return (
         <>
-            <div className="wrapp-komentar-diskusi" style={styleWrapp}>
+            <div className="wrapp-komentar-diskusi">
                 <div className="container-white-komentar-diskusi">
                     <div className="column-judul-komentar-diskusi">
                         {dataFormDiskusi && Object.keys(dataFormDiskusi).length > 0 ? (

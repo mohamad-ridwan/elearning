@@ -11,11 +11,12 @@ import { PathContext } from '../../services/context/path';
 
 function Profile() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop, inActiveNavAfterLoadPage] = useContext(PathContext)
     const [user, setUser] = useState({})
     const [errorMessageInfoProfil, setErrorMessageInfoProfil] = useState({})
     const [errorMessageUpdatePassword, setErrorMessageUpdatePassword] = useState({})
     const [loading, setLoading] = useState(false)
+    const [loadingSubmit, setLoadingSubmit] = useState(false)
     const [inputValue, setInputValue] = useState({
         image: '',
         name: '',
@@ -55,12 +56,12 @@ function Profile() {
 
     useEffect(() => {
         window.scrollTo(0, 0)
+        setTimeout(() => {
+            activeBodyDesktop('wrapp-profile', 'wrapp-profile-active');
+            inActiveNavAfterLoadPage();
+        }, 0);
         setAllAPI();
     }, [])
-
-    const styleWrappProfile = {
-        marginLeft: activeNavmenu ? '230px' : '70px'
-    }
 
     function openFile() {
         document.getElementById('getFile').click()
@@ -120,9 +121,10 @@ function Profile() {
         }
 
         if (Object.keys(confirmUpdate).length > 0 && Object.keys(err).length === 0) {
-            const confirmAlert = window.confirm('Apakah Anda ingin update Informasi Profil?')
+            const confirmAlert = window.confirm('Apakah Anda ingin update Informasi Profil Anda?')
 
             if (confirmAlert) {
+                setLoadingSubmit(true)
                 if (newPhoto) {
                     const data = new FormData()
                     data.append('image', newPhoto)
@@ -146,6 +148,7 @@ function Profile() {
         API.APIPutInformasiProfil(user._id, data)
             .then(res => {
                 if (res && res.data.error === null) {
+                    setLoadingSubmit(false)
                     document.cookie = `e-learning=${res.data.data.token}`
 
                     setTimeout(() => {
@@ -154,6 +157,8 @@ function Profile() {
                 }
             })
             .catch(err => {
+                setLoadingSubmit(false)
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
                 console.log(err)
             })
     }
@@ -162,12 +167,17 @@ function Profile() {
         API.APIPutEmailOnly(user._id, data)
             .then(res => {
                 if (res && res.data.error === null) {
+                    setLoadingSubmit(false)
                     document.cookie = `e-learning=${res.data.data.token}`
 
-                    window.location.reload();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 0);
                 }
             })
             .catch(err => {
+                setLoadingSubmit(false)
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
                 console.log(err)
             })
     }
@@ -189,9 +199,10 @@ function Profile() {
 
         if (Object.keys(err).length === 0) {
 
-            const confirmAlert = window.confirm('Apakah Anda ingin update password?')
+            const confirmAlert = window.confirm('Apakah Anda ingin update password Anda?')
 
             if (confirmAlert) {
+                setLoadingSubmit(true)
                 const newData = {
                     currentPassword: currentPassword,
                     newPassword: newPassword,
@@ -210,29 +221,36 @@ function Profile() {
                 let err = {}
 
                 if (res.error !== null && res.error.includes('current')) {
+                    setLoadingSubmit(false)
                     err.currentPassword = res.error
                 }
 
                 if (res.error !== null && res.error.includes('confirm')) {
+                    setLoadingSubmit(false)
                     err.confirmPassword = res.error
                 }
 
                 if (res.error === null) {
+                    setLoadingSubmit(false)
                     document.cookie = `e-learning=${res.data.token}`
 
-                    window.location.reload();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 0);
                 }
 
                 setErrorMessageUpdatePassword(err)
             })
             .catch(err => {
+                setLoadingSubmit(false)
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
                 console.log(err)
             })
     }
 
     return (
         <>
-            <div className="wrapp-profile" style={styleWrappProfile}>
+            <div className="wrapp-profile">
                 {user && Object.keys(user).length > 0 ? (
                     <>
                         <div className="column-atas-profile">
@@ -361,6 +379,11 @@ function Profile() {
                 )}
 
                 <Loading displayWrapp={loading ? 'flex' : 'none'} />
+                <Loading
+                    displayWrapp={loadingSubmit ? 'flex' : 'none'}
+                    bgColor="rgba(0,0,0,0.8)"
+                    zIndexWrapp="99999"
+                />
             </div>
         </>
     )

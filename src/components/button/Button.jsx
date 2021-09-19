@@ -1,7 +1,7 @@
 import React from 'react'
 import './Button.scss'
 
-function Button({ nameBtn, paddingBtn, click, bgColor, fontSize, bdrRadius, mouseOver, mouseleave, displayBtn, displayIcon, colorBtn, bdrTop, bdrLeft, bdrRight, bdrBottom, marginBtn, icon, bdrRadiusHoverBtn, classBtn, displayHoverBlackBtn, classWrapp, transitionWrapp, colorIcon, classIcon }) {
+function Button({ nameBtn, paddingBtn, click, bgColor, fontSize, bdrRadius, mouseOver, mouseleave, displayBtn, displayIcon, colorBtn, bdrTop, bdrLeft, bdrRight, bdrBottom, marginBtn, icon, bdrRadiusHoverBtn, classBtn, displayHoverBlackBtn, classWrapp, transitionWrapp, colorIcon, classIcon, displayLoadBtn }) {
 
     const styleBtn = {
         display: displayBtn,
@@ -28,6 +28,10 @@ function Button({ nameBtn, paddingBtn, click, bgColor, fontSize, bdrRadius, mous
         borderRadius: bdrRadiusHoverBtn
     }
 
+    const styleLoadingBtn = {
+        display: displayLoadBtn
+    }
+
     return (
         <>
             <button className={`wrapp-button-card ${classWrapp}`} style={styleBtn} onClick={click}
@@ -44,6 +48,12 @@ function Button({ nameBtn, paddingBtn, click, bgColor, fontSize, bdrRadius, mous
                 <div className={`hover-black-btn-card ${classBtn}`} style={styleHoverBlackBtn}
                 >
 
+                </div>
+
+                <div className="container-loading-btn-card" style={styleLoadingBtn}>
+                    <div className="circle-loading-btn-card">
+
+                    </div>
                 </div>
             </button>
         </>

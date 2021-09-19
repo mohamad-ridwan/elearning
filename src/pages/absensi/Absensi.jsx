@@ -19,8 +19,8 @@ import ExportExcel from '../../components/exportexcel/ExportExcel';
 
 function Absensi() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable] = useContext(PathContext)
-    const [dataCardAbsen, setDataCardAbsen] = useState({})
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop, inActiveNavAfterLoadPage] = useContext(PathContext)
+    const [dataCardAbsen, setDataCardAbsen] = useState([])
     const [jadwalAbsen, setJadwalAbsen] = useState([])
     const [user, setUser] = useState({})
     const [loading, setLoading] = useState(false)
@@ -29,7 +29,9 @@ function Absensi() {
     const [onCommentMhs, setOnCommentMhs] = useState(false)
     const [offBtnAbsen, setOffBtnAbsen] = useState(true)
     const [currentPage, setCurrentPage] = useState(1)
-    const [perPage, setPerPage] = useState(10)
+    const [perPage, setPerPage] = useState(3)
+    const [inputSearch, setInputSearch] = useState('')
+    const [newDataCsv, setNewDataCsv] = useState([])
     const [headersCsv, setHeadersCsv] = useState([
         { label: "#", key: "a" },
         { label: "Status Absen", key: "b" },
@@ -133,19 +135,36 @@ function Absensi() {
 
         API.APIGetOneMatkul(getPath[1])
             .then(res => {
-                setLoading(false)
+                setTimeout(() => {
+                    setLoading(false)
+                }, 500);
+
                 const respons = res.data
                 setDataMatkul(respons)
 
                 const getDataCardAbsen = respons.absensi.filter((e) => e.id === 'data-card-absen')
-                setDataCardAbsen(getDataCardAbsen[0])
+
+                let newArrCardAbsen = []
+
+                if (getDataCardAbsen.length > 0) {
+                    getDataCardAbsen.map((e) => {
+                        newArrCardAbsen.push({ one: e.dosen, two: e.matakuliah }, { three: e.jamMasuk, four: e.jamKeluar }, { five: e.ruang, six: e.kelas }, { seven: e.hari, eight: e.kodeMTK })
+                    })
+                    setTimeout(() => {
+                        setDataCardAbsen(newArrCardAbsen)
+                    }, 0);
+                }
 
                 const getJadwalAbsen = respons.absensi.filter((e) => e.id === 'jadwal-absen')
                 setJadwalAbsen(getJadwalAbsen)
                 const separateTimeZoneKeluar = respons.timeZoneKeluar.split(' ')
                 const waktuHabis = `${separateTimeZoneKeluar[0]} ${separateTimeZoneKeluar[1]} ${separateTimeZoneKeluar[2]} ${separateTimeZoneKeluar[3]} 23:59:59`
 
-                checkJamMasuk(respons.hari, respons.timeZoneMasuk, respons.timeZoneKeluar, waktuHabis);
+                // For check User that not yet absent for Schedule Today
+                const getJadwalTimeNow = getJadwalAbsen.length > 0 ? getJadwalAbsen.filter((e) => e.tanggal === `${years}-${newMounth}-${newDate}`) : []
+                const getUserAlreadyAbsent = getJadwalTimeNow.length > 0 ? getJadwalTimeNow[0].dataAbsen.filter((e) => e.nim === newUser.nim) : []
+
+                checkJamMasuk(respons.hari, respons.timeZoneMasuk, respons.timeZoneKeluar, waktuHabis, getUserAlreadyAbsent);
 
                 if (getJadwalAbsen.length > 0) {
                     function mapOut(sourceObject, removeKeys, removeId) {
@@ -172,8 +191,8 @@ function Absensi() {
 
                     promiseR.then((res) => {
                         setTimeout(() => {
-                            res.map((e) => {
-                                newArr.push({ a: e.number, b: e.statusAbsen, c: e.tanggal, d: e.matakuliah, e: e.pertemuan, f: e.rangkuman, g: e.beritaAcara })
+                            res.map((e, i) => {
+                                newArr.push({ a: i + 1, b: e.statusAbsen, c: e.tanggal, d: e.matakuliah, e: e.pertemuan, f: e.rangkuman, g: e.beritaAcara })
                             })
                             setDataCsv(newArr)
                         }, 0);
@@ -190,10 +209,14 @@ function Absensi() {
             .catch(err => console.log(err))
     }
 
-    function checkJamMasuk(hari, jamMasuk, jamKeluar, waktuHabis) {
+    function checkJamMasuk(hari, jamMasuk, jamKeluar, waktuHabis, userPresence) {
         if (hari === nameDay[day == 0 ? 6 : day - 1].toUpperCase()) {
             if (new Date(jamMasuk) < timeNow && new Date(jamKeluar) > timeNow) {
-                setNameBtnAbsen('Absen Masuk')
+                if (userPresence.length === 1) {
+                    setNameBtnAbsen('Sudah Absen')
+                } else {
+                    setNameBtnAbsen('Absen Masuk')
+                }
             } else if (timeNow >= new Date(waktuHabis)) {
                 setNameBtnAbsen('Belum Mulai')
             } else if (timeNow >= new Date(jamKeluar)) {
@@ -204,17 +227,13 @@ function Absensi() {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        setTimeout(() => {
+            activeBodyDesktop('wrapp-absensi', 'wrapp-absensi-active');
+            inActiveNavAfterLoadPage();
+        }, 0);
         setAllAPI()
         setPathGlobal(`/absensi/${getPath[1]}`);
     }, []);
-
-    const indexOfLastData = currentPage * perPage
-    const indexOfFirstData = indexOfLastData - perPage
-    const currentData = jadwalAbsen.slice(indexOfFirstData, indexOfLastData);
-
-    const styleWrapp = {
-        marginLeft: activeNavmenu ? '230px' : '70px'
-    }
 
     const styleCommentMhs = {
         display: onCommentMhs ? 'flex' : 'none'
@@ -228,7 +247,7 @@ function Absensi() {
         color: commentMhs.komplain.toLowerCase() === 'pengajaran tidak sesuai' ? '#1a8e5f' : '#333',
     }
 
-    const bgColorBtnAbsen = nameBtnAbsen.toLowerCase() === 'absen masuk' ? '#1a8e5f' : nameBtnAbsen.toLowerCase() === 'belum mulai' ? '#ea490b' : '#c1920c'
+    const bgColorBtnAbsen = nameBtnAbsen === 'Absen Masuk' ? '#1a8e5f' : nameBtnAbsen === 'Belum Mulai' ? '#ea490b' : nameBtnAbsen === 'Sudah Absen' ? '#374151' : '#c1920c'
 
     function focusInputComment() {
         document.getElementById('input-comment-mhs').focus()
@@ -270,19 +289,25 @@ function Absensi() {
         }
 
         if (new Date(dataMatkul.timeZoneKeluar) >= timeNow) {
-            API.APIPostAbsenMhs(dataMatkul._id, pertemuan, newData)
-                .then(res => {
-                    setAllAPI();
+            const confirm = window.confirm('Lakukan Presensi?')
 
-                    return res;
-                })
-                .catch(err => {
-                    alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
-                    console.log(err)
-                })
+            if (confirm) {
+                setLoading(true);
+                API.APIPostAbsenMhs(dataMatkul._id, pertemuan, newData)
+                    .then(res => {
+                        setAllAPI();
 
-            setOnCommentMhs(false)
-            setOffBtnAbsen(true)
+                        return res;
+                    })
+                    .catch(err => {
+                        setLoading(false)
+                        alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                        console.log(err)
+                    })
+
+                setOnCommentMhs(false)
+                setOffBtnAbsen(true)
+            }
         } else {
             alert('Oops!, jam kuliah Anda sudah habis!')
             window.location.reload();
@@ -290,7 +315,7 @@ function Absensi() {
     }
 
     function clickAbsenMasuk() {
-        if (nameBtnAbsen.toLowerCase() === 'absen masuk') {
+        if (nameBtnAbsen === 'Absen Masuk') {
             submitUserAbsen();
         }
     }
@@ -310,20 +335,6 @@ function Absensi() {
 
     function mouseLeaveBtn(idx) {
         btnKirim[idx].style.opacity = '0'
-    }
-
-    const columnList = document.getElementsByClassName('column-list-absen')
-
-    function mouseOverColumnList(idx) {
-        if (idx % 2 === 0) {
-            columnList[idx].classList.toggle('column-list-active')
-        }
-    }
-
-    function mouseLeaveColumnList(idx) {
-        if (idx % 2 === 0) {
-            columnList[idx].classList.toggle('column-list-active')
-        }
     }
 
     function changeKomplainAbsen(value) {
@@ -378,17 +389,21 @@ function Absensi() {
         elPaginate[number - 1].style.color = '#fff'
     }
 
-    const indexOfLastDataCsv = currentPage * perPage
-    const indexOfFirstDataCsv = indexOfLastData - perPage
-    const currentDataCsv = dataCsv.slice(indexOfFirstDataCsv, indexOfLastDataCsv)
-
-    const csvReport = {
-        filename: 'E-Learning.csv',
-        headers: headersCsv,
-        data: currentDataCsv
+    function changeInput(e) {
+        setInputSearch(e.target.value)
     }
 
-    const getAbsen = currentData.map((e, i) => i === 0 ? `${e.number} ${e.dataAbsen.filter((e) => e.nim === user.nim).length === 0 ? 'Tidak Hadir' : 'Hadir'} ${e.tanggal} ${e.matakuliah} ${e.pertemuan} ${e.rangkuman} ${e.beritaAcara}` : `\n${e.number} ${e.dataAbsen.filter((e) => e.nim === user.nim).length === 0 ? 'Tidak Hadir' : 'Hadir'} ${e.tanggal} ${e.matakuliah} ${e.pertemuan} ${e.rangkuman} ${e.beritaAcara}`)
+    function iconDelInput() {
+        setInputSearch('')
+    }
+
+    const indexOfLastDataCsv = currentPage * perPage
+    const indexOfFirstDataCsv = indexOfLastDataCsv - perPage
+    const currentDataCsv = dataCsv.slice(indexOfFirstDataCsv, indexOfLastDataCsv)
+
+    const resultSearchCsv = currentDataCsv.length > 0 ? currentDataCsv.filter((e, i) => e.b.toLowerCase() === inputSearch || e.c.toLowerCase().includes(inputSearch) || e.d.toLowerCase().includes(inputSearch) || e.e.toLowerCase().includes(inputSearch) || e.f.toLowerCase().includes(inputSearch) || e.g.toLowerCase().includes(inputSearch)) : []
+
+    const getAbsen = resultSearchCsv.map((e, i) => i === 0 ? `${i + 1} ${e.b} ${e.c} ${e.d} ${e.e} ${e.f} ${e.g}` : `\n${i + 1} ${e.b} ${e.c} ${e.d} ${e.e} ${e.f} ${e.g}`)
 
     function copyTxtClipBoard() {
         const txtCopy = `${headAbsen.map((e, i) => i === 0 ? e.name : ' ' + e.name)} \n\n${getAbsen}`;
@@ -396,31 +411,61 @@ function Absensi() {
         navigator.clipboard.writeText(txtCopy);
     }
 
+    function changeDataCsv() {
+        return new Promise((resolve, reject) => {
+            let newArr = []
+
+            resultSearchCsv.map((e, i) => {
+                setTimeout(() => {
+                    newArr.push({ a: i + 1, b: e.b, c: e.c, d: e.d, e: e.e, f: e.f, g: e.g })
+                }, 0)
+            })
+            setTimeout(() => {
+                setNewDataCsv(newArr)
+                resolve(newArr)
+            }, 0);
+        })
+    }
+
     function btnDownloadCsv() {
-        document.getElementById("btn-csv-download").click();
+        changeDataCsv().then(res => {
+            document.getElementById("btn-csv-download").click();
+            return res;
+        })
     }
 
     function btnDownloadExcel() {
-        document.getElementById("button-download-as-xls").click();
+        changeDataCsv().then(res => {
+            document.getElementById("button-download-as-xls").click();
+            return res;
+        })
     }
 
     let pdfjs = new jsPDF();
 
     function btnDownloadPdf() {
-        pdfjs.autoTable({ html: '#table-export-to-pdf' })
+        changeDataCsv().then(res => {
+            pdfjs.autoTable({ html: '#table-export-to-pdf' })
 
-        pdfjs.autoTable(headerPdf, currentDataCsv, {
-            theme: 'striped'
+            pdfjs.autoTable(headerPdf, res, {
+                theme: 'striped'
+            })
+
+            pdfjs.save('E-learning.pdf')
         })
-
-        pdfjs.save('E-learning.pdf')
     }
 
     function toPagePrintTable() {
         setHeaderTable(headAbsen)
-        setBodyTable(currentDataCsv)
         setPathPrintTable(`/absensi/${getPath[1]}`)
-        history.push(`/print-table/${getPath[1]}`)
+        setIdxOnePrintTable(6)
+        setIdxTwoPrintTable(5)
+        setIdxHeadPrintTable([{ idx: 6, width: 'calc(96%/2)' }, { idx: 5, width: 'calc(96%/4)' }])
+
+        changeDataCsv().then(res => {
+            setBodyTable(res);
+            history.push(`/print-table/${getPath[1]}`)
+        })
     }
 
     function btnTools(idx) {
@@ -439,98 +484,111 @@ function Absensi() {
 
     return (
         <>
-            <div className="wrapp-absensi" style={styleWrapp}>
+            <div className="wrapp-absensi">
                 <div className="column-atas-absensi">
-                    {dataCardAbsen && Object.keys(dataCardAbsen).length > 0 ? Object.entries(dataCardAbsen).map((e, i) => {
+                    <div className="column-kiri-atas-absensi">
+                        {dataCardAbsen && dataCardAbsen.length > 0 ? dataCardAbsen.map((e, i) => {
 
-                        const separate = e[1].split('~')
+                            const obj = Object.entries(e)
 
-                        return (
-                            <>
-                                <CardJadwal
-                                    key={i}
-                                    displayWrapp={e[0] !== 'id' ? 'flex' : 'none'}
-                                    displayColumnRed="none"
-                                    displayColumnBtn="none"
-                                    displayListCard="none"
-                                    widthWrapp="auto"
-                                    displayInfoMatkul="flex"
-                                    paddingWhiteCard="15px 40px 15px 15px"
-                                    titleInfoMatkul={separate[1]}
-                                    labelInfoMatkul={separate[0]}
-                                    iconInfoMatkul={separate[2]}
-                                    marginWrapp="0 15px 15px 0"
-                                    bdrRadiusWrapp="2px"
-                                />
-                            </>
-                        )
-                    }) : (
-                        <div></div>
-                    )}
-                </div>
+                            return (
+                                <>
+                                    <div className="column-data-card-absensi">
+                                        {obj.map((e) => {
+                                            const separate = e[1].split('~')
+                                            return (
+                                                <>
+                                                    <CardJadwal
+                                                        key={i}
+                                                        displayColumnRed="none"
+                                                        displayColumnBtn="none"
+                                                        displayListCard="none"
+                                                        widthWrapp="auto"
+                                                        displayInfoMatkul="flex"
+                                                        paddingWhiteCard="15px 0px 15px 15px"
+                                                        titleInfoMatkul={separate[1]}
+                                                        labelInfoMatkul={separate[0]}
+                                                        iconInfoMatkul={separate[2]}
+                                                        marginWrapp="0 0 15px 0"
+                                                        bdrRadiusWrapp="2px"
+                                                    />
+                                                </>
+                                            )
+                                        })}
 
-                <div className="column-btn-absensi">
-                    <Button
-                        displayBtn={offBtnAbsen ? 'flex' : 'none'}
-                        nameBtn={nameBtnAbsen}
-                        paddingBtn="7px 12px"
-                        bgColor={bgColorBtnAbsen}
-                        bdrRadius="20px"
-                        bdrRadiusHoverBtn="20px"
-                        classBtn="btn-absensi"
-                        click={clickAbsenMasuk}
-                        mouseOver={() => mouseOverBtn(0)}
-                        mouseleave={() => mouseLeaveBtn(0)}
-                    />
+                                    </div>
+                                </>
+                            )
+                        }) : (
+                            <div></div>
+                        )}
+                    </div>
 
-                    <div className="container-comment-absen-mhs" style={styleCommentMhs}>
-                        <p className="txt-optional-comment">
-                            (Optional)
-                        </p>
-
-                        <textarea name="comment" id="input-comment-mhs" cols="37" rows="3" className="input-comment-mhs" placeholder="Komentar Mahasiswa.." onChange={changeCommentMhs}></textarea>
-
-                        <div className="column-input-komplain-absen">
-                            <button className="pengajaran-sesuai btn-group-komplain"
-                                onClick={() => changeKomplainAbsen('Pengajaran Sesuai')}
-                            >
-                                <i className={iconDotsPengajaranSesuai} style={styleKomplainPengajaranSesuai}>
-
-                                </i>
-
-                                <label htmlFor="label" className="label-pengajaran-sesuai label-group-komplain">
-                                    Pengajaran Sesuai
-                                </label>
-                            </button>
-
-                            <button className="pengajaran-tidak-sesuai btn-group-komplain"
-                                onClick={() => changeKomplainAbsen('Pengajaran Tidak Sesuai')}
-                            >
-                                <i className={iconDotsPengajaranTidakSesuai} style={styleKomplainPengajaranTidakSesuai}>
-
-                                </i>
-
-                                <label htmlFor="label" className="label-pengajaran-tidak-sesuai label-group-komplain">
-                                    Pengajaran Tidak Sesuai
-                                </label>
-                            </button>
-                        </div>
-
-                        <div className="column-btn-submit-comment-absen-mhs">
+                    <div className="column-kanan-atas-absensi">
+                        <div className="column-btn-absensi">
                             <Button
-                                nameBtn="Kirim"
-                                paddingBtn="5px 12px"
-                                bgColor="#1a8e5f"
-                                classBtn="btn-absensi"
+                                displayBtn={offBtnAbsen ? 'flex' : 'none'}
+                                nameBtn={nameBtnAbsen}
+                                paddingBtn="7px 12px"
+                                bgColor={bgColorBtnAbsen}
                                 bdrRadius="20px"
                                 bdrRadiusHoverBtn="20px"
-                                displayIcon="flex"
-                                colorIcon="#fff"
-                                icon="far fa-paper-plane"
-                                mouseOver={() => mouseOverBtn(1)}
-                                mouseleave={() => mouseLeaveBtn(1)}
-                                click={clickKirimAbsen}
+                                classBtn="btn-absensi"
+                                click={clickAbsenMasuk}
+                                mouseOver={() => mouseOverBtn(0)}
+                                mouseleave={() => mouseLeaveBtn(0)}
                             />
+
+                            <div className="container-comment-absen-mhs" style={styleCommentMhs}>
+                                <p className="txt-optional-comment">
+                                    (Optional)
+                                </p>
+
+                                <textarea name="comment" id="input-comment-mhs" cols="37" rows="3" className="input-comment-mhs" placeholder="Komentar Mahasiswa.." onChange={changeCommentMhs}></textarea>
+
+                                <div className="column-input-komplain-absen">
+                                    <button className="pengajaran-sesuai btn-group-komplain"
+                                        onClick={() => changeKomplainAbsen('Pengajaran Sesuai')}
+                                    >
+                                        <i className={iconDotsPengajaranSesuai} style={styleKomplainPengajaranSesuai}>
+
+                                        </i>
+
+                                        <label htmlFor="label" className="label-pengajaran-sesuai label-group-komplain">
+                                            Pengajaran Sesuai
+                                        </label>
+                                    </button>
+
+                                    <button className="pengajaran-tidak-sesuai btn-group-komplain"
+                                        onClick={() => changeKomplainAbsen('Pengajaran Tidak Sesuai')}
+                                    >
+                                        <i className={iconDotsPengajaranTidakSesuai} style={styleKomplainPengajaranTidakSesuai}>
+
+                                        </i>
+
+                                        <label htmlFor="label" className="label-pengajaran-tidak-sesuai label-group-komplain">
+                                            Pengajaran Tidak Sesuai
+                                        </label>
+                                    </button>
+                                </div>
+
+                                <div className="column-btn-submit-comment-absen-mhs">
+                                    <Button
+                                        nameBtn="Kirim"
+                                        paddingBtn="5px 12px"
+                                        bgColor="#1a8e5f"
+                                        classBtn="btn-absensi"
+                                        bdrRadius="20px"
+                                        bdrRadiusHoverBtn="20px"
+                                        displayIcon="flex"
+                                        colorIcon="#fff"
+                                        icon="far fa-paper-plane"
+                                        mouseOver={() => mouseOverBtn(1)}
+                                        mouseleave={() => mouseLeaveBtn(1)}
+                                        click={clickKirimAbsen}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -543,6 +601,10 @@ function Absensi() {
                     <Tools
                         data={tools}
                         clickBtn={(i) => btnTools(i)}
+                        inputSearch={changeInput}
+                        displayIconDel={inputSearch.length > 0 ? 'flex' : 'none'}
+                        valueSearch={inputSearch}
+                        clickIconDel={iconDelInput}
                     />
                 </div>
 
@@ -557,42 +619,32 @@ function Absensi() {
                                 number={6}
                             />
 
-                            {currentData && currentData.length > 0 ? currentData.map((e, idx) => {
+                            {resultSearchCsv && resultSearchCsv.length > 0 ? resultSearchCsv.map((e, idx) => {
+                                const styleBoxHadir = e.b === 'Hadir' ? '#1a8e5f' : '#ea490b'
 
-                                const siswaHadir = e.dataAbsen.filter((e) => e.nim === user.nim)
-
-                                const getStatusAbsen = siswaHadir.length === 0 ? 'Tidak Hadir' : 'Hadir'
-
-                                const styleBoxHadir = getStatusAbsen.toLowerCase() === 'hadir' ? '#1a8e5f' : '#ea490b'
-
-                                setTimeout(() => {
-                                    if (columnList.length > 0) {
-                                        if (idx % 2 === 0) {
-                                            columnList[idx].classList.add('column-list-active')
-                                        }
-                                    }
-                                }, 0);
-
-                                const objListAbsen = e !== e.dataAbsen ? Object.entries(e) : null
+                                const objListAbsen = Object.entries(e)
 
                                 return (
                                     <>
                                         <div key={e._id} className="column-list-absen"
-                                            onMouseEnter={() => mouseOverColumnList(idx)}
-                                            onMouseLeave={() => mouseLeaveColumnList(idx)}
+                                            style={{
+                                                backgroundColor: idx % 2 === 0 ? '#fff' : '#f5f7fb'
+                                            }}
                                         >
-
+                                            <ListTable
+                                                contentList={idx + 1}
+                                            />
                                             {objListAbsen !== null ? objListAbsen.map((e, i) => {
 
                                                 return (
                                                     <>
                                                         <ListTable
                                                             key={i}
-                                                            widthWrapp={i === 7 ? 'calc(96%/2)' : 'calc(96%/7)' && i === 6 ? 'calc(96%/4)' : 'calc(96%/7)'}
-                                                            displayWrapp={i !== 0 && i !== 8 ? 'flex' : 'none'}
-                                                            contentList={e[0] !== 'dataAbsen' ? e[1] : ''}
-                                                            statusAbsen={getStatusAbsen}
-                                                            displayBoxHadir={i === 2 ? 'flex' : 'none'}
+                                                            widthWrapp={i === 6 ? 'calc(96%/2)' : 'calc(96%/7)' && i === 5 ? 'calc(96%/4)' : 'calc(96%/7)'}
+                                                            displayWrapp={i !== 0 ? 'flex' : 'none'}
+                                                            contentList={e[0] !== 'b' && e[0] !== 'a' ? e[1] : ''}
+                                                            statusAbsen={e[0] === 'b' ? e[1] : ''}
+                                                            displayBoxHadir={i === 1 ? 'flex' : 'none'}
                                                             bgColorStatusAbsen={styleBoxHadir}
                                                             cursorBtnList="text"
                                                         />
@@ -623,14 +675,14 @@ function Absensi() {
                         classPaginate="paginate-absensi"
                         mouseEnter={mouseEnterPaginate}
                         mouseLeave={mouseLeavePaginate}
-                        fromNumber={currentData.length > 0 ? currentData[0].number : '0'}
-                        toNumber={currentData.length > 0 ? currentData[currentData.length - 1].number : '0'}
+                        fromNumber={resultSearchCsv.length > 0 ? resultSearchCsv.length - resultSearchCsv.length + 1 : '0'}
+                        toNumber={resultSearchCsv.length > 0 ? resultSearchCsv.length : '0'}
                         lengthData={jadwalAbsen.length}
                     />
                 </div>
 
                 <div className="container-btn-csv-download">
-                    <CSVLink {...csvReport} id="btn-csv-download">
+                    <CSVLink filename="E-Learning.csv" headers={headersCsv} data={newDataCsv} id="btn-csv-download">
                         Download me
                     </CSVLink>
                 </div>
@@ -644,7 +696,7 @@ function Absensi() {
                     />
                 </div>
 
-                <ExportExcel displayTable="none" head={headAbsen} column={currentDataCsv} />
+                <ExportExcel displayTable="none" head={headAbsen} column={newDataCsv} />
 
                 <table id="table-export-to-pdf"></table>
 

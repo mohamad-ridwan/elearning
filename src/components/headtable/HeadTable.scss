@@ -13,42 +13,11 @@
             display: flex;
             font-size: $font2;
             color: $color2;
-            width: 100%;
+            width: calc(96%/7);
             padding: 10px;
             align-items: center;
             justify-content: space-between;
-            cursor: pointer;
             text-align: start;
-    
-            .column-icon-filter-table{
-                display: flex;
-                align-items: center;
-    
-                .btn-filter-table-up{
-                    display: flex;
-                    color: $color4;
-                    font-size: 7px;
-                    background-color: transparent;
-                    border: none;
-                    outline: none;
-                    cursor: pointer;
-                    transition: 0.2s ease-in-out;
-                    opacity: 0.3;
-                }
-        
-                .btn-filter-table-down{
-                    display: flex;
-                    color: $color6;
-                    font-size: 7px;
-                    background-color: transparent;
-                    border: none;
-                    outline: none;
-                    cursor: pointer;
-                    transition: 0.2s ease-in-out;
-                    margin-left: 0px;
-                    opacity: 0.3;
-                }
-            }
         }
     }
 }

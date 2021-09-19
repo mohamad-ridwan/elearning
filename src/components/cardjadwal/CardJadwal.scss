@@ -1,5 +1,35 @@
 @import '../../utils/variable.scss';
 
+@mixin maxMobile {
+    @media (max-width: $navbarMobile) {
+        @content;
+    }
+}
+
+@mixin minMobile {
+    @media (min-width: 577px) and (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: 853px) and (max-width: $maxTabCardJadwal) {
+        @content;
+    }
+}
+
+@mixin minWidthAndMaxDesktopCardJadwal {
+    @media (min-width: 1125px) and (max-width: 1460px) {
+        @content;
+    }
+}
+
 .wrapp-card-jadwal{
     display: flex;
     flex-direction: column;
@@ -7,13 +37,27 @@
     width: calc(96%/3);
     background-color: #fff;
     border: 1px solid $color19;
-    border-radius: 3px;
+    border-radius: 5px;
     margin: 0 10px 20px 0;
+    overflow: hidden;
+
+    @include mobile(){
+        width: 100%;
+        margin: 0 0 20px 0;
+    }
+
+    @include tablet(){
+        width: calc(92%/2);
+    }
+
+    @include minWidthAndMaxDesktopCardJadwal(){
+        width: calc(94%/3);
+    }
 
     .column-red-card{
         display: flex;
         flex-direction: column;
-        padding: 10px 0;
+        padding: 10px;
         justify-content: center;
         align-items: center;
         background-color: $color12;
@@ -87,7 +131,7 @@
 
                 .title-info-matkul{
                     display: flex;
-                    font-size: 16px;
+                    font-size: 14px;
                     font-weight: 600;
                     color: $color2;
                     text-align: start;
@@ -110,7 +154,7 @@
 
             .body-btn-matkul{
                 display: flex;
-                padding: 7px 12px;
+                margin-top: 7px;
                 border-radius: 5px;
                 
                 .btn-masuk-kelas{
@@ -263,6 +307,7 @@
                 margin: 20px 0;
                 font-weight: 600;
                 justify-content: center;
+                text-align: start;
             }
 
             .message-komentar-diskusi{
@@ -295,6 +340,11 @@
                     font-size: 12px;
                     color: #fff;
                     margin-right: 5px;
+                    text-align: start;
+
+                    @include maxMobile(){
+                        font-size: 11px;
+                    }
                     i{
                         margin-right: 5px;
                     }

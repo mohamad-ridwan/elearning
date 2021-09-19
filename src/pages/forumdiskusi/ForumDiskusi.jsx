@@ -14,7 +14,7 @@ import Input from '../../components/input/Input';
 
 function ForumDiskusi() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop, inActiveNavAfterLoadPage] = useContext(PathContext)
     const [dataForum, setDataForum] = useState([])
     const [idDocument, setIdDocument] = useState('')
     const [user, setUser] = useState({})
@@ -54,6 +54,7 @@ function ForumDiskusi() {
         API.APIGetOneMatkul(getPath[1])
             .then(res => {
                 setLoading(false)
+                setLoadingSubmit(false);
 
                 const respons = res.data
                 setIdDocument(respons._id)
@@ -67,12 +68,12 @@ function ForumDiskusi() {
 
     useEffect(() => {
         window.scrollTo(0, 0)
+        setTimeout(() => {
+            activeBodyDesktop('wrapp-forum-diskusi', 'wrapp-forum-diskusi-active');
+            inActiveNavAfterLoadPage();
+        }, 0);
         setAllAPI(true);
     }, [])
-
-    const styleWrapp = {
-        marginLeft: activeNavmenu ? '230px' : '70px'
-    }
 
     function mouseOverBtnDownload(idx, className) {
         const hoverBlackBtn = document.getElementsByClassName(className)
@@ -170,7 +171,6 @@ function ForumDiskusi() {
             API.APIPostRoomDiskusi(idDocument, data)
                 .then(res => {
                     setAllAPI(false);
-                    setLoadingSubmit(false);
                     setOnModal(false);
                     setOnDisplayBtnSubmit(false)
 
@@ -178,6 +178,7 @@ function ForumDiskusi() {
                 })
                 .catch(err => {
                     setLoadingSubmit(false)
+                    alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
                     console.log(err)
                 })
         }
@@ -198,7 +199,6 @@ function ForumDiskusi() {
             API.APIDeleteRoomDiskusi(idDocument, id)
                 .then(res => {
                     setAllAPI(false)
-                    setLoadingSubmit(false)
 
                     return res
                 })
@@ -213,7 +213,7 @@ function ForumDiskusi() {
 
     return (
         <>
-            <div className="wrapp-forum-diskusi" style={styleWrapp}>
+            <div className="wrapp-forum-diskusi">
                 <div className="modal-input-form-diskusi" style={styleModalFormDiskusi}>
                     <div className="btn-close-body-form-diskusi" onClick={closeModalInput}>
 
@@ -356,9 +356,12 @@ function ForumDiskusi() {
                                         borderWrapp="none"
                                         marginWrapp="0"
                                         displayColumnAuthor="flex"
+                                        paddingSlidePembelajaran="20px"
                                         marginDateSlidePembelajaran="0 20px 0px 0"
                                         marginFontSlidePembelajaran="5px 0"
                                         flexDirectionSlidePembelajaran="row"
+                                        flexWrapSlidePembelajaran="wrap"
+                                        marginBtnDownload="10px 0 0 0"
                                         alignItemsSlidePembelajaran="center"
                                         justifyContentSlidePembelajaran="space-between"
                                         justifyContentFontSlidePembelajaran="flex-start"

@@ -21,7 +21,7 @@ import ExportExcel from '../../components/exportexcel/ExportExcel';
 
 function RuangMateri() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop, inActiveNavAfterLoadPage] = useContext(PathContext)
     const [listMateri, setListMateri] = useState([])
     const [nameMatkul, setNameMatkul] = useState('')
     const [videoPembelajaran, setVideoPembelajaran] = useState([])
@@ -30,6 +30,8 @@ function RuangMateri() {
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState(5)
     const [dataCsv, setDataCsv] = useState([])
+    const [inputSearch, setInputSearch] = useState('')
+    const [newDataCsv, setNewDataCsv] = useState([])
     const [headersCsv, setHeadersCsv] = useState([
         { label: "NO", key: "a" },
         { label: "Kode MTK", key: "b" },
@@ -131,8 +133,11 @@ function RuangMateri() {
 
         API.APIGetOneMatkul(getPath[1])
             .then(res => {
+                setTimeout(() => {
+                    setLoading(false)
+                }, 500);
+
                 const respons = res.data
-                setLoading(false)
 
                 setNameMatkul(`${respons.matakuliah} - ${respons.kodeMTK}`)
 
@@ -150,8 +155,10 @@ function RuangMateri() {
 
                     getMateriTambahan[0].data.map((e) => {
                         setTimeout(() => {
-                            newArr.push({ a: e.number, b: e.kodeMTK, c: e.kelas, d: e.judul, e: e.deskripsi, f: 'Unduh', g: e.update })
-                            setDataCsv(newArr)
+                            newArr.push({ a: e.number, b: e.kodeMTK, c: e.kelas, d: e.judul, e: e.deskripsi, f: e.image, g: e.update })
+                            setTimeout(() => {
+                                setDataCsv(newArr)
+                            }, 0);
                         }, 0);
                     })
                 }
@@ -183,19 +190,15 @@ function RuangMateri() {
     }
 
     useEffect(() => {
+        window.scrollTo(0, 0)
+        setTimeout(() => {
+            activeBodyDesktop('wrapp-ruang-materi', 'wrapp-ruang-materi-active');
+            inActiveNavAfterLoadPage();
+        }, 0);
         setAllAPI();
         toPageActive(0);
         setPathGlobal(`/ruang-materi/${getPath[1]}`);
-        window.scrollTo(0, 0)
     }, [])
-
-    const indexOfLastData = currentPage * perPage
-    const indexOfFirstData = indexOfLastData - perPage
-    const currentData = listMateri.slice(indexOfFirstData, indexOfLastData)
-
-    const styleWrapp = {
-        marginLeft: activeNavmenu ? '230px' : '70px'
-    }
 
     const styleTbody = {
         borderRight: listMateri.length === 0 ? '1px solid #dee5f1' : '0',
@@ -254,20 +257,6 @@ function RuangMateri() {
 
         btnPageMateri[pathActive].style.color = '#1a8e5f'
         iconRuangMateri[pathActive].style.color = '#1a8e5f'
-    }
-
-    const columntListMateri = document.getElementsByClassName('column-list-materi')
-
-    function mouseOverColumnListMateri(idx) {
-        if (idx % 2 === 0) {
-            columntListMateri[idx].classList.toggle('column-list-materi-active')
-        }
-    }
-
-    function mouseLeaveColumnListMateri(idx) {
-        if (idx % 2 === 0) {
-            columntListMateri[idx].classList.toggle('column-list-materi-active')
-        }
     }
 
     const btnListTableActive = document.getElementsByClassName('number5-materi-tambahan')
@@ -343,20 +332,35 @@ function RuangMateri() {
     }, 0);
 
     const indexOfLastDataCsv = currentPage * perPage
-    const indexOfFirstDataCsv = indexOfLastData - perPage
+    const indexOfFirstDataCsv = indexOfLastDataCsv - perPage
     const currentDataCsv = dataCsv.slice(indexOfFirstDataCsv, indexOfLastDataCsv)
 
-    const csvReport = {
-        filename: 'E-Learning.csv',
-        headers: headersCsv,
-        data: currentDataCsv
+    const resultSearch = currentDataCsv.length > 0 ? currentDataCsv.filter((e) => e.b.toLowerCase().includes(inputSearch) || e.c.toLowerCase().includes(inputSearch) || e.d.toLowerCase().includes(inputSearch) || e.e.toLowerCase().includes(inputSearch) || e.g.toLowerCase().includes(inputSearch)) : []
+
+    function changeDataCsv() {
+        return new Promise((resolve, reject) => {
+            let newArr = []
+
+            resultSearch.map((e, i) => {
+                setTimeout(() => {
+                    newArr.push({ a: i + 1, b: e.b, c: e.c, d: e.d, e: e.e, f: 'Unduh', g: e.g })
+                }, 0)
+            })
+            setTimeout(() => {
+                setNewDataCsv(newArr)
+                resolve(newArr)
+            }, 0);
+        })
     }
 
     function btnDownloadCsv() {
-        document.getElementById('btn-csv-download-ruang-materi').click();
+        changeDataCsv().then(res => {
+            document.getElementById('btn-csv-download-ruang-materi').click();
+            return res;
+        })
     }
 
-    const getDataMateri = currentData.map((e, i) => i === 0 ? `${e.number} ${e.kodeMTK} ${e.kelas} ${e.judul} ${e.deskripsi} Unduh ${e.update}` : `\n${e.number} ${e.kodeMTK} ${e.kelas} ${e.judul} ${e.deskripsi} Unduh ${e.update}`)
+    const getDataMateri = resultSearch.map((e, i) => i === 0 ? `${i + 1} ${e.b} ${e.c} ${e.d} ${e.e} Unduh ${e.g}` : `\n${i + 1} ${e.b} ${e.c} ${e.d} ${e.e} Unduh ${e.g}`)
 
     function copyTxtClipBoard() {
         const txtCopy = `${headTable.map((e, i) => i === 0 ? e.name : ' ' + e.name)} \n\n${getDataMateri}`;
@@ -365,26 +369,38 @@ function RuangMateri() {
     }
 
     function btnDownloadExcel() {
-        document.getElementById("button-download-as-xls").click();
+        changeDataCsv().then(res => {
+            document.getElementById("button-download-as-xls").click();
+            return res;
+        })
     }
 
     let pdfjs = new jsPDF();
 
     function btnDownloadPdf() {
-        pdfjs.autoTable({ html: '#table-export-to-pdf-ruang-materi' })
+        changeDataCsv().then(res => {
+            pdfjs.autoTable({ html: '#table-export-to-pdf-ruang-materi' })
 
-        pdfjs.autoTable(headerPdf, currentDataCsv, {
-            theme: 'striped'
+            pdfjs.autoTable(headerPdf, res, {
+                theme: 'striped'
+            })
+
+            pdfjs.save('E-learning.pdf')
+            return res;
         })
-
-        pdfjs.save('E-learning.pdf')
     }
 
     function toPagePrintTable() {
         setHeaderTable(headTable)
-        setBodyTable(currentDataCsv)
         setPathPrintTable(`/ruang-materi/${getPath[1]}`)
-        history.push(`/print-table/${getPath[1]}`)
+        setIdxOnePrintTable(4)
+        setIdxTwoPrintTable(3)
+        setIdxHeadPrintTable([{ idx: 4, width: 'calc(96%/2)' }, { idx: 3, width: 'calc(96%/4)' }])
+
+        changeDataCsv().then(res => {
+            setBodyTable(res);
+            history.push(`/print-table/${getPath[1]}`)
+        })
     }
 
     function btnTools(idx) {
@@ -401,9 +417,21 @@ function RuangMateri() {
         }
     }
 
+    function changeInput(e) {
+        setInputSearch(e.target.value)
+    }
+
+    function iconDelInput() {
+        setInputSearch('')
+    }
+
+    function toPageDetailDeskripsi(path) {
+        history.push(`/ruang-materi/video-pembelajaran/detail-deskripsi/${path}`)
+    }
+
     return (
         <>
-            <div className="wrapp-ruang-materi" style={styleWrapp}>
+            <div className="wrapp-ruang-materi">
                 <div className="column-atas-ruang-materi">
                     <div className="column-btn-page-materi">
                         {buttonPath.map((e, i) => {
@@ -441,6 +469,10 @@ function RuangMateri() {
                             <Tools
                                 data={tools}
                                 clickBtn={(i) => btnTools(i)}
+                                inputSearch={changeInput}
+                                valueSearch={inputSearch}
+                                displayIconDel={inputSearch.length > 0 ? 'flex' : 'none'}
+                                clickIconDel={iconDelInput}
                             />
                         </div>
                     </div>
@@ -458,30 +490,27 @@ function RuangMateri() {
                                     number={4}
                                 />
 
-                                {currentData && currentData.length > 0 ? currentData.map((e, idx) => {
-
-                                    setTimeout(() => {
-                                        if (columntListMateri.length > 0) {
-                                            if (idx % 2 === 0) {
-                                                columntListMateri[idx].classList.add('column-list-materi-active')
-                                            }
-                                        }
-                                    }, 0);
+                                {resultSearch && resultSearch.length > 0 ? resultSearch.map((e, idx) => {
 
                                     const objListMateri = Object.entries(e)
 
                                     return (
                                         <>
                                             <div key={e._id} className="column-list-materi"
-                                                onMouseEnter={() => mouseOverColumnListMateri(idx)}
-                                                onMouseLeave={() => mouseLeaveColumnListMateri(idx)}
+                                                style={{
+                                                    backgroundColor: idx % 2 === 0 ? '#fff' : '#f5f7fb'
+                                                }}
                                             >
+                                                <ListTable
+                                                    contentList={idx + 1}
+                                                />
                                                 {objListMateri.map((e, i) => {
                                                     return (
                                                         <>
                                                             <ListTable
                                                                 key={i}
                                                                 widthWrapp={i === 4 ? 'calc(96%/2)' : 'calc(96%/7)' && i === 3 ? 'calc(96%/4)' : 'calc(96%/7)'}
+                                                                displayWrapp={i === 0 ? 'none' : 'flex'}
                                                                 contentList={i === 5 ? 'Unduh' : e[1]}
                                                                 bgColorBtnList={i === 5 ? '#1a538e' : 'none'}
                                                                 cursorBtnList={i === 5 ? 'pointer' : 'text'}
@@ -513,31 +542,37 @@ function RuangMateri() {
 
                     <div className="container-video-pembelajaran" style={styleVideoPembelajaran}>
                         {videoPembelajaran && videoPembelajaran.length > 0 ? videoPembelajaran.map((e, i) => {
+
+                            const getTitle = e.title.split(' ').join('-')
+
                             return (
                                 <>
-                                    <CardJadwal
-                                        key={e._id}
-                                        displayIconZip="none"
-                                        displayColumnRed="none"
-                                        displayColumnWhite="none"
-                                        displayCardSlidePembelajaran="flex"
-                                        widthWrapp="calc(96%/3)"
-                                        marginWrapp="0 15px 15px 0"
-                                        linkEmbedYoutube={e.linkEmbedYoutube}
-                                        dateCreate={e.date}
-                                        marginFontSlidePembelajaran="20px 20px 0 20px"
-                                        marginDateSlidePembelajaran="5px 20px 30px 20px"
-                                        paddingSlidePembelajaran="0 0 40px 0"
-                                        widthBtnDownload="100%"
-                                        alignItemsSlidePembelajaran="flex-start"
-                                        bgColorBtnDownload="#1a8e5f"
-                                        alignItemsBtnDownload="center"
-                                        nameBtn="Lihat Deskripsi"
-                                        nameFile={e.title}
-                                        classBtn="view-desk-video-pemb"
-                                        mouseOverBtnDownload={() => mouseOverBtnDownload(i, 'view-desk-video-pemb')}
-                                        mouseLeaveBtnDownload={() => mouseLeaveBtnDownload(i, 'view-desk-video-pemb')}
-                                    />
+                                    <div className="wrapp-card-video-pembelajaran">
+                                        <CardJadwal
+                                            key={e._id}
+                                            displayIconZip="none"
+                                            displayColumnRed="none"
+                                            displayColumnWhite="none"
+                                            displayCardSlidePembelajaran="flex"
+                                            widthWrapp="auto"
+                                            marginWrapp="0 15px 15px 0"
+                                            linkEmbedYoutube={e.linkEmbedYoutube}
+                                            dateCreate={e.date}
+                                            marginFontSlidePembelajaran="20px 20px 0 20px"
+                                            marginDateSlidePembelajaran="5px 20px 30px 20px"
+                                            paddingSlidePembelajaran="0 0 40px 0"
+                                            widthBtnDownload="100%"
+                                            alignItemsSlidePembelajaran="flex-start"
+                                            bgColorBtnDownload="#1a8e5f"
+                                            alignItemsBtnDownload="center"
+                                            nameBtn="Detail Deskripsi"
+                                            nameFile={e.title}
+                                            classBtn="view-desk-video-pemb"
+                                            mouseOverBtnDownload={() => mouseOverBtnDownload(i, 'view-desk-video-pemb')}
+                                            mouseLeaveBtnDownload={() => mouseLeaveBtnDownload(i, 'view-desk-video-pemb')}
+                                            clickBtnDownload={() => toPageDetailDeskripsi(`${getTitle}/${getPath[1]}`)}
+                                        />
+                                    </div>
                                 </>
                             )
                         }) : (
@@ -546,10 +581,10 @@ function RuangMateri() {
                     </div>
 
                     <div className="container-slide-pembelajaran" style={styleSlidePembelajaran}>
-                        <div className="card-slide-pembelajaran">
-                            {slidePembelajaran && slidePembelajaran.length > 0 ? slidePembelajaran.map((e, i) => {
-                                return (
-                                    <>
+                        {slidePembelajaran && slidePembelajaran.length > 0 ? slidePembelajaran.map((e, i) => {
+                            return (
+                                <>
+                                    <div className="card-slide-pembelajaran">
                                         <CardJadwal
                                             key={e._id}
                                             displayIframeYoutube="none"
@@ -559,7 +594,8 @@ function RuangMateri() {
                                             displayColumnWhite="none"
                                             displayCardSlidePembelajaran="flex"
                                             bgColorWrapp="#f4f5fb"
-                                            widthWrapp="calc(96%/3)"
+                                            widthWrapp="auto"
+                                            textAlignNameFile="center"
                                             iconPdf={e.icon}
                                             nameFile={e.name}
                                             bgColorBtnDownload="#1a8e5f"
@@ -570,12 +606,12 @@ function RuangMateri() {
                                             mouseLeaveBtnDownload={() => mouseLeaveBtnDownload(i, 'btn-download-pembelajaran')}
                                             clickBtnDownload={() => downloadSlidePembelajaran(e.image)}
                                         />
-                                    </>
-                                )
-                            }) : (
-                                <div></div>
-                            )}
-                        </div>
+                                    </div>
+                                </>
+                            )
+                        }) : (
+                            <div></div>
+                        )}
                     </div>
 
                     <div className="container-pagination-ruang-materi" style={styleContainerPagination}>
@@ -586,15 +622,19 @@ function RuangMateri() {
                             paginate={paginate}
                             mouseEnter={mouseEnterPaginate}
                             mouseLeave={mouseLeavePaginate}
-                            fromNumber={currentData.length > 0 ? currentData[0].number : '0'}
-                            toNumber={currentData.length > 0 ? currentData[currentData.length - 1].number : '0'}
+                            fromNumber={resultSearch.length > 0 ? resultSearch.length - resultSearch.length + 1 : '0'}
+                            toNumber={resultSearch.length > 0 ? resultSearch.length : '0'}
                             lengthData={listMateri.length}
                         />
                     </div>
                 </div>
 
                 <div className="container-csv-ruang-materi">
-                    <CSVLink {...csvReport} id="btn-csv-download-ruang-materi">
+                    <CSVLink
+                        filename='E-Learning.csv'
+                        headers={headersCsv}
+                        data={newDataCsv}
+                        id="btn-csv-download-ruang-materi">
                         Download me
                     </CSVLink>
                 </div>
@@ -608,7 +648,7 @@ function RuangMateri() {
                     />
                 </div>
 
-                <ExportExcel displayTable="none" head={headTable} column={currentDataCsv} />
+                <ExportExcel displayTable="none" head={headTable} column={newDataCsv} />
 
                 <table id="table-export-to-pdf-ruang-materi"></table>
 

@@ -1,7 +1,12 @@
 import React from 'react';
 import './Tools.scss'
 
-function Tools({ data, clickBtn }) {
+function Tools({ data, clickBtn, displayIconDel, inputSearch, clickIconDel, valueSearch }) {
+
+    const styleBtnDel = {
+        display: displayIconDel
+    }
+
     return (
         <>
             <div className="column-tools-absen">
@@ -25,7 +30,11 @@ function Tools({ data, clickBtn }) {
                     </p>
 
                     <div className="container-search-absen">
-                        <input type="text" className="input-search-absen" />
+                        <input type="text" value={valueSearch} className="input-search-absen"
+                            onChange={inputSearch}
+                        />
+
+                        <i className="fas fa-times" style={styleBtnDel} onClick={clickIconDel}></i>
                     </div>
                 </div>
             </div>

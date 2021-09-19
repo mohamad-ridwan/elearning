@@ -10,7 +10,7 @@ import Loading from '../../components/loading/Loading';
 
 function Dashboard() {
 
-    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu] = useContext(PathContext)
+    const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop, inActiveNavAfterLoadPage] = useContext(PathContext)
     const [user, setUser] = useState({})
     const [panduan, setPanduan] = useState([])
     const [loading, setLoading] = useState(false)
@@ -34,7 +34,11 @@ function Dashboard() {
                     document.cookie = 'e-learning='
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                history.push('/login')
+                document.cookie = 'e-learning='
+                console.log(err)
+            })
 
         API.APIGetPanduan()
             .then(res => {
@@ -50,17 +54,18 @@ function Dashboard() {
     }
 
     useEffect(() => {
+        window.scrollTo(0, 0)
+        setTimeout(() => {
+            activeBodyDesktop('wrapp-dashboard', 'wrapp-dashboard-active');
+            inActiveNavAfterLoadPage();
+        }, 0);
         addReadOnlyInput();
         setAllAPI();
     }, [])
 
-    const styleDashboard = {
-        marginLeft: activeNavmenu ? '230px' : '70px'
-    }
-
     return (
         <>
-            <div className="wrapp-dashboard" style={styleDashboard}>
+            <div className="wrapp-dashboard">
                 {user && Object.keys(user).length > 0 ? (
                     <>
                         <div className="column-kiri-dashboard">

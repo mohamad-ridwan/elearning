@@ -1,5 +1,29 @@
 @import '../../utils/variable.scss';
 
+@mixin maxMobile {
+    @media (max-width: $navbarMobile) {
+        @content;
+    }
+}
+
+@mixin minMobile {
+    @media (min-width: 577px) and (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: 853px) and (max-width: $maxTabCardJadwal) {
+        @content;
+    }
+}
+
 .wrapp-profile{
     display: flex;
     flex-direction: column;
@@ -9,6 +33,15 @@
     background-color: $color1;
     transition: 0.3s ease-in-out;
     padding: 80px 50px 20px 50px;
+
+    @include maxMobile(){
+        padding: 130px 10px 20px 10px;
+        margin-left: 0;
+    }
+
+    @include minMobile(){
+        padding: 80px 40px 20px 40px;
+    }
 
     .column-atas-profile{
         display: flex;
@@ -27,6 +60,10 @@
             border-bottom: 1px solid #eee;
             padding: 0px 100px 20px 100px;
             text-align: start;
+
+            @include mobile(){
+                padding: 0 40px 20px 40px;
+            }
         }
 
         .content-column-atas-profile{
@@ -39,12 +76,30 @@
         display: flex;
         position: relative;
         padding: 50px 100px;
+
+        @include mobile(){
+            flex-direction: column;
+            padding: 50px 0;
+        }
+
+        @include tablet(){
+            padding: 50px 0;
+        }
     }
 
     .container-update-password{
         display: flex;
         position: relative;
         padding: 50px 100px;
+
+        @include mobile(){
+            flex-direction: column;
+            padding: 50px 0;
+        }
+
+        @include tablet(){
+            padding: 50px 0;
+        }
     }
 
     .column-kiri-group{
@@ -52,6 +107,11 @@
         flex-direction: column;
         width: 30%;
         margin-right: 30px;
+
+        @include mobile(){
+            width: 100%;
+            margin-right: 0;
+        }
     }
 
     .column-kanan-group{
@@ -63,10 +123,19 @@
         border-radius: 5px;
         box-shadow: 0 8px 14px -1px rgba(0,0,0,0.2);
 
+        @include mobile(){
+            width: 100%;
+            margin-top: 20px;
+        }
+
         .column-input-group{
             display: flex;
             flex-direction: column;
             padding: 40px 100px 40px 20px;
+
+            @include mobile(){
+                padding: 40px 20px 40px 20px;
+            }
         }
 
         .column-btn-save{
@@ -88,6 +157,16 @@
         left: 100px;
         height: 1px;
         background-color: #ddd;
+
+        @include mobile(){
+            right: 0;
+            left: 0;
+        }
+
+        @include tablet(){
+            right: 0;
+            left: 0;
+        }
     }
 
     .title-group-profile{
@@ -103,5 +182,12 @@
         font-size: $font2;
         color: $color2;
         margin-top: 10px;
+    }
+}
+
+.wrapp-profile-active{
+    margin-left: 230px;
+    @include maxMobile(){
+        margin-left: 0;
     }
 }

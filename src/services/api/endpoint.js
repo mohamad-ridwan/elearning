@@ -1,3 +1,3 @@
-const endpoint = 'http://localhost:6300'
+const endpoint = 'https://e-learning-rp.herokuapp.com'
 
 export default endpoint;

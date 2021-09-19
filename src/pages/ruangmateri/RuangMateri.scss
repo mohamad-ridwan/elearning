@@ -1,5 +1,35 @@
 @import '../../utils/variable.scss';
 
+@mixin maxMobile {
+    @media (max-width: $navbarMobile) {
+        @content;
+    }
+}
+
+@mixin minMobile {
+    @media (min-width: 577px) and (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: 853px) and (max-width: $maxTabCardJadwal) {
+        @content;
+    }
+}
+
+@mixin responsiveTable {
+    @media (max-width: 1350px) {
+        @content;
+    }
+}
+
 .wrapp-ruang-materi{
     display: flex;
     flex-direction: column;
@@ -7,6 +37,15 @@
     background-color: $color1;
     transition: 0.3s ease-in-out;
     padding: 80px 50px 40px 50px;
+
+    @include maxMobile(){
+        padding: 130px 10px 40px 10px;
+        margin-left: 0;
+    }
+
+    @include minMobile(){
+        padding: 80px 40px 20px 40px;
+    }
 
     .column-atas-ruang-materi{
         display: flex;
@@ -71,6 +110,10 @@
                     flex-direction: column;
                     width: auto;
                     border-left: 1px solid $color16;
+
+                    @include responsiveTable(){
+                        width: 1200px;
+                    }
     
                     .column-list-materi{
                         display: flex;
@@ -79,16 +122,13 @@
                         background-color: $color17;
                     }
     
-                    .column-list-materi-active{
-                        background-color: #fff;
-                    }
-    
                     .no-data-available-ruang-materi{
                         display: flex;
                         font-size: $font2;
                         color: $color2;
                         padding: 10px;
                         justify-content: center;
+                        border-right: 1px solid $color16;
                     }
                 }
             }
@@ -102,21 +142,50 @@
             background-color: #fff;
             opacity: 0;
             animation: opacity 0.3s ease-in-out forwards;
+
+            @include maxMobile(){
+                flex-direction: column;
+                padding: 40px 5px 40px 20px;
+            }
+
+            .wrapp-card-video-pembelajaran{
+                width: calc(100%/3);
+
+                @include mobile(){
+                    width: 100%;
+                }
+
+                @include tablet(){
+                    width: calc(100%/2);
+                }
+            }
         }
     
         .container-slide-pembelajaran{
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: flex-start;
             width: 100%;
             padding: 40px 25px 40px 40px;
             background-color: #fff;
             opacity: 0;
             animation: opacity 0.3s ease-in-out forwards;
+
+            @include maxMobile(){
+                flex-direction: column;
+                padding: 40px 5px 40px 20px;
+            }
             
             .card-slide-pembelajaran{
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: flex-start;
+                width: calc(100%/3);
+
+                @include mobile(){
+                    width: 100%;
+                }
+
+                @include tablet(){
+                    width: calc(100%/2);
+                }
             }
         }
     
@@ -138,6 +207,13 @@
 
     .container-excel-ruang-materi{
         display: none;
+    }
+}
+
+.wrapp-ruang-materi-active{
+    margin-left: 230px;
+    @include maxMobile(){
+        margin-left: 0;
     }
 }
 

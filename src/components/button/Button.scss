@@ -43,4 +43,35 @@
         border-radius: 5px;
         transition: 0.2s ease-in-out;
     }
+
+    .container-loading-btn-card{
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-color: $color22;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+        border-radius: 5px;
+        cursor: not-allowed;
+
+        .circle-loading-btn-card{
+            display: flex;
+            height: 23px;
+            width: 23px;
+            border-radius: 500px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            animation: loading 0.5s ease-in-out infinite;
+        }
+    }
+}
+
+@keyframes loadingBtn{
+    to{
+        transform: rotate(360deg);
+    }
 }

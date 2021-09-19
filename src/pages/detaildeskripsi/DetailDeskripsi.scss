@@ -1,0 +1,109 @@
+@import '../../utils/variable.scss';
+
+@mixin maxMobile {
+    @media (max-width: $navbarMobile) {
+        @content;
+    }
+}
+
+@mixin minMobile {
+    @media (min-width: 577px) and (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: $mobile) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: 853px) and (max-width: $maxTabCardJadwal) {
+        @content;
+    }
+}
+
+.wrapp-detail-deskripsi{
+    display: flex;
+    flex-direction: column;
+    margin-left: 70px;
+    background-color: $color1;
+    transition: 0.3s ease-in-out;
+    padding: 80px 50px 40px 50px;
+
+    @include maxMobile(){
+        padding: 130px 10px 40px 10px;
+        margin-left: 0;
+    }
+
+    @include minMobile(){
+        padding: 80px 40px 20px 40px;
+    }
+
+    .container-white-detail-deskripsi{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        border-radius: 3px;
+        background-color: #fff;
+        padding: 60px;
+
+        @include maxMobile(){
+            padding: 40px 20px;
+        }
+
+        @include minMobile(){
+            padding: 40px 40px;
+        }
+
+        .column-video-detail-deskripsi{
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            padding-bottom: 40px;
+            border-bottom: 1px solid $color16;
+
+            .yt-detail-deskripsi{
+                display: flex;
+                height: 450px;
+                width: 70%;
+
+                @include maxMobile(){
+                    height: 300px;
+                    width: 100%;
+                }
+
+                @include minMobile(){
+                    height: 300px;
+                    width: 100%;
+                }
+
+                @include tablet(){
+                    height: 300px;
+                    width: 90%;
+                }
+            }
+        }
+
+        .column-paragraf-detail-deskripsi{
+            display: flex;
+            padding-top: 40px;
+
+            .txt-detail-deskripsi{
+                display: flex;
+                text-align: justify;
+                color: $color9;
+                font-size: $font1;
+                letter-spacing: 0.5px;
+            }
+        }
+    }
+}
+
+.wrapp-detail-deskripsi-active{
+    margin-left: 230px;
+    @include maxMobile(){
+        margin-left: 0;
+    }
+}
