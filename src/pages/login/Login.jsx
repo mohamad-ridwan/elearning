@@ -213,6 +213,10 @@ function Login() {
         setErrorMessage(err)
     }
 
+    function toForgotPassword() {
+        history.push('/forgot-password')
+    }
+
     return (
         <>
             <div className="wrapp-login">
@@ -239,9 +243,9 @@ function Login() {
                     </div>
 
                     <div className="column-btn-login">
-                        <a href="#" className="btn-lupa-password">
+                        <p className="btn-lupa-password" onClick={toForgotPassword}>
                             Lupa Password ?
-                        </a>
+                        </p>
 
                         <Button
                             nameBtn="MASUK"

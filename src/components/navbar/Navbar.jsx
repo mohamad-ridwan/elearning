@@ -21,18 +21,20 @@ function Navbar() {
     const getPath = window.location.pathname
 
     function setAllAPI() {
-        API.APIGetDashboard(getTokenUser)
-            .then(res => {
-                if (res && res.data) {
-                    setDataUserForNavbar(res.data.user.data)
-                } else {
-                    history.push('/login')
-                    document.cookie = 'e-learning='
-                }
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        if (getPath !== '/forgot-password' && getPath !== '/create-new-password' && getPath !== '/verifikasi-create-new-password') {
+            API.APIGetDashboard(getTokenUser)
+                .then(res => {
+                    if (res && res.data) {
+                        setDataUserForNavbar(res.data.user.data)
+                    } else {
+                        history.push('/login')
+                        document.cookie = 'e-learning='
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
     }
 
     useEffect(() => {
@@ -42,11 +44,11 @@ function Navbar() {
     const wrappNavbar = document.getElementsByClassName('wrapp-navbar')
 
     const styleNavbar = {
-        display: getPath === '/login' || getPath.includes('/print-table') ? 'none' : 'flex',
+        display: getPath === '/login' || getPath.includes('/print-table') || getPath === '/forgot-password' || getPath === '/create-new-password' || getPath === '/verifikasi-create-new-password' ? 'none' : 'flex',
     }
 
     const styleNavbarMobile = {
-        display: getPath === '/login' || getPath.includes('/print-table') ? 'none' : 'flex'
+        display: getPath === '/login' || getPath.includes('/print-table') || getPath === '/forgot-password' || getPath === '/create-new-password' || getPath === '/verifikasi-create-new-password' ? 'none' : 'flex'
     }
 
     const btnNavmenu = document.getElementsByClassName('btn-navmenu')

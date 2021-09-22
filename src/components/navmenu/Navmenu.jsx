@@ -47,7 +47,7 @@ function Navmenu() {
     const btnBarMenu = document.getElementsByClassName('btn-bar-navmenu')
 
     const styleNavmenu = {
-        display: getPath === '/login' || getPath.includes('/print-table') ? 'none' : 'flex',
+        display: getPath === '/login' || getPath.includes('/print-table') || getPath === '/forgot-password' || getPath === '/create-new-password' || getPath === '/verifikasi-create-new-password' ? 'none' : 'flex',
     }
 
     const styleIconArrow = {

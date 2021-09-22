@@ -6,19 +6,19 @@
     }
 }
 
-.wrapp-login{
+.wrapp-enter-token{
     display: flex;
-    align-items: center;
-    justify-content: center;
     height: 100vh;
     width: 100%;
+    justify-content: center;
+    align-items: center;
     background-color: $color1;
 
     @include maxMobile(){
         padding: 0 10px;
     }
-    
-    .form-login{
+
+    .form-enter-token{
         display: flex;
         flex-direction: column;
         height: auto;
@@ -28,41 +28,32 @@
         box-shadow: 0 8px 10px -1px rgba(0,0,0,0.1);
         padding: 20px;
         
-        .img-logoweb{
+        .img-logoweb-enter-token{
             display: flex;
             height: 180px;
             max-width: 100%;
         }
 
-        .column-input-login{
+        .deskripsi-enter-token{
+            display: flex;
+            font-size: $font2;
+            text-align: start;
+            color: $color2;
+        }
+
+        .column-input-enter-token{
             display: flex;
             flex-direction: column;
             height: auto;
             width: 100%;
-            border-top: 1px solid #ddd;
             padding: 20px 0 10px 0;
         }
 
-        .column-btn-login{
+        .column-btn-enter-token{
             display: flex;
             width: 100%;
             justify-content: flex-end;
             align-items: center;
-
-            .btn-lupa-password{
-                display: flex;
-                font-size: $font2;
-                color: $color2;
-                border: none;
-                background: transparent;
-                outline: none;
-                margin-right: 15px;
-                cursor: pointer;
-                transition: 0.2s ease-in-out;
-                &:hover{
-                    color: $color22;
-                }
-            }
         }
     }
 }

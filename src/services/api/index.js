@@ -8,11 +8,14 @@ import PostRoomDiskusi from "./jadwalkuliah/postroomdiskusi";
 import PostTugas from "./jadwalkuliah/posttugas";
 import GetLogoweb from "./logoweb/get";
 import GetPanduan from "./panduan/get";
+import GetVerifikasiToken from "./tokenverifikasi/get";
 import GetUser from "./user/get";
 import LoginUser from "./user/login";
+import LupaPassword from "./user/lupapassword";
 import PutEmailOnly from "./user/putEmailOnly";
 import PutInformasiProfil from "./user/putInformasiProfil";
 import PutPassword from "./user/putPassword";
+import UbahPassword from "./user/ubahPassword";
 
 // user
 const APIGetUser = () => GetUser('v1/users/get')
@@ -20,6 +23,8 @@ const APIPutInformasiProfil = (id, data) => PutInformasiProfil(`v1/users/put/inf
 const APIPutPassword = (id, data) => PutPassword(`v1/users/put/update-password/${id}`, data)
 const APILogin = (data) => LoginUser('v1/users/login', data)
 const APIPutEmailOnly = (id, data) => PutEmailOnly(`v1/users/put/informasi-profil/emailonly/${id}`, data)
+const APILupaPassword = (data) => LupaPassword('v1/users/forgot-password', data)
+const APIUbahPassword = (id, data) => UbahPassword(`v1/users/put/ubah-password/${id}`, data)
 
 // dashboard
 // API yang di auth dengan jwt
@@ -40,6 +45,10 @@ const APIPostKomentar = (_id, id, data) => PostKomentar(`v4/jadwal-kuliah/post/m
 const APIPostRoomDiskusi = (_id, data) => PostRoomDiskusi(`v4/jadwal-kuliah/post/matakuliah/ruang-diskusi/${_id}`, data)
 const APIDeleteRoomDiskusi = (_id, id) => DeleteRoomDiskusi(`v4/jadwal-kuliah/delete/matakuliah/ruang-diskusi/${_id}/${id}`)
 
+// token verifikasi create new password
+// API yang di auth dengan jwt
+const APIGetVerifikasiToken = (token) => GetVerifikasiToken('v6/verifikasi-new-password/token-verifikasi', token)
+
 const API = {
     APIGetUser,
     APIGetLogoweb,
@@ -55,7 +64,10 @@ const API = {
     APIPostTugas,
     APIPostKomentar,
     APIPostRoomDiskusi,
-    APIDeleteRoomDiskusi
+    APIDeleteRoomDiskusi,
+    APILupaPassword,
+    APIGetVerifikasiToken,
+    APIUbahPassword
 }
 
 export default API;

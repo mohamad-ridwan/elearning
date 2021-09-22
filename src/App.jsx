@@ -16,6 +16,9 @@ import ForumDiskusi from './pages/forumdiskusi/ForumDiskusi';
 import KomentarDiskusi from './pages/komentardiskusi/KomentarDiskusi';
 import PrintTable from './pages/printtable/PrintTable';
 import DetailDeskripsi from './pages/detaildeskripsi/DetailDeskripsi';
+import ForgotPassword from './pages/forgotpassword/ForgotPassword';
+import CreateNewPassword from './pages/createnewpassword/CreateNewPassword';
+import EnterToken from './pages/entertoken/EnterToken';
 
 function App() {
   return (
@@ -26,6 +29,18 @@ function App() {
           <Navmenu />
 
           <Switch>
+
+            <Route path='/verifikasi-create-new-password'>
+              <EnterToken />
+            </Route>
+
+            <Route path='/create-new-password'>
+              <CreateNewPassword />
+            </Route>
+
+            <Route path='/forgot-password'>
+              <ForgotPassword />
+            </Route>
 
             <Route path='/ruang-materi/video-pembelajaran/detail-deskripsi/:id/:id'>
               <DetailDeskripsi />
