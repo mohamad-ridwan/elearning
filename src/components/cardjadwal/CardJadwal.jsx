@@ -245,9 +245,11 @@ function CardJadwal({ displayColumnRed, displayColumnBtn, displayListCard, toPag
                 <div className="container-card-slide-pembelajaran" style={styleCardSlidePembelajaran}>
                     <iframe className="video-yt-pembelajaran" src={linkEmbedYoutube} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="fullscreen" style={styleIframeYoutube}></iframe>
 
-                    <img src={imgAuthor} alt="" className="img-author-chat-diskusi"
-                        style={styleImgAuthor}
-                    />
+                    <div className="wrapp-img-author-chat-diskusi" style={styleImgAuthor}>
+                        <img src={imgAuthor} alt="" className="img-author-chat-diskusi"
+                        />
+                    </div>
+
 
                     <div className="column-kiri-slide-pembelajaran" style={styleColumnKiri}>
                         <div className="circle-white-icon-zip" style={styleIconZip}>

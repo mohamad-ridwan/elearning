@@ -269,13 +269,17 @@
             width: 100%;
         }
 
-        .img-author-chat-diskusi{
+        .wrapp-img-author-chat-diskusi{
             display: none;
-            height: 35px;
-            width: 35px;
-            border-radius: 500px;
-            object-fit: cover;
-            object-position: center;
+
+            .img-author-chat-diskusi{
+                display: flex;
+                height: 35px;
+                width: 35px;
+                border-radius: 500px;
+                object-fit: cover;
+                object-position: center;
+            }
         }
 
         .column-kiri-slide-pembelajaran{
@@ -314,6 +318,8 @@
                 display: none;
                 font-size: 13px;
                 margin-bottom: 20px;
+                text-align: start;
+                overflow-wrap: anywhere;
             }
     
             .date-slide-pembelajaran{

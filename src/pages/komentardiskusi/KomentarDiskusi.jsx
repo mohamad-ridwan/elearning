@@ -54,10 +54,12 @@ function KomentarDiskusi() {
                 setLoading(false)
                 setLoadingSendMsg(false)
                 setMessage('')
-                const containerChatDiskusi = document.getElementsByClassName('container-chat-diskusi')[0]
+                const containerChatDiskusi = document.getElementsByClassName('container-chat-diskusi')
 
                 setTimeout(() => {
-                    containerChatDiskusi.scrollTo({ top: 0, behavior: 'smooth' })
+                    if (containerChatDiskusi.length > 0) {
+                        containerChatDiskusi[0].scrollTo({ top: 0, behavior: 'smooth' })
+                    }
                 }, 0);
 
                 const respons = res.data
@@ -180,8 +182,8 @@ function KomentarDiskusi() {
                                             marginWrapp="0"
                                             displayImgAuthor="flex"
                                             bgColorColumnKiri="#fff"
-                                            maxWidthColumnKiri="400px"
-                                            paddingColumnKiri="10px 80px 10px 10px"
+                                            maxWidthColumnKiri="450px"
+                                            paddingColumnKiri="10px 30px 20px 10px"
                                             boxShadowColumnKiri="0 1px 3px -1px rgba(0,0,0,0.2)"
                                             justifyContentFontSlidePembelajaran="flex-start"
                                             positionDateSlidePembelajaran="absolute"
@@ -217,9 +219,9 @@ function KomentarDiskusi() {
                             marginWrapp="0"
                             placeholder="Write your comment..."
                             autoCompleteInput="off"
-                            autoFocusInput="autofocus"
                             value={message}
                             changeInput={inputMessage}
+                            typeInput="text"
                         />
                         <i className="fas fa-paper-plane" style={styleIconSendMsg} onClick={(e) => submitMessage(e, 8)}></i>
 
