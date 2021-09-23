@@ -144,16 +144,36 @@ function Profile() {
         setErrorMessageInfoProfil(err)
     }
 
+    function updateAuthKomentar(nim, img, newToken) {
+        const data = {
+            image: img
+        }
+
+        API.APIPutAuthKomentar(nim, data)
+            .then(res => {
+                setLoadingSubmit(false)
+                document.cookie = `e-learning=${newToken}`
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 0);
+
+                return res;
+            })
+            .catch(err => console.log(err))
+    }
+
     function updateInformasiProfil(data) {
         API.APIPutInformasiProfil(user._id, data)
             .then(res => {
                 if (res && res.data.error === null) {
-                    setLoadingSubmit(false)
-                    document.cookie = `e-learning=${res.data.data.token}`
-
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 0);
+                    API.APIGetDashboard(res.data.data.token)
+                        .then(res => {
+                            if (res && res.data) {
+                                updateAuthKomentar(res.data.user.data.nim, res.data.user.data.image, res.data.data.token)
+                            }
+                        })
+                        .catch(err => console.log(err))
                 }
             })
             .catch(err => {

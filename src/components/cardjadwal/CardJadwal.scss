@@ -337,14 +337,11 @@
                     border-radius: 2px;
                     padding: 3px 10px;
                     align-items: center;
-                    font-size: 12px;
+                    font-size: 10px;
                     color: #fff;
                     margin-right: 5px;
                     text-align: start;
 
-                    @include maxMobile(){
-                        font-size: 11px;
-                    }
                     i{
                         margin-right: 5px;
                     }

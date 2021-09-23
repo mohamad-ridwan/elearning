@@ -6,6 +6,7 @@ import PostAbsenMhs from "./jadwalkuliah/postabsenmhs";
 import PostKomentar from "./jadwalkuliah/postkomentar";
 import PostRoomDiskusi from "./jadwalkuliah/postroomdiskusi";
 import PostTugas from "./jadwalkuliah/posttugas";
+import PutAuthKomentar from "./jadwalkuliah/putauthkomentar";
 import GetLogoweb from "./logoweb/get";
 import GetPanduan from "./panduan/get";
 import GetVerifikasiToken from "./tokenverifikasi/get";
@@ -44,6 +45,7 @@ const APIPostTugas = (id, data) => PostTugas(`v4/jadwal-kuliah/post/matakuliah/d
 const APIPostKomentar = (_id, id, data) => PostKomentar(`v4/jadwal-kuliah/post/matakuliah/ruang-diskusi/komentar/${_id}/${id}`, data)
 const APIPostRoomDiskusi = (_id, data) => PostRoomDiskusi(`v4/jadwal-kuliah/post/matakuliah/ruang-diskusi/${_id}`, data)
 const APIDeleteRoomDiskusi = (_id, id) => DeleteRoomDiskusi(`v4/jadwal-kuliah/delete/matakuliah/ruang-diskusi/${_id}/${id}`)
+const APIPutAuthKomentar = (nim, data) => PutAuthKomentar(`v4/jadwal-kuliah/put/matakuliah/ruang-diskusi/komentar/author/${nim}`, data)
 
 // token verifikasi create new password
 // API yang di auth dengan jwt
@@ -67,7 +69,8 @@ const API = {
     APIDeleteRoomDiskusi,
     APILupaPassword,
     APIGetVerifikasiToken,
-    APIUbahPassword
+    APIUbahPassword,
+    APIPutAuthKomentar
 }
 
 export default API;

@@ -70,11 +70,13 @@ function Dashboard() {
                     <>
                         <div className="column-kiri-dashboard">
                             <div className="column-name-user-dashboard">
-                                <img src={`${endpoint}/${user.image}`} className="img-user-dashboard" />
-
-                                <p className="name-user-dashboard">
-                                    {user.name}
-                                </p>
+                                {user && user.image ? (
+                                    <img src={`${endpoint}/${user.image}`} className="img-user-dashboard" />
+                                ) : (
+                                    <div className="bg-green-img-default">
+                                        <i className="fas fa-user"></i>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="column-panduan-dashboard">

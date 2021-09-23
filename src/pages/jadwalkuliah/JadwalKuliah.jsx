@@ -46,19 +46,6 @@ function JadwalKuliah() {
                             const getJadwalKuliahFromUser = respons.filter((e) => e.major === user.major && e.kelas === user.class && e.campus === user.campus && e.semester === user.statusSemester && e.id === 'jadwal-kuliah-utama')
 
                             setJadwalKuliah(getJadwalKuliahFromUser)
-
-                            // console.log(res)
-                            const tesF = respons.filter((e) => e.ruangDiskusi.length > 0)
-
-                            function getRd(data) {
-                                data.forEach((e) => {
-                                    const komentar = e.ruangDiskusi.filter((e) => e.komentar)
-                                    const getUser = komentar.filter((e) => e.author.nim == 15200060)
-                                    console.log(getUser)
-                                })
-                            }
-
-                            getRd(tesF)
                         })
                         .catch(err => console.log(err))
                 } else {
