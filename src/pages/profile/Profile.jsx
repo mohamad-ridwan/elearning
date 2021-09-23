@@ -167,10 +167,12 @@ function Profile() {
         API.APIPutInformasiProfil(user._id, data)
             .then(res => {
                 if (res && res.data.error === null) {
+                    const resToken = res.data.data.token
+
                     API.APIGetDashboard(res.data.data.token)
                         .then(res => {
                             if (res && res.data) {
-                                updateAuthKomentar(res.data.user.data.nim, res.data.user.data.image, res.data.data.token)
+                                updateAuthKomentar(res.data.user.data.nim, res.data.user.data.image, resToken)
                             }
                         })
                         .catch(err => console.log(err))
