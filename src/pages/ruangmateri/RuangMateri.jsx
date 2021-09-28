@@ -563,6 +563,8 @@ function RuangMateri() {
                                             paddingSlidePembelajaran="0 0 40px 0"
                                             widthBtnDownload="100%"
                                             alignItemsSlidePembelajaran="flex-start"
+                                            justifyContentFontSlidePembelajaran="start"
+                                            justifyContentSlidePembelajaran="start"
                                             bgColorBtnDownload="#1a8e5f"
                                             alignItemsBtnDownload="center"
                                             nameBtn="Detail Deskripsi"
@@ -602,6 +604,7 @@ function RuangMateri() {
                                             classBtn="btn-download-pembelajaran"
                                             marginWrapp="0 15px 15px 0"
                                             nameBtn="Download"
+                                            alignItemsColumnKiri="center"
                                             mouseOverBtnDownload={() => mouseOverBtnDownload(i, 'btn-download-pembelajaran')}
                                             mouseLeaveBtnDownload={() => mouseLeaveBtnDownload(i, 'btn-download-pembelajaran')}
                                             clickBtnDownload={() => downloadSlidePembelajaran(e.image)}

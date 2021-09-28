@@ -2,7 +2,7 @@ import React from 'react'
 import './CardJadwal.scss'
 import Button from '../button/Button'
 
-function CardJadwal({ displayColumnRed, displayColumnBtn, displayListCard, toPage, widthWrapp, displayInfoMatkul, paddingWhiteCard, titleInfoMatkul, labelInfoMatkul, iconInfoMatkul, marginWrapp, toPageRuangMateri, toPageRuangTugas, mouseOverRuangDiskusi, mouseLeaveRuangDiskusi, mouseOverRuangMateri, mouseLeaveRuangMateri, mouseOverRuangTugas, mouseLeaveRuangTugas, mouseOverMasukKelas, mouseLeaveMasukKelas, displayCardSlidePembelajaran, displayColumnWhite, borderWrapp, bgColorWrapp, nameFile, mouseOverBtnDownload, mouseLeaveBtnDownload, classBtn, clickBtnDownload, bdrRadiusWrapp, matakuliah, hari, jamMasuk, jamKeluar, kodeDosen, kodeMTK, sks, noRuang, kelPraktek, kodeGabung, displayWrapp, displayIconZip, nameBtn, alignItemsSlidePembelajaran, paddingSlidePembelajaran, fontSlidePembelajaran, dateCreate, marginFontSlidePembelajaran, marginDateSlidePembelajaran, alignItemsBtnDownload, widthBtnDownload, displayIframeYoutube, linkEmbedYoutube, iconPdf, bgColorColumnRed, toPageForumDiskusi, nameAuthor, dateAuthor, displayColumnAuthor, justifyContentSlidePembelajaran, flexDirectionSlidePembelajaran, flexWrapSlidePembelajaran, bgColorBtnDownload, justifyContentFontSlidePembelajaran, colorDateSlidePembelajaran, bdrBottomWrapp, displayBtnFUnduhForumDiskusi, mouseEnterUnduhForumDisk, mouseLeaveUnduhForumDisk, unduhFileForumDisk, textAlignDateSlidePembelajaran, classBtnUnduhFile, displayBtnDelete, displayBtnDownload, message, displayMessage, displayImgAuthor, bgColorColumnKiri, paddingColumnKiri, bdrRadiusColumnKiri, marginColumnKiri, imgAuthor, colorNameFile, maxWidthColumnKiri, positionDateSlidePembelajaran, bottomDateSlidePembelajaran, rightDateSlidePembelajaran, boxShadowColumnKiri, btnDeleteRoomDiskusi, marginBtnDownload, textAlignNameFile }) {
+function CardJadwal({ displayColumnRed, displayColumnBtn, displayListCard, toPage, widthWrapp, displayInfoMatkul, paddingWhiteCard, titleInfoMatkul, labelInfoMatkul, iconInfoMatkul, marginWrapp, toPageRuangMateri, toPageRuangTugas, mouseOverRuangDiskusi, mouseLeaveRuangDiskusi, mouseOverRuangMateri, mouseLeaveRuangMateri, mouseOverRuangTugas, mouseLeaveRuangTugas, mouseOverMasukKelas, mouseLeaveMasukKelas, displayCardSlidePembelajaran, displayColumnWhite, borderWrapp, bgColorWrapp, nameFile, mouseOverBtnDownload, mouseLeaveBtnDownload, classBtn, clickBtnDownload, bdrRadiusWrapp, matakuliah, hari, jamMasuk, jamKeluar, kodeDosen, kodeMTK, sks, noRuang, kelPraktek, kodeGabung, displayWrapp, displayIconZip, nameBtn, alignItemsSlidePembelajaran, paddingSlidePembelajaran, fontSlidePembelajaran, dateCreate, marginFontSlidePembelajaran, marginDateSlidePembelajaran, alignItemsBtnDownload, widthBtnDownload, displayIframeYoutube, linkEmbedYoutube, iconPdf, bgColorColumnRed, toPageForumDiskusi, nameAuthor, dateAuthor, displayColumnAuthor, justifyContentSlidePembelajaran, flexDirectionSlidePembelajaran, flexWrapSlidePembelajaran, bgColorBtnDownload, justifyContentFontSlidePembelajaran, colorDateSlidePembelajaran, bdrBottomWrapp, displayBtnFUnduhForumDiskusi, mouseEnterUnduhForumDisk, mouseLeaveUnduhForumDisk, unduhFileForumDisk, textAlignDateSlidePembelajaran, classBtnUnduhFile, displayBtnDelete, displayBtnDownload, message, displayMessage, displayImgAuthor, bgColorColumnKiri, paddingColumnKiri, bdrRadiusColumnKiri, marginColumnKiri, imgAuthor, colorNameFile, maxWidthColumnKiri, positionDateSlidePembelajaran, bottomDateSlidePembelajaran, rightDateSlidePembelajaran, boxShadowColumnKiri, btnDeleteRoomDiskusi, marginBtnDownload, textAlignNameFile, alignItemsColumnKiri }) {
 
     const styleWrapp = {
         display: displayWrapp,
@@ -59,7 +59,7 @@ function CardJadwal({ displayColumnRed, displayColumnBtn, displayListCard, toPag
         color: colorDateSlidePembelajaran,
         textAlign: textAlignDateSlidePembelajaran,
         bottom: bottomDateSlidePembelajaran,
-        right: rightDateSlidePembelajaran
+        right: rightDateSlidePembelajaran,
     }
 
     const styleColumnBtnDownload = {
@@ -127,7 +127,8 @@ function CardJadwal({ displayColumnRed, displayColumnBtn, displayListCard, toPag
         borderRadius: bdrRadiusColumnKiri,
         margin: marginColumnKiri,
         maxWidth: maxWidthColumnKiri,
-        boxShadow: boxShadowColumnKiri
+        boxShadow: boxShadowColumnKiri,
+        alignItems: alignItemsColumnKiri
     }
 
     return (
