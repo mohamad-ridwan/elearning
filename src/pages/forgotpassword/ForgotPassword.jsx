@@ -44,7 +44,7 @@ function ForgotPassword() {
                         from_name: 'E-Learning',
                         to_name: respons.name,
                         to_email: respons.email,
-                        message: `Hallo ${respons.name}!, untuk verifikasi membuat password baru silahkan kunjungi: http://localhost:3000/verifikasi-create-new-password dengan memasukkan token di bawah.`,
+                        message: `Hallo ${respons.name}!, untuk verifikasi membuat password baru silahkan kunjungi: https://e-learning-rp.web.app/verifikasi-create-new-password dengan memasukkan token di bawah.`,
                         token: token,
                         note: 'Note : Masa expired token Anda 1 jam dari saat Anda mengirimkan email!'
                     }

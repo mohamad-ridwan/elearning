@@ -71,6 +71,7 @@
                 object-fit: cover;
                 object-position: center;
                 border-radius: 3px;
+                border: 2px solid $color19;
 
                 @include minMobile(){
                     max-height: 400px;
