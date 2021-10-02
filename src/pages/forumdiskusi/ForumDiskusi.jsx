@@ -122,7 +122,7 @@ function ForumDiskusi() {
     }
 
     const years = new Date().getFullYear()
-    const month = new Date().getMonth().toString().length === 1 ? `0${new Date().getMonth() + 1}` : new Date().getMonth()
+    const month = new Date().getMonth().toString().length === 1 ? new Date().getMonth() > 8 ? new Date().getMonth() + 1 : `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1
     const date = new Date().getDate().toString().length === 1 ? `0${new Date().getDate()}` : new Date().getDate()
 
     const hours = new Date().getHours().toString().length === 1 ? `0${new Date().getHours()}` : new Date().getHours()

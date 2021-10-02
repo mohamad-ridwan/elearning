@@ -107,7 +107,7 @@ function Absensi() {
     const nameDay = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
 
     const mounth = new Date().getMonth()
-    const newMounth = mounth.toString().length === 1 ? `0${mounth + 1}` : mounth + 1
+    const newMounth = mounth.toString().length === 1 ? mounth > 8 ? mounth + 1 : `0${mounth + 1}` : mounth + 1
     const years = new Date().getFullYear()
     const date = new Date().getDate()
     const newDate = date.toString().length === 1 ? `0${date}` : date

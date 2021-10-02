@@ -118,7 +118,7 @@ function JadwalKuliah() {
                                 kelPraktek={e.kelPraktek}
                                 kodeGabung={e.kodeGabung}
                                 marginWrapp="0 15px 15px 0"
-                                bgColorColumnRed={timeZoneMasuk[3] == years && timeZoneMasuk[2] == date && timeZoneMasuk[1] === nameMonth[month] && timeZoneMasuk[0] === nameDay[day - 1] ? '#1a8e5f' : '#cc2626'}
+                                bgColorColumnRed={timeZoneMasuk[3] == years && timeZoneMasuk[2] == date && timeZoneMasuk[1] === nameMonth[month] && timeZoneMasuk[0] === nameDay[day == 0 ? 6 : day - 1] ? '#1a8e5f' : '#cc2626'}
                                 toPage={() => toPage(`/absensi/${e._id}`)}
                                 toPageForumDiskusi={() => toPage(`/forum-diskusi/${e._id}`)}
                                 toPageRuangMateri={() => toPage(`/ruang-materi/${e._id}`)}
