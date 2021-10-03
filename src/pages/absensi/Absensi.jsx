@@ -164,7 +164,12 @@ function Absensi() {
                 const getJadwalTimeNow = getJadwalAbsen.length > 0 ? getJadwalAbsen.filter((e) => e.tanggal === `${years}-${newMounth}-${newDate}`) : []
                 const getUserAlreadyAbsent = getJadwalTimeNow.length > 0 ? getJadwalTimeNow[0].dataAbsen.filter((e) => e.nim === newUser.nim) : []
 
-                checkJamMasuk(respons.hari, respons.timeZoneMasuk, respons.timeZoneKeluar, waktuHabis, getUserAlreadyAbsent);
+                const splitTimeZoneMasuk = respons.timeZoneMasuk.split(' ')
+                const splitTimeZoneKeluar = respons.timeZoneKeluar.split(' ')
+                const newTimeZoneMasuk = new Date(`${splitTimeZoneMasuk[0]} ${splitTimeZoneMasuk[1]} ${splitTimeZoneMasuk[2]} ${splitTimeZoneMasuk[3]} ${splitTimeZoneMasuk[4]}`)
+                const newTimeZoneKeluar = new Date(`${splitTimeZoneKeluar[0]} ${splitTimeZoneKeluar[1]} ${splitTimeZoneKeluar[2]} ${splitTimeZoneKeluar[3]} ${splitTimeZoneKeluar[4]}`)
+
+                checkJamMasuk(respons.hari, newTimeZoneMasuk, newTimeZoneKeluar, waktuHabis, getUserAlreadyAbsent);
 
                 if (getJadwalAbsen.length > 0) {
                     function mapOut(sourceObject, removeKeys, removeId) {
@@ -211,7 +216,7 @@ function Absensi() {
 
     function checkJamMasuk(hari, jamMasuk, jamKeluar, waktuHabis, userPresence) {
         if (hari === nameDay[day == 0 ? 6 : day - 1].toUpperCase()) {
-            if (new Date(jamMasuk) < timeNow && new Date(jamKeluar) > timeNow) {
+            if (jamMasuk < timeNow && jamKeluar > timeNow) {
                 if (userPresence.length === 1) {
                     setNameBtnAbsen('Sudah Absen')
                 } else {
@@ -219,7 +224,7 @@ function Absensi() {
                 }
             } else if (timeNow >= new Date(waktuHabis)) {
                 setNameBtnAbsen('Belum Mulai')
-            } else if (timeNow >= new Date(jamKeluar)) {
+            } else if (timeNow >= jamKeluar) {
                 setNameBtnAbsen('Sudah Selesai')
             }
         }
