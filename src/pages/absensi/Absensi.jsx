@@ -293,7 +293,10 @@ function Absensi() {
             komplain: commentMhs.komplain
         }
 
-        if (new Date(dataMatkul.timeZoneKeluar) >= timeNow) {
+        const splitTimeZoneKeluar = dataMatkul.timeZoneKeluar.split(' ')
+        const newTimeZoneKeluar = new Date(`${splitTimeZoneKeluar[0]} ${splitTimeZoneKeluar[1]} ${splitTimeZoneKeluar[2]} ${splitTimeZoneKeluar[3]} ${splitTimeZoneKeluar[4]}`)
+
+        if (newTimeZoneKeluar >= timeNow) {
             const confirm = window.confirm('Lakukan Presensi?')
 
             if (confirm) {
