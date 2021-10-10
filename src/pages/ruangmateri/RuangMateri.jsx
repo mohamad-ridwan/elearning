@@ -18,6 +18,7 @@ import ListTable from '../../components/listtable/ListTable';
 import Loading from '../../components/loading/Loading';
 import endpoint from '../../services/api/endpoint';
 import ExportExcel from '../../components/exportexcel/ExportExcel';
+import PopClipboard from '../../components/popclipboard/PopClipboard';
 
 function RuangMateri() {
 
@@ -32,6 +33,7 @@ function RuangMateri() {
     const [dataCsv, setDataCsv] = useState([])
     const [inputSearch, setInputSearch] = useState('')
     const [newDataCsv, setNewDataCsv] = useState([])
+    const [loadPopClipboard, setLoadPopClipboard] = useState(false)
     const [headersCsv, setHeadersCsv] = useState([
         { label: "NO", key: "a" },
         { label: "Kode MTK", key: "b" },
@@ -366,6 +368,13 @@ function RuangMateri() {
         const txtCopy = `${headTable.map((e, i) => i === 0 ? e.name : ' ' + e.name)} \n\n${getDataMateri}`;
 
         navigator.clipboard.writeText(txtCopy);
+        if (loadPopClipboard === false) {
+            setLoadPopClipboard(true)
+        }
+
+        setTimeout(() => {
+            setLoadPopClipboard(false)
+        }, 2000);
     }
 
     function btnDownloadExcel() {
@@ -654,6 +663,11 @@ function RuangMateri() {
                 <ExportExcel displayTable="none" head={headTable} column={newDataCsv} />
 
                 <table id="table-export-to-pdf-ruang-materi"></table>
+
+                <PopClipboard
+                    displayWrapp={loadPopClipboard ? 'flex' : 'none'}
+                    total={resultSearch.length}
+                />
 
                 <Loading displayWrapp={loading ? 'flex' : 'none'} />
             </div>

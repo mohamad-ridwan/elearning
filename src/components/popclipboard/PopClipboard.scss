@@ -1,0 +1,67 @@
+@import '../../utils/variable.scss';
+
+@mixin maxMobile {
+    @media (max-width: $navbarMobile) {
+        @content;
+    }
+}
+
+.wrapp-pop-clipboard{
+    display: flex;
+    position: fixed;    
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 9999;
+    opacity: 0;
+    animation: animatLoading 0.5s ease-in-out forwards;
+
+    .container-clipboard{
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 2px 5px -1px rgba(0,0,0,0.5);
+        border-radius: 3px;
+        overflow: hidden;
+
+        .txt-copy-clipboard{
+            display: flex;
+            background-color: $color6;
+            padding: 10px 60px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            justify-content: center;
+            border-left: 2px solid $color2;
+            border-top: 2px solid $color2;
+            border-right: 2px solid $color2;
+
+            @include maxMobile(){
+                font-size: 24px;
+                padding: 10px 40px;
+            }
+        }
+    
+        .total-copy-data{
+            display: flex;
+            font-size: 13px;
+            text-align: center;
+            color: $color2;
+            padding: 10px 0px;
+            background-color: #fff;
+            justify-content: center;
+            border-left: 2px solid $color2;
+            border-bottom: 2px solid $color2;
+            border-right: 2px solid $color2;
+        }
+    }
+}
+
+@keyframes animatLoading{
+    to{
+        opacity: 1;
+    }
+}

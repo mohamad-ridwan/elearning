@@ -18,6 +18,7 @@ import API from '../../services/api';
 import Loading from '../../components/loading/Loading';
 import endpoint from '../../services/api/endpoint';
 import ExportExcel from '../../components/exportexcel/ExportExcel';
+import PopClipboard from '../../components/popclipboard/PopClipboard';
 
 function RuangTugas() {
 
@@ -34,6 +35,7 @@ function RuangTugas() {
     const [dataCsv, setDataCsv] = useState([])
     const [newDataCsv, setNewDataCsv] = useState([])
     const [inputSearch, setInputSearch] = useState('')
+    const [loadPopClipboard, setLoadPopClipboard] = useState(false)
     const [headersCsv, setHeadersCsv] = useState([
         { label: "No", key: "a" },
         { label: "Kode MTK", key: "b" },
@@ -420,6 +422,13 @@ function RuangTugas() {
         const txtCopy = `${headTable.map((e, i) => i === 0 ? e.name : ' ' + e.name)} \n\n${dataTablePenugasan}`;
 
         navigator.clipboard.writeText(txtCopy);
+        if (loadPopClipboard === false) {
+            setLoadPopClipboard(true)
+        }
+
+        setTimeout(() => {
+            setLoadPopClipboard(false)
+        }, 2000);
     }
 
     function changeDataCsv() {
@@ -738,6 +747,11 @@ function RuangTugas() {
                 <ExportExcel displayTable="none" head={headTable} column={newDataCsv} />
 
                 <table id="table-export-to-pdf-ruang-tugas"></table>
+
+                <PopClipboard
+                    displayWrapp={loadPopClipboard ? 'flex' : 'none'}
+                    total={resultSearch.length}
+                />
 
                 <Loading displayWrapp={loading ? 'flex' : 'none'} />
             </div>

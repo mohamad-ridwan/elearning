@@ -16,6 +16,7 @@ import Pagination from '../../components/pagination/Pagination';
 import API from '../../services/api';
 import Loading from '../../components/loading/Loading';
 import ExportExcel from '../../components/exportexcel/ExportExcel';
+import PopClipboard from '../../components/popclipboard/PopClipboard';
 
 function Absensi() {
 
@@ -32,6 +33,7 @@ function Absensi() {
     const [perPage, setPerPage] = useState(3)
     const [inputSearch, setInputSearch] = useState('')
     const [newDataCsv, setNewDataCsv] = useState([])
+    const [loadPopClipboard, setLoadPopClipboard] = useState(false)
     const [headersCsv, setHeadersCsv] = useState([
         { label: "#", key: "a" },
         { label: "Status Absen", key: "b" },
@@ -417,6 +419,13 @@ function Absensi() {
         const txtCopy = `${headAbsen.map((e, i) => i === 0 ? e.name : ' ' + e.name)} \n\n${getAbsen}`;
 
         navigator.clipboard.writeText(txtCopy);
+        if (loadPopClipboard === false) {
+            setLoadPopClipboard(true);
+        }
+
+        setTimeout(() => {
+            setLoadPopClipboard(false)
+        }, 2000);
     }
 
     function changeDataCsv() {
@@ -707,6 +716,11 @@ function Absensi() {
                 <ExportExcel displayTable="none" head={headAbsen} column={newDataCsv} />
 
                 <table id="table-export-to-pdf"></table>
+
+                <PopClipboard
+                    displayWrapp={loadPopClipboard ? 'flex' : 'none'}
+                    total={resultSearchCsv.length}
+                />
 
                 <Loading displayWrapp={loading ? 'flex' : 'none'} />
             </div>
