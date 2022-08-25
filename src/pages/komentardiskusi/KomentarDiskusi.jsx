@@ -166,6 +166,8 @@ function KomentarDiskusi() {
                     <div className="container-chat-diskusi" style={styleContainerChat}>
                         <div className="body-scroll-chat-diskusi">
                             {dataKomentar && dataKomentar.length > 0 ? dataKomentar.map((e, i) => {
+                                const checkNim = nim === e.author.nim ? true : false
+
                                 return (
                                     <>
                                         <CardJadwal
@@ -189,20 +191,20 @@ function KomentarDiskusi() {
                                             positionDateSlidePembelajaran="absolute"
                                             bottomDateSlidePembelajaran="10px"
                                             rightDateSlidePembelajaran="10px"
-                                            marginColumnKiri="0 0 0 10px"
+                                            marginColumnKiri={checkNim ? '0 10px 0 0' : '0 0 0 10px'}
                                             bdrRadiusColumnKiri="5px"
                                             displayCardSlidePembelajaran="flex"
-                                            flexDirectionSlidePembelajaran="row"
+                                            flexDirectionSlidePembelajaran={checkNim ? 'row-reverse' : 'row'}
                                             displayIconZip="none"
                                             displayIframeYoutube="none"
                                             displayBtnDownload="none"
-                                            paddingSlidePembelajaran="0px 40px 20px 20px"
+                                            paddingSlidePembelajaran={checkNim ? '0px 20px 20px 40px' : '0px 40px 20px 20px'}
                                             nameFile={e.author.name}
                                             message={e.message}
                                             dateCreate={e.date}
                                             imgAuthor={`${endpoint}/${e.author.image}`}
                                             colorNameFile={e.color}
-                                            justifyContentSlidePembelajaran="flex-start"
+                                            justifyContentSlidePembelajaran='flex-start'
                                             alignItemsSlidePembelajaran="flex-end"
                                         />
                                     </>
