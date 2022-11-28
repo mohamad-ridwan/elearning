@@ -462,7 +462,7 @@ function Navbar() {
                         {dataUserForNavbar && dataUserForNavbar.nim}
                         <div className="column-img-profile-navbar">
                             {dataUserForNavbar && dataUserForNavbar.image ? (
-                                <img src={`${endpoint}/${dataUserForNavbar.image}`} alt="" className="img-profile-navbar" />
+                                <img src={dataUserForNavbar.image} alt="" className="img-profile-navbar" />
                             ) : (
                                 <i className="fas fa-user"></i>
                             )}
@@ -512,7 +512,7 @@ function Navbar() {
                         {dataUserForNavbar && dataUserForNavbar.nim}
                         <div className="column-img-profile-navbar-mobile">
                             {dataUserForNavbar && dataUserForNavbar.image ? (
-                                <img src={`${endpoint}/${dataUserForNavbar.image}`} alt="" className="img-profile-navbar-mobile" />
+                                <img src={dataUserForNavbar.image} alt="" className="img-profile-navbar-mobile" />
                             ) : (
                                 <i className="fas fa-user"></i>
                             )}
