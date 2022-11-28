@@ -4,7 +4,6 @@ import Cookies from 'js-cookie';
 import './KomentarDiskusi.scss'
 import CardJadwal from '../../components/cardjadwal/CardJadwal'
 import API from '../../services/api'
-import endpoint from '../../services/api/endpoint'
 import bgchat from '../../images/bgchat.jpg'
 import Input from '../../components/input/Input'
 import { PathContext } from '../../services/context/path';
@@ -202,7 +201,7 @@ function KomentarDiskusi() {
                                             nameFile={e.author.name}
                                             message={e.message}
                                             dateCreate={e.date}
-                                            imgAuthor={`${endpoint}/${e.author.image}`}
+                                            imgAuthor={e.author.image}
                                             colorNameFile={e.color}
                                             justifyContentSlidePembelajaran='flex-start'
                                             alignItemsSlidePembelajaran="flex-end"

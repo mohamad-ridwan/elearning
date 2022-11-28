@@ -1,11 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react'
 import Cookies from 'js-cookie';
 import { useHistory } from 'react-router-dom';
+import { ref, uploadBytes } from 'firebase/storage'
+import { v4 } from 'uuid'
 import './Profile.scss'
+import { storage } from '../../services/firebase';
 import Input from '../../components/input/Input';
 import Button from '../../components/button/Button';
 import API from '../../services/api';
-import endpoint from '../../services/api/endpoint';
 import Loading from '../../components/loading/Loading';
 import { PathContext } from '../../services/context/path';
 
@@ -40,7 +42,7 @@ function Profile() {
 
                     setInputValue({
                         ...inputValue,
-                        image: `${endpoint}/${res.data.user.data.image}`,
+                        image: res.data.user.data.image,
                         name: res.data.user.data.name,
                         email: res.data.user.data.email,
                     })
@@ -101,6 +103,40 @@ function Profile() {
 
     const { image, name, email, currentPassword, newPassword, confirmPassword, newPhoto } = inputValue;
 
+    const apiFirebaseStorage = 'https://firebasestorage.googleapis.com/v0/b/e-learning-rp.appspot.com/o/images%2F'
+
+    async function uploadImgToFirebaseStorage() {
+        return await new Promise((resolve, reject) => {
+            const imageRef = ref(storage, `images/${newPhoto.name + v4()}`)
+            uploadBytes(imageRef, newPhoto).then((res) => {
+                const nameImg = res && res.metadata.name
+
+                getAccessTokenImgUpload(nameImg)
+                    .then(res => resolve({ tokensImg: res, nameImg: nameImg }))
+                    .catch(err=>reject(err))
+            })
+                .catch(err => reject({ message: 'Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!', error: 'error', jenisError: 'gagal upload image ke firebase storage' }))
+        })
+    }
+
+    async function getAccessTokenImgUpload(nameImg) {
+        return await new Promise((resolve, reject) => {
+            fetch(`${apiFirebaseStorage}${nameImg}`, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+                .then(res => res.json())
+                .then(res => {
+                    const getAccessToken = res && res.downloadTokens
+                    resolve(getAccessToken)
+                })
+                .catch(err => reject({ message: 'Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!', error: 'error', jenisError: 'gagal mendapatkan tokens image' }))
+        })
+    }
+
     async function submitUpdateInfoProfile() {
         let confirmUpdate = {}
         let err = {}
@@ -126,11 +162,26 @@ function Profile() {
             if (confirmAlert) {
                 setLoadingSubmit(true)
                 if (newPhoto) {
-                    const data = new FormData()
-                    data.append('image', newPhoto)
-                    data.append('email', email)
+                    // upload img to firebase storage
+                    uploadImgToFirebaseStorage()
+                        .then(res => {
+                            if (res && res.tokensImg) {
+                                const tokenImg = res.tokensImg
+                                const nameImg = res.nameImg
 
-                    await updateInformasiProfil(data)
+                                const data = {
+                                    image : `${apiFirebaseStorage}${nameImg}?alt=media&token=${tokenImg}`,
+                                    email: email
+                                }
+
+                                updateInformasiProfil(data)
+                            }
+                        })
+                        .catch(err => {
+                            setLoadingSubmit(false)
+                            alert(err.message)
+                            console.log(err)
+                        })
                 } else {
                     const newData = {
                         email: email

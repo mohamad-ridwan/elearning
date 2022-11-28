@@ -71,7 +71,7 @@ function Dashboard() {
                         <div className="column-kiri-dashboard">
                             <div className="column-name-user-dashboard">
                                 {user && user.image ? (
-                                    <img src={`${endpoint}/${user.image}`} className="img-user-dashboard" />
+                                    <img src={user.image} className="img-user-dashboard" />
                                 ) : (
                                     <div className="bg-green-img-default">
                                         <i className="fas fa-user"></i>
