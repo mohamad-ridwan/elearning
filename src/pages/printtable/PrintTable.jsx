@@ -25,7 +25,7 @@ function PrintTable() {
 
         setTimeout(() => {
             window.print();
-        }, 0);
+        }, 1500);
 
         return () => {
             const child = document.getElementById('page-orientation');

@@ -7,16 +7,15 @@ import { ref, uploadBytes } from 'firebase/storage';
 import { v4 } from 'uuid';
 import './ForumDiskusi.scss'
 import { storage } from '../../services/firebase';
+import allowcors from '../../services/api/allowcors';
 import Button from '../../components/button/Button'
 import CardJadwal from '../../components/cardjadwal/CardJadwal'
-import endpoint from '../../services/api/endpoint';
 import API from '../../services/api';
 import { PathContext } from '../../services/context/path';
 import Loading from '../../components/loading/Loading';
 import Input from '../../components/input/Input';
 
 function ForumDiskusi() {
-
     const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop, inActiveNavAfterLoadPage] = useContext(PathContext)
     const [dataForum, setDataForum] = useState([])
     const [idDocument, setIdDocument] = useState('')
@@ -93,12 +92,21 @@ function ForumDiskusi() {
     const apiFirebaseStorage = 'https://firebasestorage.googleapis.com/v0/b/e-learning-rp.appspot.com/o/documents%2F'
 
     function unduhFile(filePath) {
-        axios.get(filePath, { responseType: 'blob' })
+        setLoadingSubmit(true)
+        axios.get(`${allowcors}/${filePath}`, { responseType: 'blob' })
             .then(res => {
                 const getNameDocument = filePath.split(apiFirebaseStorage)[1].split('.pdf')[0]
                 fileDownload(res.data, `${getNameDocument}.pdf`)
+
+                setTimeout(() => {
+                    setLoadingSubmit(false)
+                }, 1000)
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err)
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                setLoadingSubmit(false)
+            })
     }
 
     function toPageKomentar(judul, id, path) {

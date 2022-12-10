@@ -7,16 +7,16 @@ import { CSVLink } from 'react-csv';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel'
 import jsPDF from 'jspdf';
 import './RuangTugas.scss'
+import allowcors from '../../services/api/allowcors';
+import { PathContext } from '../../services/context/path';
 import Button from '../../components/button/Button';
 import Tools from '../../components/tools/Tools';
 import HeadTable from '../../components/headtable/HeadTable';
 import ListTable from '../../components/listtable/ListTable';
-import { PathContext } from '../../services/context/path';
 import HoverButton from '../../components/hoverbutton/HoverButton';
 import Pagination from '../../components/pagination/Pagination';
 import API from '../../services/api';
 import Loading from '../../components/loading/Loading';
-import endpoint from '../../services/api/endpoint';
 import ExportExcel from '../../components/exportexcel/ExportExcel';
 import PopClipboard from '../../components/popclipboard/PopClipboard';
 
@@ -26,6 +26,7 @@ function RuangTugas() {
     const [listTable, setListTable] = useState([])
     const [dataNilaiTugas, setDataNilaiTugas] = useState([])
     const [loading, setLoading] = useState(false)
+    const [loadingDownloadPdf, setLoadingDownloadPdf] = useState(false)
     const [pathActive, setPathActive] = useState(0)
     const [filePath, setFilePath] = useState('')
     const [pertemuan, setPertemuan] = useState('')
@@ -286,16 +287,23 @@ function RuangTugas() {
     const apiFirebaseStorage = 'https://firebasestorage.googleapis.com/v0/b/e-learning-rp.appspot.com/o/ilmu-komputer.S1_15.1A.01_semester-1_margonda%2F'
 
     function unduhFile() {
-        axios.get(filePath, { responseType: 'blob' })
+        setLoadingDownloadPdf(true)
+
+        axios.get(`${allowcors}/${filePath}`, { responseType: 'blob' })
             .then(res => {
                 closeModal()
                 const getNameDocument = filePath.split(apiFirebaseStorage)[1].split('.pdf')[0]
                 fileDownload(res.data, `${getNameDocument}.pdf`)
+
+                setTimeout(() => {
+                    setLoadingDownloadPdf(false)
+                }, 1000)
             })
             .catch(err => {
                 console.log(err)
                 alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
                 closeModal();
+                setLoadingDownloadPdf(false)
             })
     }
 
@@ -757,6 +765,11 @@ function RuangTugas() {
                 />
 
                 <Loading displayWrapp={loading ? 'flex' : 'none'} />
+                <Loading
+                    displayWrapp={loadingDownloadPdf ? 'flex' : 'none'}
+                    bgColor="rgba(0,0,0,0.8)"
+                    zIndexWrapp="99999"
+                />
             </div>
         </>
     )
