@@ -283,11 +283,14 @@ function RuangTugas() {
         document.body.style.overflowY = 'hidden'
     }
 
+    const apiFirebaseStorage = 'https://firebasestorage.googleapis.com/v0/b/e-learning-rp.appspot.com/o/ilmu-komputer.S1_15.1A.01_semester-1_margonda%2F'
+
     function unduhFile() {
-        axios.get(`${endpoint}/${filePath}`, { responseType: 'blob' })
+        axios.get(filePath, { responseType: 'blob' })
             .then(res => {
-                closeModal();
-                fileDownload(res.data, filePath)
+                closeModal()
+                const getNameDocument = filePath.split(apiFirebaseStorage)[1].split('.pdf')[0]
+                fileDownload(res.data, `${getNameDocument}.pdf`)
             })
             .catch(err => {
                 console.log(err)
