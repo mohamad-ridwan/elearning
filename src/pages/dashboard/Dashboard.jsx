@@ -84,7 +84,7 @@ function Dashboard() {
 
                                     return (
                                         <>
-                                            <a href={e && e.youtube ? e.youtube : `${endpoint}/${e.image}`} key={e._id} className="btn-panduan-dashboard" target="__blank"
+                                            <a href={e && e.youtube ? e.youtube : e.image} key={e._id} className="btn-panduan-dashboard" target="__blank"
                                             >
                                                 <i className={e.icon}></i>
                                                 {e.name}

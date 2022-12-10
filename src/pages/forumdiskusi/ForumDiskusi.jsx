@@ -3,7 +3,10 @@ import { useHistory } from 'react-router';
 import fileDownload from 'js-file-download';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { ref, uploadBytes } from 'firebase/storage';
+import { v4 } from 'uuid';
 import './ForumDiskusi.scss'
+import { storage } from '../../services/firebase';
 import Button from '../../components/button/Button'
 import CardJadwal from '../../components/cardjadwal/CardJadwal'
 import endpoint from '../../services/api/endpoint';
@@ -87,10 +90,13 @@ function ForumDiskusi() {
         hoverBlackBtn[idx].style.opacity = '0'
     }
 
+    const apiFirebaseStorage = 'https://firebasestorage.googleapis.com/v0/b/e-learning-rp.appspot.com/o/documents%2F'
+
     function unduhFile(filePath) {
-        axios.get(`${endpoint}/${filePath}`, { responseType: 'blob' })
+        axios.get(filePath, { responseType: 'blob' })
             .then(res => {
-                fileDownload(res.data, filePath)
+                const getNameDocument = filePath.split(apiFirebaseStorage)[1].split('.pdf')[0]
+                fileDownload(res.data, `${getNameDocument}.pdf`)
             })
             .catch(err => console.log(err))
     }
@@ -105,6 +111,9 @@ function ForumDiskusi() {
 
     function closeModalInput(e) {
         e.preventDefault()
+        setValueFormDiskusi({
+            judul: '',
+        })
         setOnModal(false)
         setOnDisplayBtnSubmit(false)
     }
@@ -131,20 +140,61 @@ function ForumDiskusi() {
 
     const { name, nim, email } = user && user
 
+    async function uploadImgToFirebaseStorage() {
+        return await new Promise((resolve, reject) => {
+            const documentsRef = ref(storage, `documents/${valueFormDiskusi.image.name + v4()}`)
+            uploadBytes(documentsRef, valueFormDiskusi.image).then((res) => {
+                const nameDocument = res && res.metadata.name
+
+                getAccessTokenImgUpload(nameDocument)
+                    .then(res => resolve({ tokensDocuments: res, nameDocument: nameDocument }))
+                    .catch(err => reject(err))
+            })
+                .catch(err => reject({ message: 'Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!', error: 'error', jenisError: 'gagal upload documents ke firebase storage' }))
+        })
+    }
+
+    async function getAccessTokenImgUpload(nameDocument) {
+        return await new Promise((resolve, reject) => {
+            fetch(`${apiFirebaseStorage}${nameDocument}`, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+                .then(res => res.json())
+                .then(res => {
+                    const getAccessToken = res && res.downloadTokens
+                    resolve(getAccessToken)
+                })
+                .catch(err => reject({ message: 'Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!', error: 'error', jenisError: 'gagal mendapatkan tokens documents' }))
+        })
+    }
+
+    function postToRoomDiskusi(data) {
+        API.APIPostRoomDiskusi(idDocument, data)
+            .then(res => {
+                setValueFormDiskusi({
+                    judul: '',
+                })
+                setAllAPI(false);
+                setOnModal(false);
+                setOnDisplayBtnSubmit(false)
+
+                return res;
+            })
+            .catch(err => {
+                setLoadingSubmit(false)
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                console.log(err)
+            })
+    }
+
     function submitFormDiskusi(e) {
         e.preventDefault();
 
         let err = {}
-
-        const data = new FormData()
-        data.append('judul', valueFormDiskusi.judul)
-        data.append('body', valueFormDiskusi.body)
-        data.append('name', name)
-        data.append('nim', nim)
-        data.append('kelas', user && user.class)
-        data.append('gmail', email)
-        data.append('image', valueFormDiskusi.image)
-        data.append('date', `${years}-${month}-${date} ${hours}:${minutes}:${seconds}`)
 
         if (!valueFormDiskusi.judul) {
             err.judul = 'Wajib di isi!'
@@ -168,17 +218,29 @@ function ForumDiskusi() {
         if (err && Object.keys(err).length === 0) {
             setLoadingSubmit(true)
 
-            API.APIPostRoomDiskusi(idDocument, data)
+            uploadImgToFirebaseStorage()
                 .then(res => {
-                    setAllAPI(false);
-                    setOnModal(false);
-                    setOnDisplayBtnSubmit(false)
+                    if (res && res.tokensDocuments) {
+                        const tokenDocuments = res.tokensDocuments
+                        const nameDocument = res.nameDocument
 
-                    return res;
+                        const data = {
+                            judul: valueFormDiskusi.judul,
+                            body: valueFormDiskusi.body,
+                            name: name,
+                            nim: nim,
+                            kelas: user && user.class,
+                            gmail: email,
+                            image: `${apiFirebaseStorage}${nameDocument}?alt=media&token=${tokenDocuments}`,
+                            date: `${years}-${month}-${date} ${hours}:${minutes}:${seconds}`,
+                        }
+
+                        postToRoomDiskusi(data)
+                    }
                 })
                 .catch(err => {
                     setLoadingSubmit(false)
-                    alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                    alert(err.message)
                     console.log(err)
                 })
         }

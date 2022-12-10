@@ -275,19 +275,23 @@ function RuangMateri() {
         }
     }
 
+    const apiFirebaseStorage = 'https://firebasestorage.googleapis.com/v0/b/e-learning-rp.appspot.com/o/ilmu-komputer.S1_15.1A.01_semester-1_margonda%2F'
+
     function unduhMateriTambahan(file, i) {
         if (i === 5) {
-            axios.get(`${endpoint}/${file}`, { responseType: 'blob' })
+            axios.get(file, { responseType: 'blob' })
                 .then(res => {
-                    fileDownload(res.data, file)
+                    const getNameDocument = file.split(apiFirebaseStorage)[1].split('.pdf')[0]
+                    fileDownload(res.data, `${getNameDocument}.pdf`)
                 })
         }
     }
 
     function downloadSlidePembelajaran(file) {
-        axios.get(`${endpoint}/${file}`, { responseType: 'blob' })
+        axios.get(file, { responseType: 'blob' })
             .then(res => {
-                fileDownload(res.data, file)
+                const getNameDocument = file.split(apiFirebaseStorage)[1].split('.pdf')[0]
+                    fileDownload(res.data, `${getNameDocument}.pdf`)
             })
             .catch(err => console.log(err))
     }
