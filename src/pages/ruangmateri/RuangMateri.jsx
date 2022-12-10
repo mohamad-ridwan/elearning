@@ -7,8 +7,9 @@ import { CSVLink } from 'react-csv';
 import jsPDF from 'jspdf';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel'
 import './RuangMateri.scss'
-import Tools from '../../components/tools/Tools';
+import allowcors from '../../services/api/allowcors';
 import { PathContext } from '../../services/context/path';
+import Tools from '../../components/tools/Tools';
 import HeadTable from '../../components/headtable/HeadTable';
 import Button from '../../components/button/Button';
 import Pagination from '../../components/pagination/Pagination';
@@ -16,18 +17,17 @@ import CardJadwal from '../../components/cardjadwal/CardJadwal';
 import API from '../../services/api';
 import ListTable from '../../components/listtable/ListTable';
 import Loading from '../../components/loading/Loading';
-import endpoint from '../../services/api/endpoint';
 import ExportExcel from '../../components/exportexcel/ExportExcel';
 import PopClipboard from '../../components/popclipboard/PopClipboard';
 
 function RuangMateri() {
-
     const [pathGlobal, setPathGlobal, activeNavmenu, setActiveNavmenu, activeNavCollapse, setActiveNavCollapse, overActiveNavmenu, setOverActiveNavmenu, activeNavmenuDefault, setActiveNavmenuDefault, dataUserForNavbar, setDataUserForNavbar, idxActiveGlobal, setIdxActiveGlobal, headerTable, setHeaderTable, bodyTable, setBodyTable, pathPrintTable, setPathPrintTable, idxOnePrintTable, setIdxOnePrintTable, idxTwoPrintTable, setIdxTwoPrintTable, idxHeadPrintTable, setIdxHeadPrintTable, overActiveNavmenuDefault, setOverActiveNavmenuDefault, activeBodyDesktop, activeIconDrop, setActiveIconDrop, inActiveNavAfterLoadPage] = useContext(PathContext)
     const [listMateri, setListMateri] = useState([])
     const [nameMatkul, setNameMatkul] = useState('')
     const [videoPembelajaran, setVideoPembelajaran] = useState([])
     const [slidePembelajaran, setSlidePembelajaran] = useState([])
     const [loading, setLoading] = useState(false)
+    const [loadingDownloadPdf, setLoadingDownloadPdf] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState(5)
     const [dataCsv, setDataCsv] = useState([])
@@ -279,21 +279,42 @@ function RuangMateri() {
 
     function unduhMateriTambahan(file, i) {
         if (i === 5) {
-            axios.get(file, { responseType: 'blob' })
+            setLoadingDownloadPdf(true)
+
+            axios.get(`${allowcors}/${file}`, { responseType: 'blob' })
                 .then(res => {
                     const getNameDocument = file.split(apiFirebaseStorage)[1].split('.pdf')[0]
                     fileDownload(res.data, `${getNameDocument}.pdf`)
+
+                    setTimeout(() => {
+                        setLoadingDownloadPdf(false)
+                    }, 1000)
+                })
+                .catch(err => {
+                    console.log(err)
+                    alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                    setLoadingDownloadPdf(false)
                 })
         }
     }
 
     function downloadSlidePembelajaran(file) {
-        axios.get(file, { responseType: 'blob' })
+        setLoadingDownloadPdf(true)
+
+        axios.get(`${allowcors}/${file}`, { responseType: 'blob' })
             .then(res => {
                 const getNameDocument = file.split(apiFirebaseStorage)[1].split('.pdf')[0]
-                    fileDownload(res.data, `${getNameDocument}.pdf`)
+                fileDownload(res.data, `${getNameDocument}.pdf`)
+
+                setTimeout(() => {
+                    setLoadingDownloadPdf(false)
+                }, 1000)
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err)
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                setLoadingDownloadPdf(false)
+            })
     }
 
     function mouseEnterPaginate(i) {
@@ -674,6 +695,11 @@ function RuangMateri() {
                 />
 
                 <Loading displayWrapp={loading ? 'flex' : 'none'} />
+                <Loading
+                    displayWrapp={loadingDownloadPdf ? 'flex' : 'none'}
+                    bgColor="rgba(0,0,0,0.8)"
+                    zIndexWrapp="99999"
+                />
             </div>
         </>
     )
