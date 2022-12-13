@@ -34,6 +34,10 @@ function ForgotPassword() {
         }
     }
 
+    const serviceID = 'service_hmqukxt'
+    const templateID = 'template_lwvigvh'
+    const publicKey = '9OBxoKBI85PFlIkj7'
+
     function sendGmail(token) {
         API.APIGetDashboard(token)
             .then(res => {
@@ -49,18 +53,17 @@ function ForgotPassword() {
                         note: 'Note : Masa expired token Anda 1 jam dari saat Anda mengirimkan email!'
                     }
 
-                    send(
-                        'service_hmqukxt',
-                        'template_lwvigvh',
-                        data,
-                        'user_3klKefvuYuDVa2EGf6Ri1'
-                    )
+                    send(serviceID, templateID, data, publicKey)
                         .then(res => {
-                            setLoadingBtn(false);
+                            setLoadingBtn(false)
                             setInput('')
                             alert('Berhasil mengirimkan email,\nMohon cek email Anda untuk verifikasi')
-                            history.push('/login')
                             return res;
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                            setLoadingBtn(false)
                         })
                 }
             })

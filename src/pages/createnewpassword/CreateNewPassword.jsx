@@ -15,6 +15,7 @@ function CreateNewPassword() {
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState({})
     const [_idDocument, set_IdDocument] = useState('')
+    const [dataUser, setDataUser] = useState({})
     const [input, setInput] = useState({
         newPassword: '',
         confirmPassword: ''
@@ -34,9 +35,10 @@ function CreateNewPassword() {
             .then(res => {
                 if (res && res.data) {
                     set_IdDocument(res.data.user.data._id)
+                    setDataUser(res.data.user.data)
                     setLoading(false)
                 } else if (res.error !== null) {
-                    alert('token tidak valid!,\nmohon kirim email Anda untuk mendapatkan token verifikasi.')
+                    alert('token tidak valid atau sudah kadaluwarsa!,\nmohon kirim email Anda untuk mendapatkan token verifikasi.')
                     document.cookie = 'token-new-password='
                     history.push('/forgot-password');
                     setLoading(false)
@@ -130,9 +132,21 @@ function CreateNewPassword() {
                 <form onSubmit={submit} className="form-create-new-password">
                     <img src={`${endpoint}/${logoweb && logoweb.image}`} alt="image" className="img-logoweb-create-new-password" />
 
-                    <p className="deskripsi-create-new-password">
-                        Tolong buat kata sandi baru yang tidak Anda gunakan di situs lain mana pun
-                    </p>
+                    {dataUser && Object.keys(dataUser).length > 0 ? (
+                        <div className="akun-user">
+                            {dataUser.image.length > 2 && dataUser.image.includes('https://firebasestorage.googleapis.com') ? (
+                                <img src={dataUser.image} alt="" className="profile-user" />
+                            ):(
+                                <i className="fas fa-user"></i>
+                            )}
+                            
+                            <p className="email-user">
+                                {dataUser.email}
+                            </p>
+                        </div>
+                    ) : (
+                        <></>
+                    )}
 
                     <div className="column-input-create-new-password">
                         <Input
