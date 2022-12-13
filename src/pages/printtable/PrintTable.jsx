@@ -24,8 +24,8 @@ function PrintTable() {
         setPageSize('landscape')
 
         setTimeout(() => {
-            window.print();
-        }, 1500);
+            window.print()
+        }, 1000);
 
         return () => {
             const child = document.getElementById('page-orientation');
@@ -46,7 +46,9 @@ function PrintTable() {
     const trElement = document.getElementsByClassName('tr-print-table')
 
     window.onafterprint = () => {
-        history.push(pathPrintTable)
+        setTimeout(() => {
+            history.push(pathPrintTable)
+        }, 2000);
     }
 
     return (
