@@ -9,7 +9,6 @@ import Button from '../../components/button/Button';
 import Loading from '../../components/loading/Loading';
 
 function CreateNewPassword() {
-
     const [logoweb, setLogoweb] = useState({})
     const [loadingBtn, setLoadingBtn] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -24,6 +23,72 @@ function CreateNewPassword() {
     const getTokenVerifikasi = Cookies.get('token-new-password')
     const history = useHistory();
 
+    function deleteOneTokenUser(tokenVerifikasi) {
+        API.APIDeleteTokendb({ tokenVerifikasi: tokenVerifikasi })
+            .then(res => {
+                if (res && res.message) {
+                    alert('token tidak valid atau sudah kadaluwarsa!,\nmohon kirim email Anda untuk mendapatkan token verifikasi.')
+                    document.cookie = 'token-new-password='
+                    history.push('/forgot-password');
+                    setLoading(false)
+                }
+            })
+            .catch(err => {
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                console.log(err)
+                setLoadingBtn(false)
+            })
+    }
+
+    function checkTokenFirst() {
+        return new Promise((resolve, reject) => {
+            API.APIGetTokendb()
+                .then(res => {
+                    const respons = res && res.data
+
+                    if (respons) {
+                        const getToken = respons.filter(e => e.tokenVerifikasi === getTokenVerifikasi)
+
+                        if (getToken.length > 0) {
+                            const newData = {
+                                tokenUser: getToken[0].tokenUser,
+                                tokenVerifikasi: getToken[0].tokenVerifikasi
+                            }
+
+                            resolve(newData)
+                        } else {
+                            resolve({ message: 'token tidak valid' })
+                        }
+                    }
+                })
+                .catch(err => {
+                    reject({ message: 'failed get token' })
+                })
+        })
+    }
+
+    function verifikasiToken(data, conditionState, conditionUpdate) {
+        API.APIGetVerifikasiToken(data.tokenUser)
+            .then(res => {
+                if (res && res.data) {
+                    if (conditionState) {
+                        set_IdDocument(res.data.user.data._id)
+                        setDataUser(res.data.user.data)
+                        setLoading(false)
+                    }
+
+                    updatePassword(conditionUpdate);
+                } else if (res.error !== null) {
+                    deleteOneTokenUser(data.tokenVerifikasi)
+                }
+            })
+            .catch(err => {
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                console.log(err)
+                history.push('/login');
+            })
+    }
+
     function setAllAPI() {
         setLoading(true);
 
@@ -31,20 +96,27 @@ function CreateNewPassword() {
             .then(res => setLogoweb(res.data[0]))
             .catch(err => console.log(err))
 
-        API.APIGetVerifikasiToken(getTokenVerifikasi)
+        checkTokenFirst()
             .then(res => {
-                if (res && res.data) {
-                    set_IdDocument(res.data.user.data._id)
-                    setDataUser(res.data.user.data)
-                    setLoading(false)
-                } else if (res.error !== null) {
+                if (res && res.message === 'token tidak valid') {
                     alert('token tidak valid atau sudah kadaluwarsa!,\nmohon kirim email Anda untuk mendapatkan token verifikasi.')
                     document.cookie = 'token-new-password='
                     history.push('/forgot-password');
                     setLoading(false)
+                } else {
+                    const newData = {
+                        tokenUser: res.tokenUser,
+                        tokenVerifikasi: res.tokenVerifikasi
+                    }
+
+                    verifikasiToken(newData, true)
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                console.log(err)
+                history.push('/login');
+            })
     }
 
     useEffect(() => {
@@ -70,35 +142,58 @@ function CreateNewPassword() {
         }
     }
 
-    function updatePassword() {
-        API.APIUbahPassword(_idDocument, input)
+    function deleteAllTokenUser() {
+        API.APIDeleteManyTokendb({email: dataUser.email})
             .then(res => {
-                if (res && res.error) {
-                    setLoadingBtn(false)
-                    setErrorMessage({ ...errorMessage, confirmPassword: `${res.error}!` })
-                } else if (res && res.data) {
-                    setLoadingBtn(false)
-                    alert('Password berhasil di perbarui!')
-                    history.push('/login')
-                    document.cookie = 'token-new-password='
-                }
+                setLoadingBtn(false)
+                alert('Password berhasil di perbarui!')
+                history.push('/login')
+                document.cookie = 'token-new-password='
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                console.log(err)
+                setLoadingBtn(false)
+            })
+    }
+
+    function updatePassword(condition) {
+        if (condition) {
+            API.APIUbahPassword(_idDocument, input)
+                .then(res => {
+                    if (res && res.error) {
+                        setLoadingBtn(false)
+                        setErrorMessage({ ...errorMessage, confirmPassword: `${res.error}!` })
+                    } else if (res && res.data) {
+                        deleteAllTokenUser()
+                    }
+                })
+                .catch(err => console.log(err))
+        }
     }
 
     function checkToken() {
-        API.APIGetVerifikasiToken(getTokenVerifikasi)
+        checkTokenFirst()
             .then(res => {
-                if (res && res.data) {
-                    updatePassword();
-                } else if (res.error !== null) {
-                    alert(`Oops!, ${res.error}!`)
+                if (res && res.message === 'token tidak valid') {
+                    alert('token tidak valid atau sudah kadaluwarsa!,\nmohon kirim email Anda untuk mendapatkan token verifikasi.')
                     document.cookie = 'token-new-password='
                     history.push('/forgot-password');
-                    setLoadingBtn(false)
+                    setLoading(false)
+                } else {
+                    const newData = {
+                        tokenUser: res.tokenUser,
+                        tokenVerifikasi: res.tokenVerifikasi
+                    }
+
+                    verifikasiToken(newData, false, true)
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                console.log(err)
+                history.push('/login');
+            })
     }
 
     function submit(e) {
@@ -136,10 +231,10 @@ function CreateNewPassword() {
                         <div className="akun-user">
                             {dataUser.image.length > 2 && dataUser.image.includes('https://firebasestorage.googleapis.com') ? (
                                 <img src={dataUser.image} alt="" className="profile-user" />
-                            ):(
+                            ) : (
                                 <i className="fas fa-user"></i>
                             )}
-                            
+
                             <p className="email-user">
                                 {dataUser.email}
                             </p>

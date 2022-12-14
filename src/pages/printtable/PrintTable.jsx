@@ -25,7 +25,7 @@ function PrintTable() {
 
         setTimeout(() => {
             window.print()
-        }, 1000);
+        }, 0);
 
         return () => {
             const child = document.getElementById('page-orientation');
@@ -48,7 +48,7 @@ function PrintTable() {
     window.onafterprint = () => {
         setTimeout(() => {
             history.push(pathPrintTable)
-        }, 2000);
+        }, 500);
     }
 
     return (
