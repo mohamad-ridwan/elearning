@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { send } from 'emailjs-com'
 import './ForgotPassword.scss'
+import Loading from '../../components/loading/Loading';
 import Input from '../../components/input/Input';
 import endpoint from '../../services/api/endpoint';
 import Button from '../../components/button/Button';
@@ -11,6 +12,7 @@ function ForgotPassword() {
 
     const [logoweb, setLogoweb] = useState({})
     const [loadingBtn, setLoadingBtn] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [input, setInput] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
 
@@ -18,7 +20,13 @@ function ForgotPassword() {
 
     function setAllAPI() {
         API.APIGetLogoweb()
-            .then(res => setLogoweb(res.data[0]))
+            .then(res => {
+                setLogoweb(res.data[0])
+
+                setTimeout(() => {
+                    setLoading(false)
+                }, 100);
+            })
             .catch(err => console.log(err))
     }
 
@@ -38,36 +46,44 @@ function ForgotPassword() {
     const templateID = 'template_lwvigvh'
     const publicKey = '9OBxoKBI85PFlIkj7'
 
-    function sendGmail(token) {
-        API.APIGetDashboard(token)
+    function sendGmail(newData) {
+        const data = {
+            from_name: 'E-Learning',
+            to_name: newData.name,
+            to_email: newData.email,
+            message: `Hallo ${newData.name}!, untuk verifikasi membuat password baru silahkan kunjungi: https://e-learning-rp.web.app/verifikasi-create-new-password dengan memasukkan token di bawah.`,
+            token: newData.tokenVerifikasi,
+            note: 'Note : Token ini memiliki kedaluwarsa dari waktu tertentu.'
+        }
+
+        send(serviceID, templateID, data, publicKey)
             .then(res => {
-                if (res && res.data) {
-                    const respons = res.data.user.data
-
-                    const data = {
-                        from_name: 'E-Learning',
-                        to_name: respons.name,
-                        to_email: respons.email,
-                        message: `Hallo ${respons.name}!, untuk verifikasi membuat password baru silahkan kunjungi: https://e-learning-rp.web.app/verifikasi-create-new-password dengan memasukkan token di bawah.`,
-                        token: token,
-                        note: 'Note : Masa expired token Anda 1 jam dari saat Anda mengirimkan email!'
-                    }
-
-                    send(serviceID, templateID, data, publicKey)
-                        .then(res => {
-                            setLoadingBtn(false)
-                            setInput('')
-                            alert('Berhasil mengirimkan email,\nMohon cek email Anda untuk verifikasi')
-                            return res;
-                        })
-                        .catch(err => {
-                            console.log(err)
-                            alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
-                            setLoadingBtn(false)
-                        })
-                }
+                setLoadingBtn(false)
+                setInput('')
+                alert('Berhasil mengirimkan email,\nMohon cek email Anda untuk verifikasi')
+                return res;
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err)
+                alert('Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!')
+                setLoadingBtn(false)
+            })
+    }
+
+    function uploadTokendb(data) {
+        return new Promise((resolve, reject) => {
+            API.APIPostTokendb(data)
+                .then(res => resolve({ message: 'success' }))
+                .catch(err => reject(err))
+        })
+    }
+
+    function deleteAllTokenUser(data) {
+        return new Promise((resolve, reject) => {
+            API.APIDeleteManyTokendb(data)
+                .then(res => resolve({ message: 'delete-success' }))
+                .catch(err => reject(err))
+        })
     }
 
     function getUser() {
@@ -75,10 +91,46 @@ function ForgotPassword() {
             email: input
         }
 
+        const messageError = 'Oops! terjadi kesalahan server.\nMohon coba beberapa saat lagi!'
+
         API.APILupaPassword(data)
             .then(res => {
                 if (res && res.data) {
-                    sendGmail(res.data.token)
+                    const dateToken = new Date().getTime().toString().substr(-3)
+                    const getToken = `${dateToken}${Math.floor(Math.random() * 9)}${Math.floor(Math.random() * 9)}${Math.floor(Math.random() * 9)}`
+
+                    const newData = {
+                        tokenUser: res.data.token,
+                        name: res.data.name,
+                        tokenVerifikasi: getToken.length > 6 ? getToken.substr(0, 6) : getToken,
+                        email: data.email
+                    }
+
+                    deleteAllTokenUser(data)
+                        .then(res => {
+                            if (res && res.message === 'delete-success') {
+                                uploadTokendb(newData)
+                                    .then(res => {
+                                        if (res && res.message === 'success') {
+                                            sendGmail(newData)
+                                        }
+                                    })
+                                    .catch(err => {
+                                        alert(messageError)
+                                        console.log(err)
+                                        setLoadingBtn(false)
+                                    })
+                            } else {
+                                alert(messageError)
+                                console.log(res)
+                                setLoadingBtn(false)
+                            }
+                        })
+                        .catch(err => {
+                            alert(messageError)
+                            console.log(err)
+                            setLoadingBtn(false)
+                        })
                 } else if (res.error !== null) {
                     setErrorMessage(res.error)
                     setLoadingBtn(false);
@@ -121,6 +173,8 @@ function ForgotPassword() {
 
     return (
         <>
+            <Loading displayWrapp={loading ? 'flex' : 'none'} />
+
             <div className="wrapp-forgot-password">
                 <form onSubmit={(e) => {
                     e.preventDefault();

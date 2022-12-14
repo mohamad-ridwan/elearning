@@ -9,6 +9,10 @@ import PostTugas from "./jadwalkuliah/posttugas";
 import PutAuthKomentar from "./jadwalkuliah/putauthkomentar";
 import GetLogoweb from "./logoweb/get";
 import GetPanduan from "./panduan/get";
+import DeleteTokendb from "./tokendb/delete";
+import DeleteManyTokendb from "./tokendb/deletemany";
+import GetTokendb from "./tokendb/get";
+import PostTokendb from "./tokendb/post";
 import GetVerifikasiToken from "./tokenverifikasi/get";
 import GetUser from "./user/get";
 import LoginUser from "./user/login";
@@ -51,6 +55,12 @@ const APIPutAuthKomentar = (nim, data) => PutAuthKomentar(`v4/jadwal-kuliah/put/
 // API yang di auth dengan jwt
 const APIGetVerifikasiToken = (token) => GetVerifikasiToken('v6/verifikasi-new-password/token-verifikasi', token)
 
+// tokendb
+const APIPostTokendb = (data)=> PostTokendb('v7/tokendb/post', data)
+const APIDeleteManyTokendb = (data)=>DeleteManyTokendb('v7/tokendb/delete-many', data)
+const APIDeleteTokendb = (data)=>DeleteTokendb('v7/tokendb/delete', data)
+const APIGetTokendb = ()=>GetTokendb('v7/tokendb/get')
+
 const API = {
     APIGetUser,
     APIGetLogoweb,
@@ -70,7 +80,11 @@ const API = {
     APILupaPassword,
     APIGetVerifikasiToken,
     APIUbahPassword,
-    APIPutAuthKomentar
+    APIPutAuthKomentar,
+    APIPostTokendb,
+    APIDeleteManyTokendb,
+    APIDeleteTokendb,
+    APIGetTokendb
 }
 
 export default API;

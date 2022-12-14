@@ -2,11 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import Cookies from 'js-cookie';
 import './Login.scss';
+import { PathContext } from '../../services/context/path';
+import Loading from '../../components/loading/Loading';
 import Button from '../../components/button/Button';
 import Input from '../../components/input/Input';
 import API from '../../services/api';
 import endpoint from '../../services/api/endpoint';
-import { PathContext } from '../../services/context/path';
 
 function Login() {
 
@@ -14,6 +15,7 @@ function Login() {
     const [logoweb, setLogoweb] = useState({})
     const [errorMessage, setErrorMessage] = useState({})
     const [loadingLogin, setLoadingLogin] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [inputValue, setInputValue] = useState({
         nim: '',
         password: ''
@@ -36,7 +38,13 @@ function Login() {
             })
 
         API.APIGetLogoweb()
-            .then(res => setLogoweb(res.data[0]))
+            .then(res => {
+                setLogoweb(res.data[0])
+                
+                setTimeout(() => {
+                    setLoading(false)
+                }, 100)
+            })
             .catch(err => console.log(err))
     }
 
@@ -219,6 +227,8 @@ function Login() {
 
     return (
         <>
+            <Loading displayWrapp={loading ? 'flex' : 'none'} />
+
             <div className="wrapp-login">
                 <form onSubmit={submitLogin} className="form-login">
                     <img src={`${endpoint}/${logoweb && logoweb.image}`} alt="image" className="img-logoweb" />

@@ -1,7 +1,7 @@
 import React from 'react'
 import './Input.scss'
 
-function Input({ label, typeInput, changeInput, nameInput, value, error, placeholder, fontWeightLabel, bdrRadiusInput, bgColorInput, borderInput, displayImg, displayInput, acceptFile, displayBtnOpenFile, nameBtnOpenFile, clickBtnOpenFile, shadowContainerInput, urlImg, displayIputArea, changeInputArea, valueInputArea, marginWrapp, autoCompleteInput, autoFocusInput, placeHolderInputArea, focusInputArea }) {
+function Input({ label, typeInput, changeInput, nameInput, value, error, placeholder, fontWeightLabel, bdrRadiusInput, bgColorInput, borderInput, displayImg, displayInput, acceptFile, displayBtnOpenFile, nameBtnOpenFile, clickBtnOpenFile, shadowContainerInput, urlImg, displayIputArea, changeInputArea, valueInputArea, marginWrapp, autoCompleteInput, autoFocusInput, placeHolderInputArea, focusInputArea, maxLengthInput }) {
 
     const styleLabel = {
         fontWeight: fontWeightLabel
@@ -42,7 +42,7 @@ function Input({ label, typeInput, changeInput, nameInput, value, error, placeho
                 </label>
                 <img src={urlImg} alt="" className="img-input-user" style={styleImg} />
                 <div className="container-input-card" style={styleContainerInput}>
-                    <input type={typeInput} name={nameInput} className="txt-input-card" id="getFile" value={value} autoFocus={autoFocusInput} autoComplete={autoCompleteInput} accept={acceptFile}
+                    <input type={typeInput} name={nameInput} className="txt-input-card" id="getFile" value={value} autoFocus={autoFocusInput} autoComplete={autoCompleteInput} accept={acceptFile} maxLength={maxLengthInput}
                         onChange={changeInput} placeholder={placeholder} style={styleInput}
                     />
                     <textarea name="" rows="3" className="input-area-card" placeholder={placeHolderInputArea} onChange={changeInputArea} value={valueInputArea} autoFocus={focusInputArea} style={styleInputArea}></textarea>
