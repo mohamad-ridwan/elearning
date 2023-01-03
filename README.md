@@ -2,8 +2,9 @@ Link Website
 [e-learning-rp.web.app](https://e-learning-rp.web.app/).
 
 Akun Untuk login :.
-NIM Mahasiswa : 15100019.
-Password : mhs-2021.
+
+NIM Mahasiswa : 15100019
+Password : mhs-2021
 
 User (Mahasiswa) tidak perlu register akun karena sudah terdaftar oleh sistem dari data mahasiswa yang aktif.
 <!-- # Getting Started with Create React App
