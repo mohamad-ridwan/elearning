@@ -10,6 +10,7 @@ import Button from '../../components/button/Button';
 import API from '../../services/api';
 import Loading from '../../components/loading/Loading';
 import { PathContext } from '../../services/context/path';
+import allowcors from '../../services/api/allowcors';
 
 function Profile() {
 
@@ -121,7 +122,7 @@ function Profile() {
 
     async function getAccessTokenImgUpload(nameImg) {
         return await new Promise((resolve, reject) => {
-            fetch(`${apiFirebaseStorage}${nameImg}`, {
+            fetch(`${allowcors}/${apiFirebaseStorage}${nameImg}`, {
                 method: 'GET',
                 mode: 'cors',
                 headers: {
@@ -217,10 +218,10 @@ function Profile() {
     function updateInformasiProfil(data) {
         API.APIPutInformasiProfil(user._id, data)
             .then(res => {
-                if (res && res.data.error === null) {
-                    const resToken = res.data.data.token
+                if (res && res.error === null) {
+                    const resToken = res.data.token
 
-                    API.APIGetDashboard(res.data.data.token)
+                    API.APIGetDashboard(res.data.token)
                         .then(res => {
                             if (res && res.data) {
                                 updateAuthKomentar(res.data.user.data.nim, res.data.user.data.image, resToken)
@@ -239,9 +240,9 @@ function Profile() {
     function updateInformasiProfileEmailOnly(data) {
         API.APIPutEmailOnly(user._id, data)
             .then(res => {
-                if (res && res.data.error === null) {
+                if (res && res.error === null) {
                     setLoadingSubmit(false)
-                    document.cookie = `e-learning=${res.data.data.token}`
+                    document.cookie = `e-learning=${res.data.token}`
 
                     setTimeout(() => {
                         window.location.reload();

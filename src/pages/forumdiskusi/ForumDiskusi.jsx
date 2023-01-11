@@ -29,7 +29,7 @@ function ForumDiskusi() {
     const [valueFormDiskusi, setValueFormDiskusi] = useState({
         judul: '',
         body: '',
-        image: ''
+        image: {}
     })
 
     const getTokenUser = Cookies.get('e-learning')
@@ -120,7 +120,8 @@ function ForumDiskusi() {
     function closeModalInput(e) {
         e.preventDefault()
         setValueFormDiskusi({
-            judul: '',
+            ...valueFormDiskusi,
+            judul: ''
         })
         setOnModal(false)
         setOnDisplayBtnSubmit(false)
@@ -164,7 +165,7 @@ function ForumDiskusi() {
 
     async function getAccessTokenImgUpload(nameDocument) {
         return await new Promise((resolve, reject) => {
-            fetch(`${apiFirebaseStorage}${nameDocument}`, {
+            fetch(`${allowcors}/${apiFirebaseStorage}${nameDocument}`, {
                 method: 'GET',
                 mode: 'cors',
                 headers: {
@@ -184,7 +185,8 @@ function ForumDiskusi() {
         API.APIPostRoomDiskusi(idDocument, data)
             .then(res => {
                 setValueFormDiskusi({
-                    judul: '',
+                    ...valueFormDiskusi,
+                    judul: ''
                 })
                 setAllAPI(false);
                 setOnModal(false);
@@ -226,7 +228,8 @@ function ForumDiskusi() {
         if (err && Object.keys(err).length === 0) {
             setLoadingSubmit(true)
 
-            uploadImgToFirebaseStorage()
+            if(valueFormDiskusi.image && valueFormDiskusi.image.name){
+                uploadImgToFirebaseStorage()
                 .then(res => {
                     if (res && res.tokensDocuments) {
                         const tokenDocuments = res.tokensDocuments
@@ -251,6 +254,20 @@ function ForumDiskusi() {
                     alert(err.message)
                     console.log(err)
                 })
+            }else{
+                const data = {
+                    judul: valueFormDiskusi.judul,
+                    body: valueFormDiskusi.body,
+                    name: name,
+                    nim: nim,
+                    kelas: user && user.class,
+                    gmail: email,
+                    image: 'null',
+                    date: `${years}-${month}-${date} ${hours}:${minutes}:${seconds}`,
+                }
+
+                postToRoomDiskusi(data)
+            }
         }
 
         setErrorMessage(err)
@@ -436,7 +453,7 @@ function ForumDiskusi() {
                                         justifyContentSlidePembelajaran="space-between"
                                         justifyContentFontSlidePembelajaran="flex-start"
                                         textAlignDateSlidePembelajaran="start"
-                                        displayBtnFUnduhForumDiskusi={e.image !== ' ' ? 'flex' : 'none'}
+                                        displayBtnFUnduhForumDiskusi={e.image !== 'null' ? 'flex' : 'none'}
                                         bdrBottomWrapp="1px solid #e4e9f1"
                                         colorDateSlidePembelajaran="#8796af"
                                         bgColorBtnDownload="#1a538e"
